@@ -1,7 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // reactStrictMode: false,
+  images: {
+    remotePatterns: [
+      { hostname: "utfs.io" },
+      { hostname: "3jcovyf6o9.ufs.sh" },
+    ],
+  },
 };
 
 export default nextConfig;

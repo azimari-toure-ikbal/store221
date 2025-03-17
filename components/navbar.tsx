@@ -9,6 +9,7 @@ import CurrencySwitcher from "./currency-switcher";
 import { Button } from "./ui/button";
 import UserAuth from "./user-auth";
 import UserMenu from "./user-menu";
+import Cart from "./cart";
 
 type NavbarProps = {};
 
@@ -46,7 +47,7 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
               org={organization.orgCode || ""}
             />
           )}
-          <Button size="sm">Panier (0)</Button>
+          <Cart />
           <CurrencySwitcher />
         </div>
       </div>

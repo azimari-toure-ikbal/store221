@@ -51,10 +51,10 @@ const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({}) => {
             <div
               key={c.id}
               className={cn(
-                "flex cursor-pointer flex-col gap-2 rounded-lg border border-zinc-400 p-2 transition duration-200 hover:border-primary hover:text-primary",
+                "hover:border-primary hover:text-primary flex cursor-pointer flex-col gap-2 rounded-lg border border-zinc-400 p-2 transition duration-200",
                 {
-                  "border-primary text-primary": currency.code === c.currency,
-                }
+                  "border-blue-500 text-blue-500": currency.code === c.currency,
+                },
               )}
               onClick={() =>
                 setCurrency({

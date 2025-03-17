@@ -1,4 +1,11 @@
-import { numeric, pgEnum, pgTable, text } from "drizzle-orm/pg-core";
+import {
+  integer,
+  jsonb,
+  numeric,
+  pgEnum,
+  pgTable,
+  text,
+} from "drizzle-orm/pg-core";
 import { createdAt, id, updatedAt } from "../schema-helpers";
 
 export const productTypes = ["PANTS", "SHIRTS", "SUITS"] as const;
@@ -17,12 +24,47 @@ export const wristsTypes = ["SIMPLE", "MUSKETEER"] as const;
 export type WristsTypes = (typeof wristsTypes)[number];
 export const wristsTypesEnum = pgEnum("wrists_type", wristsTypes);
 
+export const pantFits = ["REGULAR", "SLIM_FIT"] as const;
+export type PantFits = (typeof pantFits)[number];
+export const pantFitsEnum = pgEnum("pant_fit", pantFits);
+
+export const pantLegs = ["OUTLET", "REVERS"] as const;
+export type PantLegs = (typeof pantLegs)[number];
+export const pantLegsEnum = pgEnum("pant_leg", pantLegs);
+
+export const sizes = ["XS", "S", "M", "L", "XL", "XXL"] as const;
+export type Sizes = (typeof sizes)[number];
+export const sizesEnum = pgEnum("size", sizes);
+
+export const productStatuses = ["DRAFT", "PUBLISHED", "DELETED"] as const;
+export type ProductStatuses = (typeof productStatuses)[number];
+export const productStatusesEnum = pgEnum("product_status", productStatuses);
+
+export const sellers = ["CAMENWEAR", "KAYSHOPPING"] as const;
+export type Sellers = (typeof sellers)[number];
+export const sellersEnum = pgEnum("seller", sellers);
+
 export const products = pgTable("products", {
   id,
   name: text().notNull(),
   description: text(),
   price: numeric().notNull(),
+  discountedPrice: numeric(),
   type: productTypesEnum().notNull(),
+  sizes: sizesEnum().array().notNull(),
+  stock: integer().notNull(),
+  options: jsonb()
+    .$type<{
+      sleevesLength?: SleevesLengths[];
+      collarType?: CollarTypes[];
+      wristsType?: WristsTypes[];
+      pantFit?: PantFits[];
+      pantLeg?: PantLegs[];
+    }>()
+    .notNull(),
+  gallery: text().array().notNull(),
+  seller: sellersEnum().notNull(),
+  status: productStatusesEnum().notNull(),
   createdAt,
   updatedAt,
 });

@@ -16,22 +16,6 @@ const handleAuth = async () => {
 };
 
 export const ourFileRouter = {
-  fabricPicture: f({
-    image: {
-      maxFileCount: 1,
-      maxFileSize: "4MB",
-    },
-  })
-    .middleware(async () => await handleAuth())
-    .onUploadComplete(() => {}),
-  collarPicture: f({
-    image: {
-      maxFileCount: 1,
-      maxFileSize: "4MB",
-    },
-  })
-    .middleware(async () => await handleAuth())
-    .onUploadComplete(() => {}),
   productImages: f({
     image: {
       maxFileSize: "16MB",

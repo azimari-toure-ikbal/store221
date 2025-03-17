@@ -2,10 +2,11 @@ import { logVerbose } from "@/config";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { deleteUser } from "@/server/kinde";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { adminProcedure, createTRPCRouter, privateProcedure } from "../init";
+import { adminProcedure, createTRPCRouter, publicProcedure } from "../init";
 
 export const usersRouter = createTRPCRouter({
   getUsers: adminProcedure.query(async ({ ctx }) => {
@@ -34,9 +35,16 @@ export const usersRouter = createTRPCRouter({
 
       return input;
     }),
-  getCurrentUser: privateProcedure.query(async ({ ctx }) => {
+  getCurrentUser: publicProcedure.query(async ({}) => {
+    const { getUser } = getKindeServerSession();
+    const kUser = await getUser();
+
+    if (!kUser) {
+      return undefined;
+    }
+
     const res = await db.query.users.findFirst({
-      where: eq(users.kindeId, ctx.kindeData.id),
+      where: eq(users.kindeId, kUser.id),
       with: {},
     });
 

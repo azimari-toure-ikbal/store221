@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
+@import "uploadthing/tw/v4";
+@source "../node_modules/@uploadthing/react/dist"; /** <-- depends on your project structure */
 @plugin "tailwindcss-animate";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -122,5 +125,17 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  .main {
+    @apply flex h-full w-full flex-col gap-6;
+  }
+  .left-right-layout {
+    @apply grid grid-cols-1 gap-x-12 md:grid-cols-12;
+  }
+  .left-col {
+    @apply w-full space-y-12 md:col-span-7;
+  }
+  .right-col {
+    @apply w-full space-y-8 md:col-span-5;
   }
 }
