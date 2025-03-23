@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
 import { TRPCProvider } from "@/server/trpc/client";

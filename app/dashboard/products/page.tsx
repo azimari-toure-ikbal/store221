@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { buttonVariants } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
