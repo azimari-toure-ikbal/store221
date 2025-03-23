@@ -45,7 +45,10 @@ export const usersRouter = createTRPCRouter({
 
     const res = await db.query.users.findFirst({
       where: eq(users.kindeId, kUser.id),
-      with: {},
+      with: {
+        favorites: true,
+        addresses: true,
+      },
     });
 
     if (!res) {

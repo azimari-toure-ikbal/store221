@@ -1,6 +1,16 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { PhoneInput } from "@/components/ui/phone-input";
+import { countriesName } from "@/config";
+import { checkoutFormSchema } from "@/lib/validators";
+import { trpc } from "@/server/trpc/client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import IsLoading from "../is-loading";
+import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
@@ -8,90 +18,93 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { PhoneInput } from "@/components/ui/phone-input";
+} from "../ui/form";
+import { Input } from "../ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { countries, countriesName } from "@/config";
-import { useCart } from "@/hooks/use-cart";
-import { deliveryAreaAtom } from "@/lib/atoms";
-import { checkoutFormSchema } from "@/lib/validators";
-import { trpc } from "@/server/trpc/client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useSetAtom } from "jotai";
-import { useRouter } from "next/navigation";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
-import IsLoading from "../is-loading";
-import { Input } from "../ui/input";
+} from "../ui/select";
 import { Textarea } from "../ui/textarea";
 
-type CheckoutFormProps = {
-  givenName: string;
-  familyName: string;
-  email: string;
-  phone: string;
+type UserAddressFormProps = {
+  id?: string;
+  initialValues?: z.infer<typeof checkoutFormSchema>;
 };
 
-const CheckoutForm: React.FC<CheckoutFormProps> = ({
-  email,
-  familyName,
-  givenName,
-  phone,
+let toastId: string | number;
+
+const UserAddressForm: React.FC<UserAddressFormProps> = ({
+  id,
+  initialValues,
 }) => {
-  const router = useRouter();
+  const utils = trpc.useUtils();
 
-  // const currency = useAtomValue(currencyAtom);
-  const { cart, total, surMesureTotal } = useCart();
-  const setDeliveryArea = useSetAtom(deliveryAreaAtom);
+  const { mutate: createAddress, isPending: creating } =
+    trpc.userAddresses.createUserAddress.useMutation({
+      onSuccess: () => {
+        toast.success("Votre adresse a été créée avec succès.");
+        form.reset();
+        utils.userAddresses.getUserAddresses.invalidate();
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+      onSettled: () => {
+        toast.dismiss(toastId);
+      },
+    });
 
-  const { mutate: checkout, isPending } = trpc.carts.checkout.useMutation({
-    onSuccess: (data) => {
-      toast.info("Vous allez être redirigé vers le site de paiement");
-      router.push(data.redirectUrl);
-    },
-  });
+  const { mutate: updateAddress, isPending: updating } =
+    trpc.userAddresses.updateUserAddress.useMutation({
+      onSuccess: () => {
+        toast.success("Votre adresse a été mise à jour avec succès.");
+        form.reset();
+        utils.userAddresses.getUserAddresses.invalidate();
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+      onSettled: () => {
+        toast.dismiss(toastId);
+      },
+    });
 
   const form = useForm<z.infer<typeof checkoutFormSchema>>({
     resolver: zodResolver(checkoutFormSchema),
+    defaultValues: {
+      address: initialValues?.address || "",
+      city: initialValues?.city || "",
+      country: initialValues?.country || "",
+      email: initialValues?.email || "",
+      firstName: initialValues?.firstName || "",
+      lastName: initialValues?.lastName || "",
+      note: initialValues?.note || "",
+      phone: initialValues?.phone || "",
+      state: initialValues?.state || "",
+      zip: initialValues?.zip || "",
+    },
   });
 
   function onSubmit(values: z.infer<typeof checkoutFormSchema>) {
     try {
-      if (!cart) return;
-
-      checkout({
-        cartId: cart.id,
-        cartPrice: total,
-        productName: "Pantalon",
-        rate: 0.12,
-        currency: "XOF",
-        delivery: values,
-      });
+      if (id) {
+        toastId = toast.loading("Modification de l'adresse en cours...");
+        updateAddress({
+          id,
+          values,
+        });
+      } else {
+        toastId = toast.loading("Création de l'adresse en cours...");
+        createAddress(values);
+      }
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");
     }
   }
-
-  React.useEffect(() => {
-    if (form.watch("country")) {
-      const found = countries.find(
-        (c) => c.name === form.watch("country"),
-      )?.continent;
-
-      // console.log("Found continent", found);
-
-      if (found) setDeliveryArea(found);
-    }
-  }, [form, setDeliveryArea]);
 
   return (
     <div className="space-y-4">
@@ -276,8 +289,18 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
               </FormItem>
             )}
           />
-          <Button className="w-full" type="submit" disabled={isPending}>
-            {isPending ? <IsLoading /> : "Procéder au paiement"}
+          <Button
+            className="w-full"
+            type="submit"
+            disabled={creating || updating}
+          >
+            {creating || updating ? (
+              <IsLoading />
+            ) : id ? (
+              "Modifier l'adresse"
+            ) : (
+              "Ajouter une adresse"
+            )}
           </Button>
         </form>
       </Form>
@@ -285,4 +308,4 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
   );
 };
 
-export default CheckoutForm;
+export default UserAddressForm;

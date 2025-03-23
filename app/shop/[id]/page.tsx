@@ -14,8 +14,17 @@ import Link from "next/link";
 import { use, useRef, useState } from "react";
 
 import IsLoading from "@/components/is-loading";
+import ProductDetailActions from "@/components/product-detail-actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -235,8 +244,8 @@ export default function ProductDetailPage({ params, searchParams }: Props) {
                       className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 relative flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
                     >
                       {formatCollarType(col)}
-                      <Popover>
-                        <PopoverTrigger asChild>
+                      <Dialog>
+                        <DialogTrigger asChild>
                           <Button
                             variant={"secondary"}
                             size={"icon"}
@@ -244,6 +253,45 @@ export default function ProductDetailPage({ params, searchParams }: Props) {
                           >
                             <Info />
                           </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>{col}</DialogTitle>
+                            <DialogDescription>
+                              {col === "MINIMALISTIC" ? (
+                                <p className="text-justify text-xs">
+                                  Le col minimaliste, également connu sous le
+                                  nom de col officier, se distingue par son
+                                  style épuré et moderne. Il s'adapte aussi bien
+                                  à une chemise formelle pour un look
+                                  sophistiqué qu'à une chemise d'été en lin pour
+                                  un style décontracté. La rigidité du col varie
+                                  en fonction du tissu : souple pour les
+                                  matières casual et plus rigide pour les tissus
+                                  formels.
+                                </p>
+                              ) : (
+                                <p className="text-justify text-xs">
+                                  Le col standard, aussi appelé col italien, est
+                                  un choix business polyvalent. Adaptable, il
+                                  peut se porter avec ou sans cravate. De taille
+                                  moyenne, avec des pointes plutôt évasées, il
+                                  offre une tenue parfaite et est équipé de
+                                  baleines amovibles.
+                                </p>
+                              )}
+                            </DialogDescription>
+                          </DialogHeader>
+                          <img
+                            src="/placeholder.svg"
+                            alt="collar"
+                            className="aspect-square h-40 w-full"
+                          />
+                        </DialogContent>
+                      </Dialog>
+                      {/* <Popover>
+                        <PopoverTrigger asChild>
+                          
                         </PopoverTrigger>
                         <PopoverContent side="right">
                           {col === "MINIMALISTIC" ? (
@@ -268,7 +316,7 @@ export default function ProductDetailPage({ params, searchParams }: Props) {
                             </p>
                           )}
                         </PopoverContent>
-                      </Popover>
+                      </Popover> */}
                     </Label>
                   </div>
                 ))}
@@ -578,6 +626,7 @@ export default function ProductDetailPage({ params, searchParams }: Props) {
             <p className="mb-4 text-2xl font-semibold">
               {formatPrice(Number(product.price), currency.code, currency.rate)}
             </p>
+            <ProductDetailActions id={product.id} title={product.name} />
             {/* <p className="text-muted-foreground">
               This handcrafted piece features traditional African designs and
               techniques. Each item is uniquely patterned using methods that

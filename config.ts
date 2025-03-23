@@ -1,11 +1,4 @@
-import {
-  ChartBar,
-  HeartIcon,
-  House,
-  ListChecks,
-  ShoppingCart,
-  User,
-} from "lucide-react";
+import { ChartBar, HeartIcon, House, ShoppingCart, User } from "lucide-react";
 import { z } from "zod";
 import {
   CollarTypes,
@@ -37,7 +30,7 @@ export const CUSTOMERS_MENU = [
   { title: "Commandes", icon: ShoppingCart, href: "/customer/orders" },
   { title: "Adresses", icon: House, href: "/customer/addresses" },
   { title: "Favoris", icon: HeartIcon, href: "/customer/favorites" },
-  { title: "Wishlist", icon: ListChecks, href: "/customer/wishlist" },
+  // { title: "Wishlist", icon: ListChecks, href: "/customer/wishlist" },
   // { title: "" },
 ];
 
@@ -65,7 +58,7 @@ export const SHIRT_WEIGHT = 0.25;
 export const PANTS_WEIGHT = 0.3;
 export const SUITS_WEIGHT = 1;
 
-export const AREAS = ["DAKAR", "EUROPE", "AMERIQUE"] as const;
+export const AREAS = ["Afrique", "Europe", "Amerique"] as const;
 export type DELIVERY_AREAS = (typeof AREAS)[number];
 
 export type ItemOptions = {
@@ -237,20 +230,20 @@ export const countries = [
   { name: "Royaume-Uni", continent: "Europe" },
   { name: "Vatican", continent: "Europe" },
 
-  { name: "Argentine", continent: "Amérique" },
-  { name: "Bolivie", continent: "Amérique" },
-  { name: "Brésil", continent: "Amérique" },
-  { name: "Canada", continent: "Amérique" },
-  { name: "Chili", continent: "Amérique" },
-  { name: "Colombie", continent: "Amérique" },
-  { name: "Cuba", continent: "Amérique" },
-  { name: "Équateur", continent: "Amérique" },
-  { name: "États-Unis", continent: "Amérique" },
-  { name: "Mexique", continent: "Amérique" },
-  { name: "Paraguay", continent: "Amérique" },
-  { name: "Pérou", continent: "Amérique" },
-  { name: "Uruguay", continent: "Amérique" },
-  { name: "Venezuela", continent: "Amérique" },
+  { name: "Argentine", continent: "Amerique" },
+  { name: "Bolivie", continent: "Amerique" },
+  { name: "Brésil", continent: "Amerique" },
+  { name: "Canada", continent: "Amerique" },
+  { name: "Chili", continent: "Amerique" },
+  { name: "Colombie", continent: "Amerique" },
+  { name: "Cuba", continent: "Amerique" },
+  { name: "Équateur", continent: "Amerique" },
+  { name: "États-Unis", continent: "Amerique" },
+  { name: "Mexique", continent: "Amerique" },
+  { name: "Paraguay", continent: "Amerique" },
+  { name: "Pérou", continent: "Amerique" },
+  { name: "Uruguay", continent: "Amerique" },
+  { name: "Venezuela", continent: "Amerique" },
 ] as const;
 
 export const countriesName = countries.map((c) => c.name);

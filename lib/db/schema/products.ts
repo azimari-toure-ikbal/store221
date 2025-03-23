@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
   integer,
   jsonb,
@@ -7,6 +8,7 @@ import {
   text,
 } from "drizzle-orm/pg-core";
 import { createdAt, id, updatedAt } from "../schema-helpers";
+import { favorites } from "./favorites";
 
 export const productTypes = ["PANTS", "SHIRTS", "SUITS"] as const;
 export type ProductTypes = (typeof productTypes)[number];
@@ -68,3 +70,7 @@ export const products = pgTable("products", {
   createdAt,
   updatedAt,
 });
+
+export const productsRelations = relations(products, ({ many, one }) => ({
+  favorites: many(favorites),
+}));

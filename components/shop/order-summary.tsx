@@ -39,7 +39,9 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({}) => {
       <Separator />
       <div className="flex flex-col gap-2">
         <span className="font-semibold">Méthode de paiement</span>
-        <div className="flex items-center justify-between">PAYTECH</div>
+        <div className="relative h-14 w-full">
+          <img alt="paytech" src={"/paytech.png"} className="object-fill" />
+        </div>
       </div>
     </div>
   );

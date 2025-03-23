@@ -1,6 +1,8 @@
 import { relations } from "drizzle-orm";
 import { pgEnum, pgTable, text } from "drizzle-orm/pg-core";
 import { createdAt, id, updatedAt } from "../schema-helpers";
+import { favorites } from "./favorites";
+import { userAddresses } from "./user-addresses";
 
 export const roles = ["USER", "ADMIN"] as const;
 export type Roles = (typeof roles)[number];
@@ -19,4 +21,7 @@ export const users = pgTable("users", {
 });
 export type DBUser = typeof users.$inferSelect;
 
-export const usersRelations = relations(users, ({ one, many }) => ({}));
+export const usersRelations = relations(users, ({ one, many }) => ({
+  favorites: many(favorites),
+  addresses: many(userAddresses),
+}));

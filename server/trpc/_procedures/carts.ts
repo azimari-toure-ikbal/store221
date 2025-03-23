@@ -478,7 +478,7 @@ export const cartsRouter = createTRPCRouter({
         currency: input.currency,
         ref_command: `${input.cartId}`,
         command_name: "Paiement panier store221 via Paytech",
-        env: "test",
+        env: "prod",
         ipn_url: devMode
           ? "https://9cef-41-208-134-215.ngrok-free.app/api/paytech/ipn"
           : "https://samaweekend.com/paytech/api/paytech/ipn",

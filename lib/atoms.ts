@@ -3,7 +3,11 @@ import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import { z } from "zod";
 import { Currencies } from "./db/schema";
-import { ProductFilter, productFormSchema } from "./validators";
+import {
+  checkoutFormSchema,
+  ProductFilter,
+  productFormSchema,
+} from "./validators";
 
 export const currencyAtom = atomWithStorage<{ code: Currencies; rate: number }>(
   "S221_CURRENCY",
@@ -20,7 +24,7 @@ export const paymentGatewayAtom = atomWithStorage<string>(
 );
 export const deliveryAreaAtom = atomWithStorage<DELIVERY_AREAS>(
   "S221_DeliveryArea",
-  "DAKAR",
+  "Afrique",
 );
 
 export const filterAtom = atom<ProductFilter>({
@@ -39,3 +43,7 @@ export const pageAtom = atom<number>(1);
 export const productFormAtom = atomWithStorage<
   z.infer<typeof productFormSchema>
 >("S221_PRODUCTFORM_BACKUP", PRODUCT_FORM_DEFAULT_VALUES);
+
+export const savedCheckoutInfoAtom = atomWithStorage<
+  z.infer<typeof checkoutFormSchema> | undefined
+>("S221_SAVED_CHECKOUT_INFO", undefined);

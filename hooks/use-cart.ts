@@ -26,6 +26,8 @@ export const useCart = () => {
   const paymentGateway = useAtomValue(paymentGatewayAtom);
   const deliveryArea = useAtomValue(deliveryAreaAtom);
 
+  // console.log("Deliveryarea is", deliveryArea);
+
   const { user } = useKindeBrowserClient();
   const [sessionId, setSessionId] = useAtom(sessionAtom);
 
@@ -653,30 +655,30 @@ export const useCart = () => {
   const deliveryPrice = useMemo(() => {
     if (!cart) return 0;
 
-    if (deliveryArea === "DAKAR") {
+    if (deliveryArea === "Afrique") {
       return 0;
     }
 
     if (totalWeight <= 2.5) {
-      if (deliveryArea === "EUROPE") {
+      if (deliveryArea === "Europe") {
         return 18500;
       } else {
         return 21000;
       }
     } else if (totalWeight > 2.5 && totalWeight <= 5) {
-      if (deliveryArea === "EUROPE") {
+      if (deliveryArea === "Europe") {
         return 37000;
       } else {
         return 42000;
       }
     } else if (totalWeight > 5 && totalWeight <= 7.5) {
-      if (deliveryArea === "EUROPE") {
+      if (deliveryArea === "Europe") {
         return 55500;
       } else {
         return 63000;
       }
     } else if (totalWeight > 7.5 && totalWeight <= 10) {
-      if (deliveryArea === "EUROPE") {
+      if (deliveryArea === "Europe") {
         return 74000;
       } else {
         return 84000;
