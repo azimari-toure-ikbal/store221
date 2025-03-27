@@ -7,6 +7,7 @@ import { HydrateClient, trpc } from "@/server/trpc/server";
 import { Provider as JotaiProvider } from "jotai";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { NuqsAdapter } from "nuqs/adapters/next";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Toaster } from "sonner";
@@ -41,44 +42,46 @@ export default function RootLayout({
       >
         <JotaiProvider>
           <TRPCProvider>
-            <div className="relative min-h-full w-full bg-white">
-              <main className="relative flex min-h-screen flex-col">
-                <HydrateClient>
-                  <Suspense
-                    fallback={
-                      <header className="sticky top-0 z-40 border-b bg-zinc-50">
-                        <div className="container mx-auto flex h-16 items-center justify-between py-4">
-                          <div className="h-8 w-20 animate-pulse rounded-xl bg-zinc-200"></div>
-                          <div className="hidden items-center gap-6 md:flex">
-                            {[...Array(6)].map((_, index) => (
-                              <div
-                                key={index}
-                                className="h-8 w-20 animate-pulse rounded-xl bg-zinc-200"
-                              ></div>
-                            ))}
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <div className="size-8 animate-pulse rounded-full bg-zinc-200"></div>
+            <NuqsAdapter>
+              <div className="bg-primary/15 relative min-h-full w-full">
+                <main className="relative flex min-h-screen flex-col">
+                  <HydrateClient>
+                    <Suspense
+                      fallback={
+                        <header className="sticky top-0 z-40 border-b bg-zinc-50">
+                          <div className="container mx-auto flex h-16 items-center justify-between py-4">
                             <div className="h-8 w-20 animate-pulse rounded-xl bg-zinc-200"></div>
-                            <div className="h-8 w-20 animate-pulse rounded-xl bg-zinc-200"></div>
+                            <div className="hidden items-center gap-6 md:flex">
+                              {[...Array(6)].map((_, index) => (
+                                <div
+                                  key={index}
+                                  className="h-8 w-20 animate-pulse rounded-xl bg-zinc-200"
+                                ></div>
+                              ))}
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <div className="size-8 animate-pulse rounded-full bg-zinc-200"></div>
+                              <div className="h-8 w-20 animate-pulse rounded-xl bg-zinc-200"></div>
+                              <div className="h-8 w-20 animate-pulse rounded-xl bg-zinc-200"></div>
+                            </div>
                           </div>
-                        </div>
-                      </header>
-                    }
-                  >
-                    <ErrorBoundary fallback={<p>Error</p>}>
-                      <Navbar />
-                    </ErrorBoundary>
-                  </Suspense>
-                </HydrateClient>
-                <div className="h-full w-full flex-1 flex-grow overflow-x-hidden pb-6">
-                  {/* <GlobalProvider /> */}
-                  {children}
-                </div>
-                <Footer />
-              </main>
-            </div>
-            <Toaster />
+                        </header>
+                      }
+                    >
+                      <ErrorBoundary fallback={<p>Error</p>}>
+                        <Navbar />
+                      </ErrorBoundary>
+                    </Suspense>
+                  </HydrateClient>
+                  <div className="h-full w-full flex-1 flex-grow overflow-x-hidden pb-6">
+                    {/* <GlobalProvider /> */}
+                    {children}
+                  </div>
+                  <Footer />
+                </main>
+              </div>
+              <Toaster />
+            </NuqsAdapter>
           </TRPCProvider>
         </JotaiProvider>
       </body>

@@ -42,6 +42,37 @@ export const productsRouter = createTRPCRouter({
 
       return res;
     }),
+  duplicateProduct: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        values: productFormSchema,
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const foundProduct = await db.query.products.findFirst({
+        where: eq(products.id, input.id),
+      });
+
+      if (!foundProduct) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Product not found",
+        });
+      }
+
+      const res = await db
+        .insert(products)
+        .values({
+          ...input.values,
+          gallery: [],
+          stock: Number(input.values.stock),
+          status: "DRAFT",
+        })
+        .returning();
+
+      return res;
+    }),
   updateProduct: adminProcedure
     .input(
       z.object({
@@ -117,14 +148,14 @@ export const productsRouter = createTRPCRouter({
   getPaginatedProducts: publicProcedure
     .input(
       z.object({
-        page: z.number().min(1).default(1),
+        page: z.number(),
         pageSize: z.number().min(1).default(12),
         filter: productFilterValidator.optional(),
       }),
     )
     .query(async ({ input }) => {
       const { page, pageSize, filter } = input;
-      const offset = (page - 1) * pageSize;
+      const offset = page * pageSize;
 
       const filters: SQL[] = [];
 

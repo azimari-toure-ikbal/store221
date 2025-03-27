@@ -1,5 +1,6 @@
 "use client";
 
+import IkImage from "@/lib/image";
 import parse from "html-react-parser";
 import {
   ChevronLeft,
@@ -11,7 +12,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { use, useRef, useState } from "react";
+import { use, useState } from "react";
 
 import IsLoading from "@/components/is-loading";
 import ProductDetailActions from "@/components/product-detail-actions";
@@ -27,26 +28,17 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/hooks/use-cart";
+import { useProductFilters } from "@/hooks/use-states";
 import { currencyAtom } from "@/lib/atoms";
 import {
   collarTypes,
   CollarTypes,
+  pantFits,
   PantFits,
+  pantLegs,
   PantLegs,
   sizes,
   Sizes,
@@ -57,8 +49,9 @@ import {
 } from "@/lib/db/schema";
 import {
   cn,
-  createProductOptionsParams,
   formatCollarType,
+  formatPantFit,
+  formatPantLeg,
   formatPrice,
   formatSleevesLength,
   formatType,
@@ -66,74 +59,33 @@ import {
 } from "@/lib/utils";
 import { trpc } from "@/server/trpc/client";
 import { useAtomValue } from "jotai";
-import React from "react";
 
 type ProductType = "SUITS" | "SHIRTS" | "PANTS";
 
 type Params = Promise<{ id: string }>;
-type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
 type Props = {
   params: Params;
-  searchParams: SearchParams;
 };
 
-type SelectedOptions = {
-  [key: string]: string;
-};
-
-export default function ProductDetailPage({ params, searchParams }: Props) {
+export default function ProductDetailPage({ params }: Props) {
   const { id } = use(params);
-  const sParams = use(searchParams);
-
-  const initialized = useRef(false);
 
   const currency = useAtomValue(currencyAtom);
 
-  const [selectedOptions, setSelectedOptions] = useState<{
-    size: Sizes | "sur-mesure";
-    sleevesLength?: SleevesLengths;
-    collarType?: CollarTypes;
-    wristsType?: WristsTypes;
-    pantFit?: PantFits;
-    pantLeg?: PantLegs;
-  }>({
-    size: "XS",
-  });
-
   const { addProductToCart, addingProduct } = useCart();
 
-  const [quantity, setQuantity] = useState(1);
+  const [{ initials, quantity, selectedOptions }, setFilters] =
+    useProductFilters();
+
   const [currentImage, setCurrentImage] = useState(0);
   const [showInitials, setShowInitials] = useState(false);
-  const [initials, setInitials] = useState("");
 
   const { data: product, isLoading } = trpc.products.getProductDetails.useQuery(
     {
       id,
     },
   );
-
-  React.useEffect(() => {
-    // This call now creates the query parameters and updates the URL automatically.
-    createProductOptionsParams(selectedOptions);
-  }, [selectedOptions]);
-
-  React.useEffect(() => {
-    if (initialized.current) return;
-    initialized.current = true;
-
-    const initialOptions = {
-      size: (sParams.size as Sizes | "sur-mesure") || "XS",
-      collarType: sParams.collarType as CollarTypes | undefined,
-      sleevesLength: sParams.sleevesLength as SleevesLengths | undefined,
-      wristsType: sParams.wristsType as WristsTypes | undefined,
-      pantFit: sParams.pantFit as PantFits | undefined,
-      pantLeg: sParams.pantLeg as PantLegs | undefined,
-    };
-
-    setSelectedOptions(initialOptions);
-  }, [sParams]);
 
   const relatedProducts = [
     {
@@ -162,13 +114,17 @@ export default function ProductDetailPage({ params, searchParams }: Props) {
     },
   ];
 
-  const incrementQuantity = () => setQuantity((prev) => prev + 1);
+  const incrementQuantity = () =>
+    setFilters((prev) => ({ ...prev, quantity: prev.quantity + 1 }));
   const decrementQuantity = () =>
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+    setFilters((prev) => ({
+      ...prev,
+      quantity: prev.quantity > 1 ? prev.quantity - 1 : 1,
+    }));
 
   const toggleInitials = () => {
     setShowInitials((prev) => !prev);
-    if (showInitials) setInitials("");
+    if (showInitials) setFilters((prev) => ({ ...prev, initials: "" }));
   };
 
   const nextImage = () => {
@@ -187,19 +143,24 @@ export default function ProductDetailPage({ params, searchParams }: Props) {
   const renderProductOptions = () => {
     if (!product) return;
     switch (product.type) {
-      case "SHIRTS":
+      case "CLASSSIC_SHIRTS":
+      case "AFRICAN_SHIRTS":
         return (
           <>
+            {/* Sleeves options */}
             <div className="space-y-3">
               <h3 className="font-medium">Longeur des manches</h3>
               <RadioGroup
                 defaultValue={selectedOptions.sleevesLength}
                 className="flex flex-wrap gap-2"
                 onValueChange={(val) => {
-                  setSelectedOptions({
-                    ...selectedOptions,
-                    sleevesLength: val as SleevesLengths,
-                  });
+                  setFilters((prev) => ({
+                    ...prev,
+                    selectedOptions: {
+                      ...prev.selectedOptions,
+                      sleevesLength: val as SleevesLengths,
+                    },
+                  }));
                 }}
               >
                 {sleevesLengths.map((sleeve, index) => (
@@ -220,16 +181,20 @@ export default function ProductDetailPage({ params, searchParams }: Props) {
               </RadioGroup>
             </div>
 
+            {/* Collar options */}
             <div className="space-y-3">
               <h3 className="font-medium">Type de col</h3>
               <RadioGroup
                 defaultValue={selectedOptions.collarType}
                 className="flex flex-wrap gap-4"
                 onValueChange={(val) => {
-                  setSelectedOptions({
-                    ...selectedOptions,
-                    collarType: val as CollarTypes,
-                  });
+                  setFilters((prev) => ({
+                    ...prev,
+                    selectedOptions: {
+                      ...prev.selectedOptions,
+                      collarType: val as CollarTypes,
+                    },
+                  }));
                 }}
               >
                 {collarTypes.map((col, index) => (
@@ -256,7 +221,7 @@ export default function ProductDetailPage({ params, searchParams }: Props) {
                         </DialogTrigger>
                         <DialogContent>
                           <DialogHeader>
-                            <DialogTitle>{col}</DialogTitle>
+                            <DialogTitle>{formatCollarType(col)}</DialogTitle>
                             <DialogDescription>
                               {col === "MINIMALISTIC" ? (
                                 <p className="text-justify text-xs">
@@ -283,56 +248,36 @@ export default function ProductDetailPage({ params, searchParams }: Props) {
                             </DialogDescription>
                           </DialogHeader>
                           <img
-                            src="/placeholder.svg"
+                            src={
+                              col === "STANDARD"
+                                ? "/shop/Col-standard.png"
+                                : "/shop/Col-minimaliste.png"
+                            }
                             alt="collar"
-                            className="aspect-square h-40 w-full"
+                            className="aspect-square h-auto w-full rounded-lg border"
                           />
                         </DialogContent>
                       </Dialog>
-                      {/* <Popover>
-                        <PopoverTrigger asChild>
-                          
-                        </PopoverTrigger>
-                        <PopoverContent side="right">
-                          {col === "MINIMALISTIC" ? (
-                            <p className="text-justify text-xs">
-                              Le col minimaliste, également connu sous le nom de
-                              col officier, se distingue par son style épuré et
-                              moderne. Il s'adapte aussi bien à une chemise
-                              formelle pour un look sophistiqué qu'à une chemise
-                              d'été en lin pour un style décontracté. La
-                              rigidité du col varie en fonction du tissu :
-                              souple pour les matières casual et plus rigide
-                              pour les tissus formels.
-                            </p>
-                          ) : (
-                            <p className="text-justify text-xs">
-                              Le col standard, aussi appelé col italien, est un
-                              choix business polyvalent. Adaptable, il peut se
-                              porter avec ou sans cravate. De taille moyenne,
-                              avec des pointes plutôt évasées, il offre une
-                              tenue parfaite et est équipé de baleines
-                              amovibles.
-                            </p>
-                          )}
-                        </PopoverContent>
-                      </Popover> */}
                     </Label>
                   </div>
                 ))}
               </RadioGroup>
             </div>
 
+            {/* Wrists options */}
             <div className="space-y-3">
               <h3 className="font-medium">Type de poignets</h3>
               <RadioGroup
                 defaultValue={selectedOptions.wristsType}
                 className="flex flex-wrap gap-2"
                 onValueChange={(val) => {
-                  setSelectedOptions({
-                    ...selectedOptions,
-                    wristsType: val as WristsTypes,
-                  });
+                  setFilters((prev) => ({
+                    ...prev,
+                    selectedOptions: {
+                      ...prev.selectedOptions,
+                      wristsType: val as WristsTypes,
+                    },
+                  }));
                 }}
               >
                 {wristsTypes.map((wrist, index) => (
@@ -348,8 +293,8 @@ export default function ProductDetailPage({ params, searchParams }: Props) {
                     >
                       {formatWristsType(wrist)}
 
-                      <Popover>
-                        <PopoverTrigger asChild>
+                      <Dialog>
+                        <DialogTrigger asChild>
                           <Button
                             variant={"secondary"}
                             size={"icon"}
@@ -357,30 +302,46 @@ export default function ProductDetailPage({ params, searchParams }: Props) {
                           >
                             <Info />
                           </Button>
-                        </PopoverTrigger>
-                        <PopoverContent side="right">
-                          {wrist === "SIMPLE" ? (
-                            <p className="text-justify text-xs">
-                              Les poignets simples sont adaptés à tous les
-                              styles quotidiens, qu'ils soient casual ou
-                              business. Leurs angles biseautés leur confèrent
-                              une allure contemporaine et ils se ferment par un
-                              bouton. leur rigidité et leur hauteur sont
-                              adjustés en fonction du type de tissu choisi : des
-                              poignets plus souples pour les tissus casual et
-                              plus rigides pour les tissus formels.
-                            </p>
-                          ) : (
-                            <p className="text-justify text-xs">
-                              Les poignets mousquetaires sont parfaits pour des
-                              chemises cérémonie ou pour créer un look business
-                              sophistiqué. Ces poignets sont doublés, ils se
-                              replient et se ferment à l'aide de boutons de
-                              manchettes (non fournies).
-                            </p>
-                          )}
-                        </PopoverContent>
-                      </Popover>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>{formatWristsType(wrist)}</DialogTitle>
+                            <DialogDescription>
+                              {wrist === "SIMPLE" ? (
+                                <p className="text-justify text-xs">
+                                  Les poignets simples sont adaptés à tous les
+                                  styles quotidiens, qu'ils soient casual ou
+                                  business. Leurs angles biseautés leur
+                                  confèrent une allure contemporaine et ils se
+                                  ferment par un bouton. leur rigidité et leur
+                                  hauteur sont adjustés en fonction du type de
+                                  tissu choisi : des poignets plus souples pour
+                                  les tissus casual et plus rigides pour les
+                                  tissus formels.
+                                </p>
+                              ) : (
+                                <p className="text-justify text-xs">
+                                  Les poignets mousquetaires sont parfaits pour
+                                  des chemises cérémonie ou pour créer un look
+                                  business sophistiqué. Ces poignets sont
+                                  doublés, ils se replient et se ferment à
+                                  l'aide de boutons de manchettes (non
+                                  fournies).
+                                </p>
+                              )}
+                            </DialogDescription>
+                          </DialogHeader>
+                          <img
+                            src={
+                              wrist === "SIMPLE"
+                                ? "/shop/Poignet-Simple.png"
+                                : "/shop/Poignet-Mousquetaire.png"
+                            }
+                            alt="collar"
+                            className="aspect-square h-auto w-full rounded-lg border"
+                          />
+                        </DialogContent>
+                      </Dialog>
                     </Label>
                   </div>
                 ))}
@@ -391,160 +352,558 @@ export default function ProductDetailPage({ params, searchParams }: Props) {
       case "PANTS":
         return (
           <>
+            {/* Pant fit options */}
             <div className="space-y-3">
-              <h3 className="font-medium">Pant Fit</h3>
-              <RadioGroup defaultValue="slim" className="flex flex-wrap gap-2">
-                <div>
-                  <RadioGroupItem
-                    id="slim"
-                    value="slim"
-                    className="peer sr-only"
-                  />
-                  <Label
-                    htmlFor="slim"
-                    className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
-                  >
-                    Slim Fit
-                  </Label>
-                </div>
-                <div>
-                  <RadioGroupItem
-                    id="regular"
-                    value="regular"
-                    className="peer sr-only"
-                  />
-                  <Label
-                    htmlFor="regular"
-                    className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
-                  >
-                    Regular Fit
-                  </Label>
-                </div>
-                <div>
-                  <RadioGroupItem
-                    id="relaxed"
-                    value="relaxed"
-                    className="peer sr-only"
-                  />
-                  <Label
-                    htmlFor="relaxed"
-                    className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
-                  >
-                    Relaxed Fit
-                  </Label>
-                </div>
+              <h3 className="font-medium">Coupe de pantalon</h3>
+              <RadioGroup
+                defaultValue={selectedOptions.pantFit}
+                className="flex flex-wrap gap-4"
+                onValueChange={(val) => {
+                  setFilters((prev) => ({
+                    ...prev,
+                    selectedOptions: {
+                      ...prev.selectedOptions,
+                      pantFit: val as PantFits,
+                    },
+                  }));
+                }}
+              >
+                {pantFits.map((fit, index) => (
+                  <div key={index}>
+                    <RadioGroupItem
+                      id={fit}
+                      value={fit}
+                      className="peer sr-only"
+                    />
+                    <Label
+                      htmlFor={fit}
+                      className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 relative flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
+                    >
+                      {formatPantFit(fit)}
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant={"secondary"}
+                            size={"icon"}
+                            className="absolute -top-2 -right-2 size-5 rounded-full p-3"
+                          >
+                            <Info />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>{formatPantFit(fit)}</DialogTitle>
+                            <DialogDescription>
+                              {fit === "REGULAR" ? (
+                                <p className="text-justify text-xs">
+                                  La coupe regular offre comme son nom l’indique
+                                  une forme droite de la taille jusqu’aux
+                                  chevilles. C’est la coupe la plus classique et
+                                  la plus indémodable. La coupe droite s’adapte
+                                  à toutes les morphologies, petites ou grandes.
+                                  C’est aussi la forme à privilégier si vous
+                                  êtes un peu fort. Classique et décontractée,
+                                  la coupe regular s'adapte à toutes les
+                                  occasions et à tous les styles vestimentaires
+                                  : tee-shirt, pull, veste, chemise...
+                                </p>
+                              ) : (
+                                <p className="text-justify text-xs">
+                                  De forme droite mais resserrée au niveau des
+                                  cuisses et des chevilles, la coupe slim est la
+                                  coupe du moment. Cette coupe est
+                                  principalement recommandée pour les
+                                  silhouettes minces et longilignes. Comme elle
+                                  laisse bien apparaitre vos chaussures vous
+                                  pouvez donc porter le jean slom avec des
+                                  Derbies ou des baskets du type Converse. Vous
+                                  pourrez également marier votre jean avec une
+                                  chemise pour un look mode et tendance. Pour un
+                                  style plus classique, optez pour des
+                                  mocassins.
+                                </p>
+                              )}
+                            </DialogDescription>
+                          </DialogHeader>
+                          <img
+                            src={
+                              fit === "REGULAR"
+                                ? "/shop/Bas-ourlet.png"
+                                : "/shop/Bas-releve.png"
+                            }
+                            alt="collar"
+                            className="aspect-square h-auto w-full rounded-lg border"
+                          />
+                        </DialogContent>
+                      </Dialog>
+                    </Label>
+                  </div>
+                ))}
               </RadioGroup>
             </div>
 
+            {/* Pant Leg options*/}
             <div className="space-y-3">
-              <h3 className="font-medium">Pant Leg</h3>
-              <Select defaultValue="straight">
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select pant leg style" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="straight">Straight Leg</SelectItem>
-                  <SelectItem value="tapered">Tapered Leg</SelectItem>
-                  <SelectItem value="wide">Wide Leg</SelectItem>
-                </SelectContent>
-              </Select>
+              <h3 className="font-medium">Bas de pantalon</h3>
+              <RadioGroup
+                defaultValue={selectedOptions.pantLeg}
+                className="flex flex-wrap gap-4"
+                onValueChange={(val) => {
+                  setFilters((prev) => ({
+                    ...prev,
+                    selectedOptions: {
+                      ...prev.selectedOptions,
+                      pantLeg: val as PantLegs,
+                    },
+                  }));
+                }}
+              >
+                {pantLegs.map((leg, index) => (
+                  <div key={index}>
+                    <RadioGroupItem
+                      id={leg}
+                      value={leg}
+                      className="peer sr-only"
+                    />
+                    <Label
+                      htmlFor={leg}
+                      className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 relative flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
+                    >
+                      {formatPantLeg(leg)}
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant={"secondary"}
+                            size={"icon"}
+                            className="absolute -top-2 -right-2 size-5 rounded-full p-3"
+                          >
+                            <Info />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>{formatPantLeg(leg)}</DialogTitle>
+                            <DialogDescription>
+                              {leg === "OUTLET" ? (
+                                <p className="text-justify text-xs">
+                                  Le pantalon à ourlets est un type de pantalon
+                                  dont les bords inférieurs des jambes sont
+                                  ourlés. Cela peut ajouter une touche de style
+                                  et de sophistication à la tenue, et il est
+                                  souvent utilisé pour donner un aspect plus
+                                  soigné et structuré au vêtement. Les pantalons
+                                  à ourlets peuvent être ajustés pour
+                                  différentes longueurs, ce qui permet de
+                                  personnaliser l'apparence en fonction des
+                                  préférences de l'individu.
+                                </p>
+                              ) : (
+                                <p className="text-justify text-xs">
+                                  Le revers est une technique de finition du bas
+                                  d'un pantalon qui consiste à retourner le
+                                  tissu vers l'extérieur, créant ainsi un pli
+                                  apparent qui ajoute une touche stylistique
+                                  unique au vêtement.
+                                </p>
+                              )}
+                            </DialogDescription>
+                          </DialogHeader>
+                          <img
+                            src={
+                              leg === "OUTLET"
+                                ? "/shop/Bas-ourlet.png"
+                                : "/shop/Bas-releve.png"
+                            }
+                            alt="collar"
+                            className="aspect-square h-auto w-full rounded-lg border"
+                          />
+                        </DialogContent>
+                      </Dialog>
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
             </div>
           </>
         );
-      case "SUITS":
+      case "MEN_SUITS":
+      case "WOMEN_SUITS":
         return (
-          <>
+          <div className="grid grid-cols-2 gap-4">
+            {/* Sleeves options */}
             <div className="space-y-3">
-              <h3 className="font-medium">Jacket Style</h3>
-              <Select defaultValue="single">
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select jacket style" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="single">Single Breasted</SelectItem>
-                  <SelectItem value="double">Double Breasted</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-3">
-              <h3 className="font-medium">Lapel Style</h3>
-              <Select defaultValue="notch">
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select lapel style" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="notch">Notch Lapel</SelectItem>
-                  <SelectItem value="peak">Peak Lapel</SelectItem>
-                  <SelectItem value="shawl">Shawl Lapel</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-3">
-              <h3 className="font-medium">Sleeve Length</h3>
-              <RadioGroup defaultValue="long" className="flex flex-wrap gap-2">
-                <div>
-                  <RadioGroupItem
-                    id="short-suit"
-                    value="short"
-                    className="peer sr-only"
-                  />
-                  <Label
-                    htmlFor="short-suit"
-                    className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
-                  >
-                    Short Sleeve
-                  </Label>
-                </div>
-                <div>
-                  <RadioGroupItem
-                    id="long-suit"
-                    value="long"
-                    className="peer sr-only"
-                  />
-                  <Label
-                    htmlFor="long-suit"
-                    className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
-                  >
-                    Long Sleeve
-                  </Label>
-                </div>
+              <h3 className="font-medium">Longeur des manches</h3>
+              <RadioGroup
+                defaultValue={selectedOptions.sleevesLength}
+                className="flex flex-wrap gap-2"
+                onValueChange={(val) => {
+                  setFilters((prev) => ({
+                    ...prev,
+                    selectedOptions: {
+                      ...prev.selectedOptions,
+                      sleevesLength: val as SleevesLengths,
+                    },
+                  }));
+                }}
+              >
+                {sleevesLengths.map((sleeve, index) => (
+                  <div key={index}>
+                    <RadioGroupItem
+                      id={sleeve}
+                      value={sleeve}
+                      className="peer sr-only"
+                    />
+                    <Label
+                      htmlFor={sleeve}
+                      className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
+                    >
+                      {formatSleevesLength(sleeve)}
+                    </Label>
+                  </div>
+                ))}
               </RadioGroup>
             </div>
 
+            {/* Collar options */}
             <div className="space-y-3">
-              <h3 className="font-medium">Pant Fit</h3>
-              <RadioGroup defaultValue="slim" className="flex flex-wrap gap-2">
-                <div>
-                  <RadioGroupItem
-                    id="slim-suit"
-                    value="slim"
-                    className="peer sr-only"
-                  />
-                  <Label
-                    htmlFor="slim-suit"
-                    className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
-                  >
-                    Slim Fit
-                  </Label>
-                </div>
-                <div>
-                  <RadioGroupItem
-                    id="regular-suit"
-                    value="regular"
-                    className="peer sr-only"
-                  />
-                  <Label
-                    htmlFor="regular-suit"
-                    className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
-                  >
-                    Regular Fit
-                  </Label>
-                </div>
+              <h3 className="font-medium">Type de col</h3>
+              <RadioGroup
+                defaultValue={selectedOptions.collarType}
+                className="flex flex-wrap gap-4"
+                onValueChange={(val) => {
+                  setFilters((prev) => ({
+                    ...prev,
+                    selectedOptions: {
+                      ...prev.selectedOptions,
+                      collarType: val as CollarTypes,
+                    },
+                  }));
+                }}
+              >
+                {collarTypes.map((col, index) => (
+                  <div key={index}>
+                    <RadioGroupItem
+                      id={col}
+                      value={col}
+                      className="peer sr-only"
+                    />
+                    <Label
+                      htmlFor={col}
+                      className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 relative flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
+                    >
+                      {formatCollarType(col)}
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant={"secondary"}
+                            size={"icon"}
+                            className="absolute -top-2 -right-2 size-5 rounded-full p-3"
+                          >
+                            <Info />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>{formatCollarType(col)}</DialogTitle>
+                            <DialogDescription>
+                              {col === "MINIMALISTIC" ? (
+                                <p className="text-justify text-xs">
+                                  Le col minimaliste, également connu sous le
+                                  nom de col officier, se distingue par son
+                                  style épuré et moderne. Il s'adapte aussi bien
+                                  à une chemise formelle pour un look
+                                  sophistiqué qu'à une chemise d'été en lin pour
+                                  un style décontracté. La rigidité du col varie
+                                  en fonction du tissu : souple pour les
+                                  matières casual et plus rigide pour les tissus
+                                  formels.
+                                </p>
+                              ) : (
+                                <p className="text-justify text-xs">
+                                  Le col standard, aussi appelé col italien, est
+                                  un choix business polyvalent. Adaptable, il
+                                  peut se porter avec ou sans cravate. De taille
+                                  moyenne, avec des pointes plutôt évasées, il
+                                  offre une tenue parfaite et est équipé de
+                                  baleines amovibles.
+                                </p>
+                              )}
+                            </DialogDescription>
+                          </DialogHeader>
+                          <img
+                            src={
+                              col === "STANDARD"
+                                ? "/shop/Col-standard.png"
+                                : "/shop/Col-minimaliste.png"
+                            }
+                            alt="collar"
+                            className="aspect-square h-auto w-full rounded-lg border"
+                          />
+                        </DialogContent>
+                      </Dialog>
+                    </Label>
+                  </div>
+                ))}
               </RadioGroup>
             </div>
-          </>
+
+            {/* Wrists options */}
+            <div className="space-y-3">
+              <h3 className="font-medium">Type de poignets</h3>
+              <RadioGroup
+                defaultValue={selectedOptions.wristsType}
+                className="flex flex-wrap gap-2"
+                onValueChange={(val) => {
+                  setFilters((prev) => ({
+                    ...prev,
+                    selectedOptions: {
+                      ...prev.selectedOptions,
+                      wristsType: val as WristsTypes,
+                    },
+                  }));
+                }}
+              >
+                {wristsTypes.map((wrist, index) => (
+                  <div key={index}>
+                    <RadioGroupItem
+                      id={wrist}
+                      value={wrist}
+                      className="peer sr-only"
+                    />
+                    <Label
+                      htmlFor={wrist}
+                      className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 relative flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
+                    >
+                      {formatWristsType(wrist)}
+
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant={"secondary"}
+                            size={"icon"}
+                            className="absolute -top-2 -right-2 size-5 rounded-full p-3"
+                          >
+                            <Info />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>{formatWristsType(wrist)}</DialogTitle>
+                            <DialogDescription>
+                              {wrist === "SIMPLE" ? (
+                                <p className="text-justify text-xs">
+                                  Les poignets simples sont adaptés à tous les
+                                  styles quotidiens, qu'ils soient casual ou
+                                  business. Leurs angles biseautés leur
+                                  confèrent une allure contemporaine et ils se
+                                  ferment par un bouton. leur rigidité et leur
+                                  hauteur sont adjustés en fonction du type de
+                                  tissu choisi : des poignets plus souples pour
+                                  les tissus casual et plus rigides pour les
+                                  tissus formels.
+                                </p>
+                              ) : (
+                                <p className="text-justify text-xs">
+                                  Les poignets mousquetaires sont parfaits pour
+                                  des chemises cérémonie ou pour créer un look
+                                  business sophistiqué. Ces poignets sont
+                                  doublés, ils se replient et se ferment à
+                                  l'aide de boutons de manchettes (non
+                                  fournies).
+                                </p>
+                              )}
+                            </DialogDescription>
+                          </DialogHeader>
+                          <img
+                            src={
+                              wrist === "SIMPLE"
+                                ? "/shop/Poignet-Simple.png"
+                                : "/shop/Poignet-Mousquetaire.png"
+                            }
+                            alt="collar"
+                            className="aspect-square h-auto w-full rounded-lg border"
+                          />
+                        </DialogContent>
+                      </Dialog>
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
+
+            {/* Pant fit options */}
+            <div className="space-y-3">
+              <h3 className="font-medium">Coupe de pantalon</h3>
+              <RadioGroup
+                defaultValue={selectedOptions.pantFit}
+                className="flex flex-wrap gap-4"
+                onValueChange={(val) => {
+                  setFilters((prev) => ({
+                    ...prev,
+                    selectedOptions: {
+                      ...prev.selectedOptions,
+                      pantFit: val as PantFits,
+                    },
+                  }));
+                }}
+              >
+                {pantFits.map((fit, index) => (
+                  <div key={index}>
+                    <RadioGroupItem
+                      id={fit}
+                      value={fit}
+                      className="peer sr-only"
+                    />
+                    <Label
+                      htmlFor={fit}
+                      className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 relative flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
+                    >
+                      {formatPantFit(fit)}
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant={"secondary"}
+                            size={"icon"}
+                            className="absolute -top-2 -right-2 size-5 rounded-full p-3"
+                          >
+                            <Info />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>{formatPantFit(fit)}</DialogTitle>
+                            <DialogDescription>
+                              {fit === "REGULAR" ? (
+                                <p className="text-justify text-xs">
+                                  La coupe regular offre comme son nom l’indique
+                                  une forme droite de la taille jusqu’aux
+                                  chevilles. C’est la coupe la plus classique et
+                                  la plus indémodable. La coupe droite s’adapte
+                                  à toutes les morphologies, petites ou grandes.
+                                  C’est aussi la forme à privilégier si vous
+                                  êtes un peu fort. Classique et décontractée,
+                                  la coupe regular s'adapte à toutes les
+                                  occasions et à tous les styles vestimentaires
+                                  : tee-shirt, pull, veste, chemise...
+                                </p>
+                              ) : (
+                                <p className="text-justify text-xs">
+                                  De forme droite mais resserrée au niveau des
+                                  cuisses et des chevilles, la coupe slim est la
+                                  coupe du moment. Cette coupe est
+                                  principalement recommandée pour les
+                                  silhouettes minces et longilignes. Comme elle
+                                  laisse bien apparaitre vos chaussures vous
+                                  pouvez donc porter le jean slom avec des
+                                  Derbies ou des baskets du type Converse. Vous
+                                  pourrez également marier votre jean avec une
+                                  chemise pour un look mode et tendance. Pour un
+                                  style plus classique, optez pour des
+                                  mocassins.
+                                </p>
+                              )}
+                            </DialogDescription>
+                          </DialogHeader>
+                          <img
+                            src={
+                              fit === "REGULAR"
+                                ? "/shop/Bas-ourlet.png"
+                                : "/shop/Bas-releve.png"
+                            }
+                            alt="collar"
+                            className="aspect-square h-auto w-full rounded-lg border"
+                          />
+                        </DialogContent>
+                      </Dialog>
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
+
+            {/* Pant Leg options*/}
+            <div className="space-y-3">
+              <h3 className="font-medium">Bas de pantalon</h3>
+              <RadioGroup
+                defaultValue={selectedOptions.pantLeg}
+                className="flex flex-wrap gap-4"
+                onValueChange={(val) => {
+                  setFilters((prev) => ({
+                    ...prev,
+                    selectedOptions: {
+                      ...prev.selectedOptions,
+                      pantLeg: val as PantLegs,
+                    },
+                  }));
+                }}
+              >
+                {pantLegs.map((leg, index) => (
+                  <div key={index}>
+                    <RadioGroupItem
+                      id={leg}
+                      value={leg}
+                      className="peer sr-only"
+                    />
+                    <Label
+                      htmlFor={leg}
+                      className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 relative flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
+                    >
+                      {formatPantLeg(leg)}
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant={"secondary"}
+                            size={"icon"}
+                            className="absolute -top-2 -right-2 size-5 rounded-full p-3"
+                          >
+                            <Info />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>{formatPantLeg(leg)}</DialogTitle>
+                            <DialogDescription>
+                              {leg === "OUTLET" ? (
+                                <p className="text-justify text-xs">
+                                  Le pantalon à ourlets est un type de pantalon
+                                  dont les bords inférieurs des jambes sont
+                                  ourlés. Cela peut ajouter une touche de style
+                                  et de sophistication à la tenue, et il est
+                                  souvent utilisé pour donner un aspect plus
+                                  soigné et structuré au vêtement. Les pantalons
+                                  à ourlets peuvent être ajustés pour
+                                  différentes longueurs, ce qui permet de
+                                  personnaliser l'apparence en fonction des
+                                  préférences de l'individu.
+                                </p>
+                              ) : (
+                                <p className="text-justify text-xs">
+                                  Le revers est une technique de finition du bas
+                                  d'un pantalon qui consiste à retourner le
+                                  tissu vers l'extérieur, créant ainsi un pli
+                                  apparent qui ajoute une touche stylistique
+                                  unique au vêtement.
+                                </p>
+                              )}
+                            </DialogDescription>
+                          </DialogHeader>
+                          <img
+                            src={
+                              leg === "OUTLET"
+                                ? "/shop/Bas-ourlet.png"
+                                : "/shop/Bas-releve.png"
+                            }
+                            alt="collar"
+                            className="aspect-square h-auto w-full rounded-lg border"
+                          />
+                        </DialogContent>
+                      </Dialog>
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
+          </div>
         );
       default:
         return null;
@@ -565,12 +924,16 @@ export default function ProductDetailPage({ params, searchParams }: Props) {
       <div className="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2">
         {/* Product Images */}
         <div className="space-y-4">
-          <div className="border-border relative h-[500px] overflow-hidden rounded-lg border">
-            <Image
-              src={product?.gallery[currentImage] || "/placeholder.svg"}
-              alt="Product image"
+          <div className="border-border relative h-[600px] overflow-hidden rounded-lg border">
+            <IkImage
+              path={
+                product?.gallery[currentImage].split("/f/")[1] ||
+                "/placeholder.svg"
+              }
               fill
-              className="object-cover"
+              alt={`${product.name}`}
+              lqip={{ active: true, quality: 20, blur: 6 }}
+              className="h-full w-full rounded-2xl object-cover"
             />
             <div className="absolute inset-0 flex items-center justify-between px-4">
               <Button
@@ -603,10 +966,9 @@ export default function ProductDetailPage({ params, searchParams }: Props) {
                 )}
                 onClick={() => setCurrentImage(index)}
               >
-                <Image
+                <img
                   src={image || "/placeholder.svg"}
                   alt={`Product thumbnail ${index + 1}`}
-                  fill
                   className="object-cover"
                 />
               </button>
@@ -645,12 +1007,18 @@ export default function ProductDetailPage({ params, searchParams }: Props) {
                 className="flex flex-wrap gap-2"
                 onValueChange={(val) => {
                   if (val === "sur-mesure") {
-                    setSelectedOptions({ ...selectedOptions, size: val });
+                    setFilters((prev) => ({
+                      ...prev,
+                      selectedOptions: { ...prev.selectedOptions, size: val },
+                    }));
                   } else {
-                    setSelectedOptions({
-                      ...selectedOptions,
-                      size: val as Sizes,
-                    });
+                    setFilters((prev) => ({
+                      ...prev,
+                      selectedOptions: {
+                        ...prev.selectedOptions,
+                        size: val as Sizes,
+                      },
+                    }));
                   }
                 }}
               >
@@ -686,43 +1054,93 @@ export default function ProductDetailPage({ params, searchParams }: Props) {
               </RadioGroup>
             </div>
 
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {product.type !== "PANTS" && (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant={"outline"}>
+                      Guide des tailles (chemises)
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>
+                        Le guide des tailles pour les chemises
+                      </DialogTitle>
+                    </DialogHeader>
+                    <img
+                      src="/shop/guide-chemises.png"
+                      alt="guide taille chemises"
+                    />
+                  </DialogContent>
+                </Dialog>
+              )}
+
+              {product.type !== "AFRICAN_SHIRTS" &&
+                product.type !== "CLASSSIC_SHIRTS" && (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant={"outline"}>
+                        Guide des tailles (pantalons)
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>
+                          Le guide des tailles pour les pantalons
+                        </DialogTitle>
+                      </DialogHeader>
+                      <img
+                        src="/shop/guide-pantalons.png"
+                        alt="guide taille pantalons"
+                      />
+                    </DialogContent>
+                  </Dialog>
+                )}
+            </div>
+
             {/* Dynamic Product Options */}
             {renderProductOptions()}
 
             {/* Initials Section */}
-            <div className="space-y-3">
-              <Button
-                variant="outline"
-                onClick={toggleInitials}
-                className={showInitials ? "border-primary text-primary" : ""}
-              >
-                {showInitials ? "Annuler" : "Ajouter vos initiales"}
-              </Button>
+            {selectedOptions.sleevesLength === "LONG" && (
+              <div className="space-y-3">
+                <Button
+                  variant="outline"
+                  onClick={toggleInitials}
+                  className={showInitials ? "border-primary text-primary" : ""}
+                >
+                  {showInitials ? "Annuler" : "Ajouter vos initiales"}
+                </Button>
 
-              {showInitials && (
-                <div className="space-y-2">
-                  <Label htmlFor="initials">
-                    Vos initiales (max 3 caractères)
-                  </Label>
-                  <Input
-                    id="initials"
-                    value={initials}
-                    onChange={(e) =>
-                      setInitials(e.target.value.slice(0, 3).toUpperCase())
-                    }
-                    placeholder="e.g. ABC"
-                    maxLength={3}
-                    className="w-24"
-                  />
-                  <p className="text-muted-foreground text-sm">
-                    Les initiales seront brodées sur{" "}
-                    {product?.type === "PANTS"
-                      ? "la poche arrière"
-                      : "la manchette"}
-                  </p>
-                </div>
-              )}
-            </div>
+                {showInitials && (
+                  <div className="space-y-2">
+                    <Label htmlFor="initials">
+                      Vos initiales (max 3 caractères)
+                    </Label>
+                    <Input
+                      id="initials"
+                      value={initials}
+                      onChange={(e) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          initials: e.target.value.slice(0, 3).toUpperCase(),
+                        }))
+                      }
+                      placeholder="e.g. ABC"
+                      maxLength={3}
+                      className="w-24"
+                    />
+                    <p className="text-muted-foreground text-sm">
+                      Les initiales seront brodées sur{" "}
+                      {product?.type === "PANTS"
+                        ? "la poche arrière"
+                        : "la manchette"}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
 
             <div>
               <h3 className="mb-3 font-medium">Quantité</h3>

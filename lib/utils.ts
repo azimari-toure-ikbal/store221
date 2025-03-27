@@ -87,10 +87,14 @@ export const formatType = (type: ProductTypes) => {
   switch (type) {
     case "PANTS":
       return "Pantalons";
-    case "SHIRTS":
+    case "CLASSSIC_SHIRTS":
       return "Chemises";
-    case "SUITS":
-      return "Costumes";
+    case "AFRICAN_SHIRTS":
+      return "Chemises Africaines";
+    case "MEN_SUITS":
+      return "Costumes Hommes";
+    case "WOMEN_SUITS":
+      return "Costumes Femmes";
     default:
       return "Unknown";
   }
@@ -143,9 +147,9 @@ export const formatPantFit = (type: PantFits) => {
 export const formatPantLeg = (type: PantLegs) => {
   switch (type) {
     case "OUTLET":
-      return "Outlet";
+      return "Ourlet";
     case "REVERS":
-      return "Reverse";
+      return "Revers";
     default:
       return "Unknown";
   }
@@ -241,11 +245,15 @@ export const inStock = (product: CartItem, quantity: number): boolean => {
 
 export const getWeight = (productType: ProductTypes) => {
   switch (productType) {
-    case "SHIRTS":
+    case "AFRICAN_SHIRTS":
+      return SHIRT_WEIGHT;
+    case "CLASSSIC_SHIRTS":
       return SHIRT_WEIGHT;
     case "PANTS":
       return PANTS_WEIGHT;
-    case "SUITS":
+    case "MEN_SUITS":
+      return SUITS_WEIGHT;
+    case "WOMEN_SUITS":
       return SUITS_WEIGHT;
     default:
       return 0;

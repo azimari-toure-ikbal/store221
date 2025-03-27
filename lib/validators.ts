@@ -92,6 +92,15 @@ export const productFilterValidator = z.object({
 
 export type ProductFilter = z.infer<typeof productFilterValidator>;
 
+export const productOptionsValidator = z.object({
+  size: z.enum(["sur-mesure", ...sizes]),
+  sleevesLength: z.enum(sleevesLengths).optional(),
+  collarType: z.enum(collarTypes).optional(),
+  wristsType: z.enum(wristsTypes).optional(),
+  pantFit: z.enum(pantFits).optional(),
+  pantLeg: z.enum(pantLegs).optional(),
+});
+
 export const cartItemSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),

@@ -10,7 +10,13 @@ import {
 import { createdAt, id, updatedAt } from "../schema-helpers";
 import { favorites } from "./favorites";
 
-export const productTypes = ["PANTS", "SHIRTS", "SUITS"] as const;
+export const productTypes = [
+  "PANTS",
+  "CLASSSIC_SHIRTS",
+  "AFRICAN_SHIRTS",
+  "MEN_SUITS",
+  "WOMEN_SUITS",
+] as const;
 export type ProductTypes = (typeof productTypes)[number];
 export const productTypesEnum = pgEnum("product_type", productTypes);
 

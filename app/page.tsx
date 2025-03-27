@@ -1,3 +1,4 @@
+import CollectionCard from "@/components/collection-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChevronRight } from "lucide-react";
@@ -33,14 +34,7 @@ export default function HomePage() {
                   size="lg"
                   className="bg-white text-black hover:bg-white/90"
                 >
-                  Shop Collection
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-white text-white hover:bg-white/10"
-                >
-                  Learn More
+                  Voir la boutique
                 </Button>
               </div>
             </div>
@@ -54,78 +48,25 @@ export default function HomePage() {
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Our Collections
+                Nos collections
               </h2>
               <p className="text-muted-foreground mx-auto max-w-[700px] md:text-lg">
-                Explore our carefully curated categories of authentic African
-                attire.
+                Explorez nos catégories soigneusement sélectionnées de vêtements
+                made in Sénégal authentiques.
               </p>
             </div>
           </div>
-          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div className="group relative overflow-hidden rounded-lg">
-              <div className="absolute inset-0 z-10 bg-black/30 transition-colors group-hover:bg-black/40" />
-              <Image
-                src="/placeholder.svg?height=400&width=300"
-                alt="Traditional Costumes"
-                width={300}
-                height={400}
-                className="h-[400px] w-full object-cover transition-transform group-hover:scale-105"
-              />
-              <div className="absolute inset-0 z-20 flex items-end p-6">
-                <div className="space-y-2 text-white">
-                  <h3 className="text-xl font-bold">Traditional Costumes</h3>
-                  <Button
-                    variant="outline"
-                    className="border-white text-white hover:bg-white/10"
-                  >
-                    Explore
-                  </Button>
-                </div>
-              </div>
-            </div>
-            <div className="group relative overflow-hidden rounded-lg">
-              <div className="absolute inset-0 z-10 bg-black/30 transition-colors group-hover:bg-black/40" />
-              <Image
-                src="/placeholder.svg?height=400&width=300"
-                alt="Modern Shirts"
-                width={300}
-                height={400}
-                className="h-[400px] w-full object-cover transition-transform group-hover:scale-105"
-              />
-              <div className="absolute inset-0 z-20 flex items-end p-6">
-                <div className="space-y-2 text-white">
-                  <h3 className="text-xl font-bold">Modern Shirts</h3>
-                  <Button
-                    variant="outline"
-                    className="border-white text-white hover:bg-white/10"
-                  >
-                    Explore
-                  </Button>
-                </div>
-              </div>
-            </div>
-            <div className="group relative overflow-hidden rounded-lg">
-              <div className="absolute inset-0 z-10 bg-black/30 transition-colors group-hover:bg-black/40" />
-              <Image
-                src="/placeholder.svg?height=400&width=300"
-                alt="Designer Pants"
-                width={300}
-                height={400}
-                className="h-[400px] w-full object-cover transition-transform group-hover:scale-105"
-              />
-              <div className="absolute inset-0 z-20 flex items-end p-6">
-                <div className="space-y-2 text-white">
-                  <h3 className="text-xl font-bold">Designer Pants</h3>
-                  <Button
-                    variant="outline"
-                    className="border-white text-white hover:bg-white/10"
-                  >
-                    Explore
-                  </Button>
-                </div>
-              </div>
-            </div>
+          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+            <CollectionCard
+              title="Chemises Classiques"
+              image="/home/classique.jpg"
+            />
+            <CollectionCard
+              title="Chemises Africaines"
+              image="/home/africaine.jpg"
+            />
+            <CollectionCard title="Costumes" image="/home/hommes.jpg" />
+            <CollectionCard title="Pantalons" image="/home/pantalons.jpg" />
           </div>
         </div>
       </section>

@@ -4,6 +4,7 @@ import {
   CollarTypes,
   PantFits,
   PantLegs,
+  ProductTypes,
   Sizes,
   SleevesLengths,
   WristsTypes,
@@ -74,7 +75,7 @@ export type CartItem = {
   name: string;
   productId: string;
   image: string;
-  productType: "SHIRTS" | "PANTS" | "SUITS";
+  productType: ProductTypes;
   price: number;
   quantity: number;
   stock: number;
@@ -117,7 +118,7 @@ export const PRODUCT_FORM_DEFAULT_VALUES: z.infer<typeof productFormSchema> = {
   stock: "",
   discountedPrice: "",
   gallery: [],
-  type: "SHIRTS",
+  type: "CLASSSIC_SHIRTS",
   sizes: ["S", "XS", "M", "L", "XL", "XXL"],
   seller: "CAMENWEAR",
   options: {

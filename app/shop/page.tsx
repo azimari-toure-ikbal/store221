@@ -14,7 +14,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 import {
   ChevronDown,
   ChevronLeft,
@@ -26,24 +26,25 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { use, useRef, useState } from "react";
+import { useState } from "react";
 
 // Product types and their specific filter options
-type ProductType = "ALL" | "SHIRTS" | "PANTS" | "SUITS";
+// type ProductType = "ALL" | "SHIRTS" | "PANTS" | "SUITS";
 
 // Import atoms from your atoms file
 import { Slider } from "@/components/ui/slider";
 import { AVAILABLE_SORT, DEFAULT_LIMIT } from "@/config";
-import { currencyAtom, filterAtom, pageAtom } from "@/lib/atoms";
+import { useShopFilters } from "@/hooks/use-states";
+import { currencyAtom } from "@/lib/atoms";
 import {
   collarTypes,
   pantFits,
   pantLegs,
+  ProductTypes,
   sleevesLengths,
   wristsTypes,
 } from "@/lib/db/schema";
 import {
-  createProductQueryParams,
   formatCollarType,
   formatPantFit,
   formatPantLeg,
@@ -55,57 +56,11 @@ import {
 import { ProductFilter } from "@/lib/validators";
 import { trpc } from "@/server/trpc/client";
 import { ProductItemResponse } from "@/types";
-import { usePathname, useRouter } from "next/navigation";
-import React from "react";
 
-type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
-
-export default function ProductListingPage({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
-  const params = use(searchParams);
-
-  // Use the provided atoms
-  const [filter, setFilter] = useAtom(filterAtom);
-  const [page, setPage] = useAtom(pageAtom);
-
-  const router = useRouter();
-  const pathname = usePathname();
-  const initialized = useRef(false);
+export default function ProductListingPage() {
+  const [{ filter, page }, setFilters] = useShopFilters();
 
   const currency = useAtomValue(currencyAtom);
-
-  React.useEffect(() => {
-    const queryParams = createProductQueryParams(filter, page);
-    const newQueryString = queryParams.toString();
-    const currentQueryString = window.location.search.slice(1); // Remove "?" at start
-    if (currentQueryString !== newQueryString) {
-      router.replace(`${pathname}?${newQueryString}`);
-    }
-  }, [filter, page, pathname, router]);
-
-  React.useEffect(() => {
-    if (initialized.current) return; // Prevents re-initialization
-    initialized.current = true;
-
-    const queryFilter = params.filter as string | undefined;
-    const queryPage = params.page as string | undefined;
-
-    if (queryFilter) {
-      try {
-        const parsedFilter = JSON.parse(queryFilter);
-        setFilter(parsedFilter);
-      } catch (e) {
-        console.error("Failed to parse filter from query params", e);
-      }
-    }
-
-    if (queryPage) {
-      setPage(parseInt(queryPage, 10) || 1);
-    }
-  }, [params.filter, params.page, setFilter, setPage]);
 
   // Filter section collapse state
   const [collapsedSections, setCollapsedSections] = useState<
@@ -135,35 +90,40 @@ export default function ProductListingPage({
   };
 
   // Handle type change
-  const handleTypeChange = (type: ProductType) => {
-    setFilter((prev) => {
-      const newFilter = { ...prev, productType: type };
+  const handleTypeChange = (type: ProductTypes | "ALL") => {
+    setFilters((prev) => {
+      const newFilter = {
+        ...prev,
+        filter: { ...prev.filter, productType: type },
+      };
 
       // Clear irrelevant filters when type changes
-      if (type !== "SHIRTS" && type !== "SUITS") {
-        newFilter.sleevesOptions = [];
-        newFilter.wristsOptions = [];
-        newFilter.collarOptions = [];
+      if (
+        type !== "AFRICAN_SHIRTS" &&
+        type !== "CLASSSIC_SHIRTS" &&
+        type !== "MEN_SUITS" &&
+        type !== "WOMEN_SUITS"
+      ) {
+        newFilter.filter.sleevesOptions = [];
+        newFilter.filter.wristsOptions = [];
+        newFilter.filter.collarOptions = [];
       }
 
-      if (type !== "PANTS" && type !== "SUITS") {
-        newFilter.pantFitOptions = [];
-        newFilter.pantLegOptions = [];
+      if (type !== "PANTS" && type !== "MEN_SUITS" && type !== "WOMEN_SUITS") {
+        newFilter.filter.pantFitOptions = [];
+        newFilter.filter.pantLegOptions = [];
       }
 
-      if (type !== "SUITS") {
-        newFilter.sleevesOptions = [];
-        newFilter.wristsOptions = [];
-        newFilter.collarOptions = [];
-        newFilter.pantFitOptions = [];
-        newFilter.pantLegOptions = [];
+      if (type !== "MEN_SUITS" && type !== "WOMEN_SUITS") {
+        newFilter.filter.sleevesOptions = [];
+        newFilter.filter.wristsOptions = [];
+        newFilter.filter.collarOptions = [];
+        newFilter.filter.pantFitOptions = [];
+        newFilter.filter.pantLegOptions = [];
       }
 
-      return newFilter;
+      return { ...prev, page: 0, filter: newFilter.filter };
     });
-
-    // Reset to first page when changing filters
-    setPage(1);
   };
 
   // Handle filter changes
@@ -173,67 +133,69 @@ export default function ProductListingPage({
   ) => {
     const isFilterApplied = filter[category].includes(value as never);
 
-    setFilter((prev) => ({
+    setFilters((prev) => ({
       ...prev,
-      [category]: isFilterApplied
-        ? prev[category].filter((v) => v !== value)
-        : [...prev[category], value],
+      page: 0,
+      filter: {
+        ...prev.filter,
+        [category]: isFilterApplied
+          ? prev.filter[category].filter((v) => v !== value)
+          : [...prev.filter[category], value],
+      },
     }));
-
-    // Reset to first page when changing filters
-    setPage(1);
   };
 
   // Handle price range change
   const handlePriceRangeChange = (min: number, max: number) => {
-    setFilter((prev) => ({
+    setFilters((prev) => ({
       ...prev,
-      price: max,
+      page: 0,
+      filter: {
+        ...prev.filter,
+        price: max,
+      },
     }));
-
-    // Reset to first page when changing filters
-    setPage(1);
   };
 
   // Handle sort change
   const handleSortChange = (value: (typeof AVAILABLE_SORT)[number]) => {
-    setFilter((prev) => ({
+    setFilters((prev) => ({
       ...prev,
-      sort: value,
+      page: 0,
+      filter: {
+        ...prev.filter,
+        sort: value,
+      },
     }));
-
-    // Reset to first page when changing sort
-    setPage(1);
   };
 
   // Handle pagination
   const goToPage = (newPage: number) => {
-    setPage(newPage);
+    setFilters((prev) => ({
+      ...prev,
+      page: newPage,
+    }));
   };
 
   const goToPreviousPage = () => {
-    setPage((prev) => Math.max(prev - 1, 1));
+    setFilters((prev) => ({
+      ...prev,
+      page: Math.max(prev.page - 1, 1),
+    }));
   };
 
   const goToNextPage = () => {
     if (products && page < Math.ceil(products.total / DEFAULT_LIMIT)) {
-      setPage((prev) => prev + 1);
+      setFilters((prev) => ({
+        ...prev,
+        page: prev.page + 1,
+      }));
     }
   };
 
   // Clear all filters
   const clearAllFilters = () => {
-    setFilter({
-      productType: "ALL",
-      sleevesOptions: [],
-      collarOptions: [],
-      wristsOptions: [],
-      pantFitOptions: [],
-      pantLegOptions: [],
-      sort: "created-desc",
-      price: 0,
-    });
-    setPage(1);
+    setFilters(null);
   };
 
   // Check if a filter is active
@@ -307,9 +269,17 @@ export default function ProductListingPage({
               <RadioGroupItem
                 id="shirts"
                 value="SHIRTS"
-                onClick={() => handleTypeChange("SHIRTS")}
+                onClick={() => handleTypeChange("CLASSSIC_SHIRTS")}
               />
-              <Label htmlFor="shirts">Chemises</Label>
+              <Label htmlFor="shirts">Chemises Classiques</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                id="shirts"
+                value="SHIRTS"
+                onClick={() => handleTypeChange("AFRICAN_SHIRTS")}
+              />
+              <Label htmlFor="shirts">Chemises Africaines</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem
@@ -323,9 +293,17 @@ export default function ProductListingPage({
               <RadioGroupItem
                 id="suits"
                 value="SUITS"
-                onClick={() => handleTypeChange("SUITS")}
+                onClick={() => handleTypeChange("MEN_SUITS")}
               />
-              <Label htmlFor="suits">Costumes</Label>
+              <Label htmlFor="suits">Costumes Hommes</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                id="suits"
+                value="SUITS"
+                onClick={() => handleTypeChange("WOMEN_SUITS")}
+              />
+              <Label htmlFor="suits">Costumes Femmes</Label>
             </div>
           </RadioGroup>
         )}
@@ -373,12 +351,13 @@ export default function ProductListingPage({
               variant={!filter.price ? "default" : "outline"}
               size="sm"
               onClick={() => {
-                setFilter((prev) => {
-                  return {
-                    ...prev,
+                setFilters((prev) => ({
+                  ...prev,
+                  filter: {
+                    ...prev.filter,
                     price: 0,
-                  };
-                });
+                  },
+                }));
               }}
               className="w-full"
             >
@@ -391,10 +370,7 @@ export default function ProductListingPage({
       <Separator />
 
       {/* Shirt Options - Only show if ALL or SHIRTS is selected */}
-      {(!filter.productType ||
-        filter.productType === "ALL" ||
-        filter.productType === "SHIRTS" ||
-        filter.productType === "SUITS") && (
+      {(!filter.productType || filter.productType !== "PANTS") && (
         <>
           <div className="space-y-2">
             <div
@@ -478,9 +454,9 @@ export default function ProductListingPage({
 
       {/* Pant Options - Only show if ALL or PANTS is selected */}
       {(!filter.productType ||
-        filter.productType === "ALL" ||
-        filter.productType === "PANTS" ||
-        filter.productType === "SUITS") && (
+        ["ALL", "PANTS", "MEN_SUITS", "WOMEN_SUITS"].includes(
+          filter.productType,
+        )) && (
         <>
           <div className="space-y-2">
             <div

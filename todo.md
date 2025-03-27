@@ -3,5 +3,5 @@
 - [ ] on info click dialog with image and description
 - [ ] setDeliveryArea
 - [ ] add paypal payment
-
+- [ ] duplicate
 <!-- - [ ] Switch stock -->

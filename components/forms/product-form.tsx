@@ -13,6 +13,7 @@ import {
   wristsTypes,
 } from "@/lib/db/schema/products";
 import {
+  cn,
   formatCollarType,
   formatPantFit,
   formatPantLeg,
@@ -101,6 +102,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
   const { mutate: createProduct, isPending } =
     trpc.products.createProduct.useMutation({
       onSuccess: (_, input) => {
+        toast.success("Produit créé avec succès");
         router.push("/dashboard/products");
       },
       onError: (error) => {
@@ -168,6 +170,16 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
     try {
       toastId = toast.loading("Création en cours");
 
+      if (values.type === "AFRICAN_SHIRTS") {
+        values.options.collarType = [];
+      }
+
+      if (values.type === "PANTS") {
+        values.options.collarType = [];
+        values.options.sleevesLength = [];
+        values.options.wristsType = [];
+      }
+
       if (id) {
         updateProduct({
           id,
@@ -176,7 +188,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
         });
       } else {
         createProduct({
-          values,
+          values: {
+            ...values,
+            options: values.options,
+          },
           status: "PUBLISHED",
         });
       }
@@ -228,68 +243,67 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
               </FormItem>
             )}
           />
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>Type de produit</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex gap-6"
-                    >
-                      {productTypes.map((t, index) => (
-                        <FormItem
-                          key={index}
-                          className="flex items-center space-y-0 space-x-3"
-                        >
-                          <FormControl>
-                            <RadioGroupItem value={t} />
-                          </FormControl>
-                          <FormLabel className="font-normal">
-                            {formatType(t)}
-                          </FormLabel>
-                        </FormItem>
-                      ))}
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
-            <FormField
-              control={form.control}
-              name="seller"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Vendeur</FormLabel>
-                  <Select
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>Type de produit</FormLabel>
+                <FormControl>
+                  <RadioGroup
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    className="flex gap-6"
                   >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Choisissez un vendeur" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {sellers.map((seller, index) => (
-                        <SelectItem key={index} value={seller}>
-                          {seller}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    {productTypes.map((t, index) => (
+                      <FormItem
+                        key={index}
+                        className="flex items-center space-y-0 space-x-3"
+                      >
+                        <FormControl>
+                          <RadioGroupItem value={t} />
+                        </FormControl>
+                        <FormLabel className="font-normal">
+                          {formatType(t)}
+                        </FormLabel>
+                      </FormItem>
+                    ))}
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="seller"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Vendeur</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Choisissez un vendeur" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {sellers.map((seller, index) => (
+                      <SelectItem key={index} value={seller}>
+                        {seller}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}
@@ -388,8 +402,13 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
             onDelete={handleDeleteGallery}
           />
 
-          {form.watch("type") === "SHIRTS" && (
-            <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-3">
+          {(form.watch("type") === "CLASSSIC_SHIRTS" ||
+            form.watch("type") === "AFRICAN_SHIRTS") && (
+            <div
+              className={cn("grid w-full grid-cols-1 gap-4 md:grid-cols-3", {
+                "md:grid-cols-2": form.watch("type") === "AFRICAN_SHIRTS",
+              })}
+            >
               <FormField
                 control={form.control}
                 name="options.sleevesLength"
@@ -422,37 +441,39 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="options.collarType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Type de col</FormLabel>
-                    <FormControl>
-                      <MultiSelector
-                        values={field.value}
-                        onValuesChange={field.onChange}
-                        loop
-                      >
-                        <MultiSelectorTrigger>
-                          <MultiSelectorInput placeholder="Ajouter une taille" />
-                        </MultiSelectorTrigger>
-                        <MultiSelectorContent>
-                          <MultiSelectorList>
-                            {collarTypes.map((col) => (
-                              <MultiSelectorItem key={col} value={col}>
-                                {formatCollarType(col)}
-                              </MultiSelectorItem>
-                            ))}
-                          </MultiSelectorList>
-                        </MultiSelectorContent>
-                      </MultiSelector>
-                    </FormControl>
+              {form.watch("type") === "CLASSSIC_SHIRTS" && (
+                <FormField
+                  control={form.control}
+                  name="options.collarType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Type de col</FormLabel>
+                      <FormControl>
+                        <MultiSelector
+                          values={field.value}
+                          onValuesChange={field.onChange}
+                          loop
+                        >
+                          <MultiSelectorTrigger>
+                            <MultiSelectorInput placeholder="Ajouter une taille" />
+                          </MultiSelectorTrigger>
+                          <MultiSelectorContent>
+                            <MultiSelectorList>
+                              {collarTypes.map((col) => (
+                                <MultiSelectorItem key={col} value={col}>
+                                  {formatCollarType(col)}
+                                </MultiSelectorItem>
+                              ))}
+                            </MultiSelectorList>
+                          </MultiSelectorContent>
+                        </MultiSelector>
+                      </FormControl>
 
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
               <FormField
                 control={form.control}
@@ -556,7 +577,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
             </div>
           )}
 
-          {form.watch("type") === "SUITS" && (
+          {(form.watch("type") === "MEN_SUITS" ||
+            form.watch("type") === "WOMEN_SUITS") && (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <FormField
                 control={form.control}
