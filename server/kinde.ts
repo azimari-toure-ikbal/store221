@@ -49,12 +49,11 @@ export const updateUser = async (user: {
 }) => {
   init();
 
+  // TODO: Add a way to switch the user org.
   try {
-    const kIden = await Users.getUserData({
-      id: user.id,
+    const kIden = await Users.getUserIdentities({
+      userId: user.id,
     });
-
-    // console.log("kIden", kIden);
 
     if (!kIden.identities || kIden.identities.length === 0) {
       if (logVerbose)
@@ -64,7 +63,7 @@ export const updateUser = async (user: {
       throw new Error("User has no identities");
     }
 
-    if (!kIden.identities[0].identity) {
+    if (!kIden.identities[0].id) {
       if (logVerbose)
         console.error(
           `User ${user.id} has no identity id. Can't update user in KINDE`,
@@ -73,7 +72,7 @@ export const updateUser = async (user: {
     }
 
     await Identities.deleteIdentity({
-      identityId: kIden.identities[0].identity,
+      identityId: kIden.identities[0].id,
     });
 
     const kUser = await Users.updateUser({

@@ -40,6 +40,8 @@ export async function enrichCartItems(
         });
       }
 
+      // console.log("enrichCartItems", item);
+
       return {
         name: product.name,
         productId: product.id,
@@ -168,6 +170,8 @@ export const cartsRouter = createTRPCRouter({
 
       if (!cart)
         throw new TRPCError({ code: "NOT_FOUND", message: "Cart not found" });
+
+      // console.log("found cart", cart);
 
       return enrichCartItems(cart);
     }),
@@ -460,8 +464,10 @@ export const cartsRouter = createTRPCRouter({
         cartPrice: z.number(),
         productName: z.string(),
         promoCode: z.string().optional(),
-        currency: z.string(),
-        rate: z.number(),
+        // currency: z.string(),
+        // rate: z.number(),
+        sessionId: z.string(),
+        deliveryPrice: z.number(),
         delivery: checkoutFormSchema,
       }),
     )
@@ -475,25 +481,26 @@ export const cartsRouter = createTRPCRouter({
       const params = {
         item_name: input.productName,
         item_price: input.cartPrice,
-        currency: input.currency,
-        ref_command: `${input.cartId}`,
+        currency: "XOF",
+        ref_command: `${input.cartId}-${new Date().toISOString()}`,
         command_name: "Paiement panier store221 via Paytech",
         env: "prod",
         ipn_url: devMode
           ? "https://9cef-41-208-134-215.ngrok-free.app/api/paytech/ipn"
-          : "https://samaweekend.com/paytech/api/paytech/ipn",
+          : "https://store221.com/api/paytech/ipn",
         success_url: devMode
           ? `https://shiny.samaweekend.com/success`
-          : `https://samaweekend.com/success`,
+          : `https://store221.com/sale-success`,
         cancel_url: devMode
           ? `https://shiny.samaweekend.com`
-          : `https://samaweekend.com`,
+          : `https://store221.com/sale-canceled`,
         custom_field: JSON.stringify({
+          sessionId: input.sessionId,
+          userId: kUser.id,
           cartId: input.cartId,
-          userId: kUser?.id,
           promoCode: input.promoCode,
-          rate: input.rate,
           delivery: input.delivery,
+          deliveryPrice: input.deliveryPrice,
         }),
       };
 

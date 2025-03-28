@@ -105,7 +105,7 @@ export const cartItemSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),
   image: z.string(),
-  productType: z.enum(["SHIRTS", "PANTS", "SUITS"]),
+  productType: z.enum(productTypes),
   quantity: z.number(),
   price: z.number(),
   stock: z.number(),
@@ -147,3 +147,5 @@ export const checkoutFormSchema = z.object({
   zip: z.string(),
   note: z.string().optional(),
 });
+
+export type Delivery = z.infer<typeof checkoutFormSchema>;

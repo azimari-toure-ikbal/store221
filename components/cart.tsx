@@ -43,6 +43,9 @@ const Cart: React.FC<CartProps> = ({}) => {
     droppingCart,
   } = useCart();
 
+  // console.log("cartItemsLength", cartItemsLength);
+  // console.log("cart", cart);
+
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={setOpen}>
@@ -71,8 +74,8 @@ const Cart: React.FC<CartProps> = ({}) => {
           {cart && (
             <div className="flex h-full w-full flex-col overflow-hidden">
               <div className="h-full flex-1 divide-y">
-                {cart.items.map((item) => (
-                  <ShoppingCartItem key={item.productId} item={item} />
+                {cart.items.map((item, index) => (
+                  <ShoppingCartItem key={index} item={item} />
                 ))}
               </div>
               <div className="space-y-4 border-t p-4">
@@ -119,7 +122,7 @@ const Cart: React.FC<CartProps> = ({}) => {
       <SheetTrigger asChild>
         <Button size="sm">Panier ({cartItemsLength})</Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className="sm:max-w-md">
         <SheetHeader>
           <SheetTitle>Votre panier</SheetTitle>
         </SheetHeader>
@@ -141,8 +144,8 @@ const Cart: React.FC<CartProps> = ({}) => {
         {cart && (
           <div className="flex h-full w-full flex-col overflow-hidden">
             <div className="h-full flex-1 divide-y">
-              {cart.items.map((item) => (
-                <ShoppingCartItem key={item.productId} item={item} />
+              {cart.items.map((item, index) => (
+                <ShoppingCartItem key={index} item={item} />
               ))}
             </div>
             <div className="space-y-4 border-t p-4">

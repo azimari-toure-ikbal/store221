@@ -1,15 +1,11 @@
 "use client";
 
 import {
-  AudioWaveform,
-  Bot,
-  Command,
-  Frame,
+  BoxIcon,
   GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
+  LayoutDashboard,
+  ShoppingCart,
+  Users2,
 } from "lucide-react";
 import * as React from "react";
 
@@ -20,158 +16,148 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { NavMain } from "./nav-main";
+import { NavProjects } from "./nav-projects";
 import { NavUser } from "./nav-user";
 import { TeamSwitcher } from "./team-switcher";
 
 // This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   teams: [
     {
-      name: "Acme Inc",
+      name: "Store 221",
       logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
+      plan: "",
     },
   ],
-  navMain: [
-    {
-      title: "Général",
-      url: "#",
-      icon: SquareTerminal,
-      items: [
-        {
-          title: "Analytics",
-          url: "/dashboard/analytics",
-        },
-        {
-          title: "Avis",
-          url: "/dashboard/reviews",
-        },
-      ],
-    },
-    {
-      title: "Catalogue",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Fournisseurs",
-          url: "/dashboard/sellers",
-        },
-        {
-          title: "Catégories",
-          url: "/dashboard/categories",
-        },
-        {
-          title: "Sous-catégories",
-          url: "/dashboard/sub-categories",
-        },
-        {
-          title: "Produits",
-          url: "/dashboard/products",
-        },
-        {
-          title: "Packs",
-          url: "/dashboard/packs",
-        },
-      ],
-    },
-    {
-      title: "Ventes",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "Commandes",
-          url: "/dashboard/orders",
-        },
-        {
-          title: "Paniers",
-          url: "/dashboard/carts",
-        },
-        {
-          title: "Retours",
-          url: "/dashboard/returns",
-        },
-      ],
-    },
-    {
-      title: "Utilisateurs",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "Equipe",
-          url: "/dashboard/team",
-        },
-        {
-          title: "Clients",
-          url: "/dashboard/clients",
-        },
-        {
-          title: "Parrainage",
-          url: "/dashboard/referrals",
-        },
-      ],
-    },
-    {
-      title: "Réglages",
-      url: "#",
-      icon: SquareTerminal,
-      items: [
-        {
-          title: "Système",
-          url: "/dashboard/settings",
-        },
-        {
-          title: "Marketing",
-          url: "/dashboard/marketing",
-        },
-        {
-          title: "Codes promo",
-          url: "/dashboard/promo-codes",
-        },
-        {
-          title: "Ventes flash",
-          url: "/dashboard/flash-sales",
-        },
-        {
-          title: "Zones de livraison",
-          url: "/dashboard/delivery-zones",
-        },
-      ],
-    },
-  ],
+  // navMain: [
+  //   {
+  //     title: "Général",
+  //     url: "#",
+  //     icon: SquareTerminal,
+  //     items: [
+  //       {
+  //         title: "Analytics",
+  //         url: "/dashboard/analytics",
+  //       },
+  //       {
+  //         title: "Avis",
+  //         url: "/dashboard/reviews",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Catalogue",
+  //     url: "#",
+  //     icon: Bot,
+  //     items: [
+  //       {
+  //         title: "Fournisseurs",
+  //         url: "/dashboard/sellers",
+  //       },
+  //       {
+  //         title: "Catégories",
+  //         url: "/dashboard/categories",
+  //       },
+  //       {
+  //         title: "Sous-catégories",
+  //         url: "/dashboard/sub-categories",
+  //       },
+  //       {
+  //         title: "Produits",
+  //         url: "/dashboard/products",
+  //       },
+  //       {
+  //         title: "Packs",
+  //         url: "/dashboard/packs",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Ventes",
+  //     url: "#",
+  //     icon: Settings2,
+  //     items: [
+  //       {
+  //         title: "Commandes",
+  //         url: "/dashboard/orders",
+  //       },
+  //       {
+  //         title: "Paniers",
+  //         url: "/dashboard/carts",
+  //       },
+  //       {
+  //         title: "Retours",
+  //         url: "/dashboard/returns",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Utilisateurs",
+  //     url: "#",
+  //     icon: Settings2,
+  //     items: [
+  //       {
+  //         title: "Equipe",
+  //         url: "/dashboard/team",
+  //       },
+  //       {
+  //         title: "Clients",
+  //         url: "/dashboard/clients",
+  //       },
+  //       {
+  //         title: "Parrainage",
+  //         url: "/dashboard/referrals",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Réglages",
+  //     url: "#",
+  //     icon: SquareTerminal,
+  //     items: [
+  //       {
+  //         title: "Système",
+  //         url: "/dashboard/settings",
+  //       },
+  //       {
+  //         title: "Marketing",
+  //         url: "/dashboard/marketing",
+  //       },
+  //       {
+  //         title: "Codes promo",
+  //         url: "/dashboard/promo-codes",
+  //       },
+  //       {
+  //         title: "Ventes flash",
+  //         url: "/dashboard/flash-sales",
+  //       },
+  //       {
+  //         title: "Zones de livraison",
+  //         url: "/dashboard/delivery-zones",
+  //       },
+  //     ],
+  //   },
+  // ],
   projects: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
+      name: "Tableau de bord",
+      url: "/dashboard",
+      icon: LayoutDashboard,
     },
     {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
+      name: "Produits",
+      url: "/dashboard/products",
+      icon: BoxIcon,
     },
     {
-      name: "Travel",
-      url: "#",
-      icon: Map,
+      name: "Commandes",
+      url: "/dashboard/orders",
+      icon: ShoppingCart,
+    },
+    {
+      name: "Utilisateurs",
+      url: "/dashboard/users",
+      icon: Users2,
     },
   ],
 };
@@ -183,10 +169,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        {/* <NavMain items={data.navMain} /> */}
+        <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

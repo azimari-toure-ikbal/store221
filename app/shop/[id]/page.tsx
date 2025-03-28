@@ -59,6 +59,7 @@ import {
 } from "@/lib/utils";
 import { trpc } from "@/server/trpc/client";
 import { useAtomValue } from "jotai";
+import { toast } from "sonner";
 
 type ProductType = "SUITS" | "SHIRTS" | "PANTS";
 
@@ -939,7 +940,7 @@ export default function ProductDetailPage({ params }: Props) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="bg-background/80 hover:bg-background rounded-full"
+                className="bg-background/80 hover:bg-background cursor-pointer rounded-full"
                 onClick={prevImage}
               >
                 <ChevronLeft className="h-6 w-6" />
@@ -948,7 +949,7 @@ export default function ProductDetailPage({ params }: Props) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="bg-background/80 hover:bg-background rounded-full"
+                className="bg-background/80 hover:bg-background cursor-pointer rounded-full"
                 onClick={nextImage}
               >
                 <ChevronRight className="h-6 w-6" />
@@ -1148,7 +1149,7 @@ export default function ProductDetailPage({ params }: Props) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-10 w-10 rounded-none"
+                  className="h-10 w-10 cursor-pointer rounded-none"
                   onClick={decrementQuantity}
                   disabled={!quantity || quantity <= 1}
                 >
@@ -1159,7 +1160,7 @@ export default function ProductDetailPage({ params }: Props) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-10 w-10 rounded-none"
+                  className="h-10 w-10 cursor-pointer rounded-none"
                   onClick={incrementQuantity}
                   disabled={!quantity || quantity >= product.stock}
                 >
@@ -1176,6 +1177,45 @@ export default function ProductDetailPage({ params }: Props) {
             className="w-full md:w-auto"
             onClick={() => {
               // console.log("Add product to cart quantity is: ", quantity);
+
+              if (
+                product.type === "MEN_SUITS" ||
+                product.type === "WOMEN_SUITS"
+              ) {
+                if (
+                  !selectedOptions.collarType ||
+                  !selectedOptions.wristsType ||
+                  !selectedOptions.pantFit ||
+                  !selectedOptions.pantLeg
+                ) {
+                  return toast.warning(
+                    "Vous devez sélectionner toutes les options avant de pouvoir ajouter le produit au panier",
+                  );
+                }
+              }
+
+              if (product.type === "PANTS") {
+                if (!selectedOptions.pantFit || !selectedOptions.pantLeg) {
+                  return toast.warning(
+                    "Vous devez sélectionner les options avant de pouvoir ajouter le produit au panier",
+                  );
+                }
+              }
+
+              if (
+                product.type === "CLASSSIC_SHIRTS" ||
+                product.type === "AFRICAN_SHIRTS"
+              ) {
+                if (
+                  !selectedOptions.sleevesLength ||
+                  !selectedOptions.collarType ||
+                  !selectedOptions.wristsType
+                ) {
+                  return toast.warning(
+                    "Vous devez sélectionner les options avant de pouvoir ajouter le produit au panier",
+                  );
+                }
+              }
 
               addProductToCart(
                 {

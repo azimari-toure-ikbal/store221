@@ -14,7 +14,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({}) => {
   const currency = useAtomValue(currencyAtom);
 
   return (
-    <div className="flex h-fit w-full flex-col gap-4 rounded-2xl border p-4">
+    <div className="flex h-fit w-full flex-col gap-4 rounded-2xl bg-white p-4">
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <span>Sous-Total</span>

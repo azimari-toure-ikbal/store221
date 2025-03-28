@@ -43,7 +43,7 @@ export default function RootLayout({
         <JotaiProvider>
           <TRPCProvider>
             <NuqsAdapter>
-              <div className="bg-primary/15 relative min-h-full w-full">
+              <div className="bg-primary/10 relative min-h-full w-full">
                 <main className="relative flex min-h-screen flex-col">
                   <HydrateClient>
                     <Suspense
@@ -73,7 +73,7 @@ export default function RootLayout({
                       </ErrorBoundary>
                     </Suspense>
                   </HydrateClient>
-                  <div className="h-full w-full flex-1 flex-grow overflow-x-hidden pb-6">
+                  <div className="h-full w-full flex-1 flex-grow overflow-x-hidden pb-6 sm:overflow-x-scroll">
                     {/* <GlobalProvider /> */}
                     {children}
                   </div>

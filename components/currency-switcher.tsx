@@ -23,11 +23,11 @@ const CurrencySwitcher: React.FC<CurrencySwitcherProps> = ({}) => {
   });
 
   // We will refetch the rates every X time because it should have been updated in the DB
-  // React.useEffect(() => {
-  //   if (query.isStale) {
-  //     query.refetch();
-  //   }
-  // }, [query]);
+  React.useEffect(() => {
+    if (query.isStale) {
+      query.refetch();
+    }
+  }, [query]);
 
   const [currency, setCurrency] = useAtom(currencyAtom);
 

@@ -26,8 +26,6 @@ export const useCart = () => {
   const paymentGateway = useAtomValue(paymentGatewayAtom);
   const deliveryArea = useAtomValue(deliveryAreaAtom);
 
-  // console.log("Deliveryarea is", deliveryArea);
-
   const { user } = useKindeBrowserClient();
   const [sessionId, setSessionId] = useAtom(sessionAtom);
 
@@ -54,7 +52,7 @@ export const useCart = () => {
   const { data } = trpc.carts.getCart.useQuery(
     { sessionId },
     {
-      enabled: sessionId !== "" && cart === undefined,
+      enabled: sessionId !== "",
     },
   );
 
@@ -638,11 +636,17 @@ export const useCart = () => {
     // Shirt is 0.25kg
     // Pant is 0.3kg
     for (const item of cart.items) {
-      if (item.productType === "SHIRTS") {
+      if (
+        item.productType === "CLASSSIC_SHIRTS" ||
+        item.productType === "AFRICAN_SHIRTS"
+      ) {
         weight += SHIRT_WEIGHT * item.quantity;
       } else if (item.productType === "PANTS") {
         weight += PANTS_WEIGHT * item.quantity;
-      } else if (item.productType === "SUITS") {
+      } else if (
+        item.productType === "MEN_SUITS" ||
+        item.productType === "WOMEN_SUITS"
+      ) {
         weight += SUITS_WEIGHT * item.quantity;
       } else {
         console.error("Unknown product type");

@@ -49,7 +49,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
   const router = useRouter();
 
   // const currency = useAtomValue(currencyAtom);
-  const { cart, total, surMesureTotal } = useCart();
+  const { cart, total, surMesureTotal, deliveryPrice } = useCart();
   const setDeliveryArea = useSetAtom(deliveryAreaAtom);
 
   const { mutate: checkout, isPending } = trpc.carts.checkout.useMutation({
@@ -71,9 +71,12 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
         cartId: cart.id,
         cartPrice: total,
         productName: "Pantalon",
-        rate: 0.12,
-        currency: "XOF",
+        // rate: 0.12,
+        // currency: "XOF",
         delivery: values,
+        deliveryPrice: deliveryPrice,
+        sessionId: cart.sessionId,
+        promoCode: undefined,
       });
     } catch (error) {
       console.error("Form submission error", error);
@@ -81,20 +84,20 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
     }
   }
 
-  React.useEffect(() => {
-    if (form.watch("country")) {
-      const found = countries.find(
-        (c) => c.name === form.watch("country"),
-      )?.continent;
+  // React.useEffect(() => {
+  //   if (form.watch("country")) {
+  //     const found = countries.find(
+  //       (c) => c.name === form.watch("country"),
+  //     )?.continent;
 
-      // console.log("Found continent", found);
+  //     // console.log("Found continent", found);
 
-      if (found) setDeliveryArea(found);
-    }
-  }, [form, setDeliveryArea]);
+  //     if (found) setDeliveryArea(found);
+  //   }
+  // }, [form, setDeliveryArea]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 rounded-lg bg-white p-4">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -179,7 +182,13 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                 <FormItem>
                   <FormLabel>Pays</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(val) => {
+                      setDeliveryArea(
+                        countries.find((c) => c.name === val)?.continent ||
+                          "Afrique",
+                      );
+                      field.onChange(val);
+                    }}
                     defaultValue={field.value}
                   >
                     <FormControl>
