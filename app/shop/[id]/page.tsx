@@ -1,6 +1,6 @@
 "use client";
 
-import IkImage from "@/lib/image";
+// import IkImage from "@/lib/image";
 import parse from "html-react-parser";
 import {
   ChevronLeft,
@@ -93,25 +93,25 @@ export default function ProductDetailPage({ params }: Props) {
       id: 1,
       name: "Ankara Print Shirt",
       price: "$89.99",
-      image: "/placeholder.svg?height=300&width=250",
+      image: "/placeholder.svg",
     },
     {
       id: 2,
       name: "Kente Fabric Suit",
       price: "$169.99",
-      image: "/placeholder.svg?height=300&width=250",
+      image: "/placeholder.svg",
     },
     {
       id: 3,
       name: "Dashiki Top",
       price: "$59.99",
-      image: "/placeholder.svg?height=300&width=250",
+      image: "/placeholder.svg",
     },
     {
       id: 4,
       name: "Mud Cloth Pants",
       price: "$79.99",
-      image: "/placeholder.svg?height=300&width=250",
+      image: "/placeholder.svg",
     },
   ];
 
@@ -144,7 +144,7 @@ export default function ProductDetailPage({ params }: Props) {
   const renderProductOptions = () => {
     if (!product) return;
     switch (product.type) {
-      case "CLASSSIC_SHIRTS":
+      case "CLASSIC_SHIRTS":
       case "AFRICAN_SHIRTS":
         return (
           <>
@@ -926,14 +926,10 @@ export default function ProductDetailPage({ params }: Props) {
         {/* Product Images */}
         <div className="space-y-4">
           <div className="border-border relative h-[600px] overflow-hidden rounded-lg border">
-            <IkImage
-              path={
-                product?.gallery[currentImage].split("/f/")[1] ||
-                "/placeholder.svg"
-              }
+            <Image
+              src={product?.gallery[currentImage] || "/placeholder.svg"}
               fill
               alt={`${product.name}`}
-              lqip={{ active: true, quality: 20, blur: 6 }}
               className="h-full w-full rounded-2xl object-cover"
             />
             <div className="absolute inset-0 flex items-center justify-between px-4">
@@ -967,8 +963,9 @@ export default function ProductDetailPage({ params }: Props) {
                 )}
                 onClick={() => setCurrentImage(index)}
               >
-                <img
+                <Image
                   src={image || "/placeholder.svg"}
+                  fill
                   alt={`Product thumbnail ${index + 1}`}
                   className="object-cover"
                 />
@@ -1078,7 +1075,7 @@ export default function ProductDetailPage({ params }: Props) {
               )}
 
               {product.type !== "AFRICAN_SHIRTS" &&
-                product.type !== "CLASSSIC_SHIRTS" && (
+                product.type !== "CLASSIC_SHIRTS" && (
                   <Dialog>
                     <DialogTrigger asChild>
                       <Button variant={"outline"}>
@@ -1203,7 +1200,7 @@ export default function ProductDetailPage({ params }: Props) {
               }
 
               if (
-                product.type === "CLASSSIC_SHIRTS" ||
+                product.type === "CLASSIC_SHIRTS" ||
                 product.type === "AFRICAN_SHIRTS"
               ) {
                 if (

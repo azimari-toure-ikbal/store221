@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 
+import ProductsTableView from "@/components/data-tables/products/products-table-view";
 import { buttonVariants } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
@@ -19,6 +20,7 @@ const DashboardProductsPage: React.FC<DashboardProductsPageProps> = ({}) => {
         <PlusCircle />
         <span>Nouveau produit</span>
       </Link>
+      <ProductsTableView />
     </div>
   );
 };

@@ -100,7 +100,7 @@ export default function ProductListingPage() {
       // Clear irrelevant filters when type changes
       if (
         type !== "AFRICAN_SHIRTS" &&
-        type !== "CLASSSIC_SHIRTS" &&
+        type !== "CLASSIC_SHIRTS" &&
         type !== "MEN_SUITS" &&
         type !== "WOMEN_SUITS"
       ) {
@@ -269,7 +269,7 @@ export default function ProductListingPage() {
               <RadioGroupItem
                 id="shirts"
                 value="SHIRTS"
-                onClick={() => handleTypeChange("CLASSSIC_SHIRTS")}
+                onClick={() => handleTypeChange("CLASSIC_SHIRTS")}
               />
               <Label htmlFor="shirts">Chemises Classiques</Label>
             </div>

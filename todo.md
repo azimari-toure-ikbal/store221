@@ -1,7 +1,7 @@
 - [ ] initials ajouter le tarif sur le ui
-- [ ] guide des tailles
-- [ ] on info click dialog with image and description
-- [ ] setDeliveryArea
+- [x] guide des tailles
+- [x] on info click dialog with image and description
+- [x] setDeliveryArea
 - [ ] add paypal payment
-- [ ] duplicate
+- [x] duplicate
 <!-- - [ ] Switch stock -->

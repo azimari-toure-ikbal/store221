@@ -86,6 +86,16 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
     },
   });
 
+  const { data: product, isLoading: loadingDetails } =
+    trpc.products.getProductDetails.useQuery(
+      {
+        id: id ?? "",
+      },
+      {
+        enabled: !!id,
+      },
+    );
+
   const { mutate: updateProduct, isPending: updating } =
     trpc.products.updateProduct.useMutation({
       onSuccess: (_, input) => {
@@ -112,6 +122,29 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
         toast.dismiss(toastId);
       },
     });
+
+  React.useEffect(() => {
+    if (product) {
+      form.reset({
+        name: product.name,
+        type: product.type,
+        seller: product.seller,
+        description: product.description,
+        price: product.price,
+        discountedPrice: product.discountedPrice || undefined,
+        stock: String(product.stock),
+        gallery: product.gallery,
+        sizes: product.sizes,
+        options: {
+          sleevesLength: product.options.sleevesLength ?? [],
+          collarType: product.options.collarType ?? [],
+          wristsType: product.options.wristsType ?? [],
+          pantFit: product.options.pantFit ?? [],
+          pantLeg: product.options.pantLeg ?? [],
+        },
+      });
+    }
+  }, [form, product]);
 
   React.useEffect(() => {
     // Each 60 seconds, update setProductFormBackup with the current form values
@@ -204,6 +237,14 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
     }
   }
 
+  if (loadingDetails) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <IsLoading />
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto h-full max-w-4xl">
       <Form {...form}>
@@ -223,8 +264,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
             </Button>
             <Button
               type="button"
-              variant={"secondary"}
+              variant={"outline"}
               disabled={isPending || updating}
+              onClick={saveDraft}
             >
               {isPending || updating ? <IsLoading /> : "Brouillon"}
             </Button>
@@ -253,7 +295,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={field.value ?? product?.type}
                     className="flex gap-6"
                   >
                     {productTypes.map((t, index) => (
@@ -284,7 +326,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
                 <FormLabel>Vendeur</FormLabel>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  defaultValue={field.value ?? product?.seller}
                 >
                   <FormControl>
                     <SelectTrigger className="w-full">
@@ -402,7 +444,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
             onDelete={handleDeleteGallery}
           />
 
-          {(form.watch("type") === "CLASSSIC_SHIRTS" ||
+          {(form.watch("type") === "CLASSIC_SHIRTS" ||
             form.watch("type") === "AFRICAN_SHIRTS") && (
             <div
               className={cn("grid w-full grid-cols-1 gap-4 md:grid-cols-3", {
@@ -441,7 +483,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
                 )}
               />
 
-              {form.watch("type") === "CLASSSIC_SHIRTS" && (
+              {form.watch("type") === "CLASSIC_SHIRTS" && (
                 <FormField
                   control={form.control}
                   name="options.collarType"

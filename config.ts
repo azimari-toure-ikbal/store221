@@ -1,4 +1,12 @@
-import { ChartBar, HeartIcon, House, ShoppingCart, User } from "lucide-react";
+import {
+  BoxIcon,
+  HeartIcon,
+  House,
+  LayoutDashboard,
+  ShoppingCart,
+  User,
+  Users2,
+} from "lucide-react";
 import { z } from "zod";
 import {
   CollarTypes,
@@ -36,12 +44,26 @@ export const CUSTOMERS_MENU = [
 ];
 
 export const ADMINS_MENU = [
-  { title: "Dashboard", icon: ChartBar, href: "/dashboard/analytics" },
-  { title: "Produits", icon: ChartBar, href: "/dashboard/products" },
-  { title: "Cols", icon: ChartBar, href: "/dashboard/collars" },
-  { title: "Tissus", icon: ChartBar, href: "/dashboard/fabrics" },
-  { title: "Options", icon: ChartBar, href: "/dashboard/options" },
-  { title: "Commandes", icon: ShoppingCart, href: "/dashboard/orders" },
+  {
+    title: "Tableau de bord",
+    href: "/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "Produits",
+    href: "/dashboard/products",
+    icon: BoxIcon,
+  },
+  {
+    title: "Commandes",
+    href: "/dashboard/orders",
+    icon: ShoppingCart,
+  },
+  {
+    title: "Utilisateurs",
+    href: "/dashboard/users",
+    icon: Users2,
+  },
 ];
 
 export const AVAILABLE_SORT = [
@@ -118,7 +140,7 @@ export const PRODUCT_FORM_DEFAULT_VALUES: z.infer<typeof productFormSchema> = {
   stock: "",
   discountedPrice: "",
   gallery: [],
-  type: "CLASSSIC_SHIRTS",
+  type: "CLASSIC_SHIRTS",
   sizes: ["S", "XS", "M", "L", "XL", "XXL"],
   seller: "CAMENWEAR",
   options: {

@@ -12,7 +12,7 @@ import { favorites } from "./favorites";
 
 export const productTypes = [
   "PANTS",
-  "CLASSSIC_SHIRTS",
+  "CLASSIC_SHIRTS",
   "AFRICAN_SHIRTS",
   "MEN_SUITS",
   "WOMEN_SUITS",
@@ -55,7 +55,7 @@ export const sellersEnum = pgEnum("seller", sellers);
 export const products = pgTable("products", {
   id,
   name: text().notNull(),
-  description: text(),
+  description: text().notNull(),
   price: numeric().notNull(),
   discountedPrice: numeric(),
   type: productTypesEnum().notNull(),
@@ -76,6 +76,8 @@ export const products = pgTable("products", {
   createdAt,
   updatedAt,
 });
+
+export type DBProduct = typeof products.$inferSelect;
 
 export const productsRelations = relations(products, ({ many, one }) => ({
   favorites: many(favorites),

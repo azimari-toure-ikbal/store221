@@ -24,7 +24,7 @@ export const usersRouter = createTRPCRouter({
     const kUser = await getUser();
 
     if (!kUser) {
-      return undefined;
+      return null;
     }
 
     const res = await db.query.users.findFirst({

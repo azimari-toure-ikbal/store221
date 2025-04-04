@@ -87,7 +87,7 @@ export const formatType = (type: ProductTypes) => {
   switch (type) {
     case "PANTS":
       return "Pantalons";
-    case "CLASSSIC_SHIRTS":
+    case "CLASSIC_SHIRTS":
       return "Chemises";
     case "AFRICAN_SHIRTS":
       return "Chemises Africaines";
@@ -247,7 +247,7 @@ export const getWeight = (productType: ProductTypes) => {
   switch (productType) {
     case "AFRICAN_SHIRTS":
       return SHIRT_WEIGHT;
-    case "CLASSSIC_SHIRTS":
+    case "CLASSIC_SHIRTS":
       return SHIRT_WEIGHT;
     case "PANTS":
       return PANTS_WEIGHT;

@@ -8,6 +8,11 @@ import { z } from "zod";
 import { adminProcedure, createTRPCRouter, publicProcedure } from "../init";
 
 export const productsRouter = createTRPCRouter({
+  getProducts: adminProcedure.query(async ({ ctx }) => {
+    return await db.query.products.findMany({
+      where: ne(products.status, "DELETED"),
+    });
+  }),
   createProduct: adminProcedure
     .input(
       z.object({
@@ -46,7 +51,6 @@ export const productsRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-        values: productFormSchema,
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -61,12 +65,15 @@ export const productsRouter = createTRPCRouter({
         });
       }
 
+      const id = crypto.randomUUID();
+
       const res = await db
         .insert(products)
         .values({
-          ...input.values,
+          ...foundProduct,
+          id,
+          name: `${foundProduct.name} - ${crypto.randomUUID().slice(0, 5)}`,
           gallery: [],
-          stock: Number(input.values.stock),
           status: "DRAFT",
         })
         .returning();

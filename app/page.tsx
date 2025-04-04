@@ -12,7 +12,7 @@ export default function HomePage() {
         <div className="absolute inset-0 z-10 bg-black/40" />
         <div className="relative h-[600px]">
           <Image
-            src="/placeholder.svg?height=600&width=1200"
+            src="/placeholder.svg"
             alt="African clothing collection"
             fill
             className="object-cover"
@@ -93,7 +93,7 @@ export default function HomePage() {
               >
                 <div className="bg-muted aspect-square overflow-hidden rounded-md">
                   <Image
-                    src={`/placeholder.svg?height=300&width=300&text=Product+${item}`}
+                    src={`/placeholder.svg`}
                     alt={`Product ${item}`}
                     width={300}
                     height={300}
@@ -143,7 +143,7 @@ export default function HomePage() {
             </div>
             <div className="relative h-[300px] overflow-hidden rounded-lg md:h-[400px]">
               <Image
-                src="/placeholder.svg?height=400&width=600"
+                src="/placeholder.svg"
                 alt="Artisan crafting"
                 fill
                 className="object-cover"
@@ -171,7 +171,7 @@ export default function HomePage() {
             <div className="group relative overflow-hidden rounded-lg border">
               <div className="aspect-[4/3] overflow-hidden">
                 <Image
-                  src="/placeholder.svg?height=400&width=600"
+                  src="/placeholder.svg"
                   alt="Featured product 1"
                   width={600}
                   height={400}
@@ -193,7 +193,7 @@ export default function HomePage() {
             <div className="group relative overflow-hidden rounded-lg border">
               <div className="aspect-[4/3] overflow-hidden">
                 <Image
-                  src="/placeholder.svg?height=400&width=600"
+                  src="/placeholder.svg"
                   alt="Featured product 2"
                   width={600}
                   height={400}
@@ -264,7 +264,7 @@ export default function HomePage() {
                 <div className="flex items-start space-x-4">
                   <div className="bg-muted h-10 w-10 overflow-hidden rounded-full">
                     <Image
-                      src={`/placeholder.svg?height=40&width=40&text=User`}
+                      src={`/placeholder.svg`}
                       alt="User"
                       width={40}
                       height={40}
@@ -293,7 +293,7 @@ export default function HomePage() {
         <div className="absolute inset-0 z-10 bg-black/60" />
         <div className="relative h-[400px]">
           <Image
-            src="/placeholder.svg?height=400&width=1200"
+            src="/placeholder.svg"
             alt="African fashion"
             fill
             className="object-cover"
@@ -347,7 +347,7 @@ export default function HomePage() {
             {[1, 2, 3, 4, 5, 6].map((item) => (
               <div key={item} className="aspect-square overflow-hidden">
                 <Image
-                  src={`/placeholder.svg?height=200&width=200&text=Instagram+${item}`}
+                  src={`/placeholder.svg`}
                   alt={`Instagram post ${item}`}
                   width={200}
                   height={200}

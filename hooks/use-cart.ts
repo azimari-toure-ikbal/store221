@@ -637,7 +637,7 @@ export const useCart = () => {
     // Pant is 0.3kg
     for (const item of cart.items) {
       if (
-        item.productType === "CLASSSIC_SHIRTS" ||
+        item.productType === "CLASSIC_SHIRTS" ||
         item.productType === "AFRICAN_SHIRTS"
       ) {
         weight += SHIRT_WEIGHT * item.quantity;
