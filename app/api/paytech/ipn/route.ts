@@ -1,6 +1,6 @@
 import { PayTechIPN } from "@/config";
 import { db } from "@/lib/db";
-import { carts } from "@/lib/db/schema";
+import { carts, orders } from "@/lib/db/schema";
 import { Delivery } from "@/lib/validators";
 import crypto from "crypto";
 import { eq } from "drizzle-orm";
@@ -40,10 +40,9 @@ export async function POST(req: NextRequest) {
   const api_secret_sha256 = shaEncrypt(process.env.PAYTECH_SECRET!);
 
   const customField = decodeURIComponent(response.custom_field);
-  const sessionId = JSON.parse(customField).sessionId as string;
   const userId = JSON.parse(customField).userId as string | undefined;
   const cartId = JSON.parse(customField).cartId as string;
-  const promoCode = JSON.parse(customField).promoCode as string | undefined;
+  // const promoCode = JSON.parse(customField).promoCode as string | undefined;
   const delivery = JSON.parse(customField).delivery as Delivery;
   const deliveryPrice = JSON.parse(customField).deliveryPrice as number;
 
@@ -70,6 +69,13 @@ export async function POST(req: NextRequest) {
   }
 
   await db.update(carts).set({ status: "PAYED" }).where(eq(carts.id, cartId));
+
+  await db.insert(orders).values({
+    cartId: cartId,
+    userId: userId,
+    delivery: delivery,
+    totalPaid: response.item_price,
+  });
 
   return NextResponse.json({ success: true });
 }

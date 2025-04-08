@@ -14,7 +14,7 @@ const statusVariants = {
   neutral: ["draft", "default"],
 };
 
-const statusLabels = {
+export const statusLabels = {
   published: "Publié",
   waiting_payment: "En attente",
   pending_payment: "En attente",
@@ -24,7 +24,7 @@ const statusLabels = {
   approved: "Approuvé",
   succeeded: "Réussi",
   completed: "Terminé",
-  dropped: "Abandonné par client",
+  dropped: "Abandon client",
   abandonned: "Abandonné",
   draft: "Brouillon",
   deleted: "Supprimé",

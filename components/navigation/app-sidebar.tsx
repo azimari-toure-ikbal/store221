@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Archive,
   BoxIcon,
   GalleryVerticalEnd,
   LayoutDashboard,
@@ -152,6 +153,11 @@ const data = {
     {
       name: "Commandes",
       url: "/dashboard/orders",
+      icon: Archive,
+    },
+    {
+      name: "Paniers",
+      url: "/dashboard/carts",
       icon: ShoppingCart,
     },
     {

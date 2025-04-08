@@ -1,6 +1,12 @@
 // hooks/useCart.ts
 
-import { CartItem, PANTS_WEIGHT, SHIRT_WEIGHT, SUITS_WEIGHT } from "@/config";
+import {
+  CartItem,
+  PANTS_WEIGHT,
+  SHIRT_WEIGHT,
+  SUITS_WEIGHT,
+  SUR_MESURE_PRICE,
+} from "@/config";
 import {
   cartAtom,
   currencyAtom,
@@ -606,25 +612,27 @@ export const useCart = () => {
       .reduce((acc, cur) => acc + cur);
   }, [cart]);
 
-  const subTotal = useMemo(() => {
-    if (!cart) return 0;
-
-    return cart.items.reduce(
-      (acc, item) => acc + item.quantity * item.price,
-      0,
-    );
-  }, [cart]);
-
   const surMesureTotal = useMemo(() => {
     if (!cart) return 0;
 
     let total = 0;
     for (const item of cart.items) {
       if (item.options.size === "sur-mesure") {
-        total += 2500;
+        total += SUR_MESURE_PRICE * item.quantity;
       }
     }
     return total;
+  }, [cart]);
+
+  const subTotal = useMemo(() => {
+    if (!cart) return 0;
+
+    const sub = cart.items.reduce(
+      (acc, item) => acc + item.quantity * item.price,
+      0,
+    );
+
+    return sub + surMesureTotal;
   }, [cart]);
 
   const totalWeight = useMemo(() => {
@@ -698,7 +706,7 @@ export const useCart = () => {
     if (deliveryPrice === 0) return subTotal;
 
     return subTotal + deliveryPrice;
-  }, [cart]);
+  }, [cart, deliveryPrice]);
 
   return {
     cart,

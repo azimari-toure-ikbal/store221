@@ -20,8 +20,11 @@ import {
 import { countries, countriesName } from "@/config";
 import { useCart } from "@/hooks/use-cart";
 import { deliveryAreaAtom } from "@/lib/atoms";
+import { DBUserAddress } from "@/lib/db/schema";
+import { cn } from "@/lib/utils";
 import { checkoutFormSchema } from "@/lib/validators";
 import { trpc } from "@/server/trpc/client";
+import { CurrentUserResponse } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSetAtom } from "jotai";
 import { useRouter } from "next/navigation";
@@ -31,22 +34,19 @@ import { toast } from "sonner";
 import { z } from "zod";
 import IsLoading from "../is-loading";
 import { Input } from "../ui/input";
+import { ScrollArea } from "../ui/scroll-area";
 import { Textarea } from "../ui/textarea";
 
 type CheckoutFormProps = {
-  givenName: string;
-  familyName: string;
-  email: string;
-  phone: string;
+  user: CurrentUserResponse;
 };
 
-const CheckoutForm: React.FC<CheckoutFormProps> = ({
-  email,
-  familyName,
-  givenName,
-  phone,
-}) => {
+const CheckoutForm: React.FC<CheckoutFormProps> = ({ user }) => {
   const router = useRouter();
+
+  const [selectedAddress, setSelectedAddress] = React.useState<
+    DBUserAddress | undefined
+  >(undefined);
 
   // const currency = useAtomValue(currencyAtom);
   const { cart, total, surMesureTotal, deliveryPrice } = useCart();
@@ -75,7 +75,6 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
         // currency: "XOF",
         delivery: values,
         deliveryPrice: deliveryPrice,
-        sessionId: cart.sessionId,
         promoCode: undefined,
       });
     } catch (error) {
@@ -83,6 +82,40 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
       toast.error("Failed to submit the form. Please try again.");
     }
   }
+
+  const handleSelectAddress = (address: DBUserAddress) => {
+    if (address.id === selectedAddress?.id) {
+      setSelectedAddress(undefined);
+      form.reset({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        country: "",
+        city: "",
+        state: "",
+        zip: "",
+        address: "",
+        note: undefined,
+      });
+      return;
+    }
+
+    setSelectedAddress(address);
+
+    form.reset({
+      firstName: address.firstName,
+      lastName: address.lastName,
+      email: address.email,
+      phone: address.phone,
+      country: address.country,
+      city: address.city,
+      state: address.state,
+      zip: address.zip,
+      address: address.address,
+      note: address.note ?? undefined,
+    });
+  };
 
   // React.useEffect(() => {
   //   if (form.watch("country")) {
@@ -98,6 +131,40 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
 
   return (
     <div className="space-y-4 rounded-lg bg-white p-4">
+      {user && user.addresses.length > 0 && (
+        <div className="flex w-full flex-col gap-4">
+          <h2 className="text-lg font-medium">
+            Liste de vos adresses ({user.addresses.length})
+          </h2>
+          <ScrollArea className="h-20 w-full">
+            {user.addresses.map((address, index) => (
+              <div
+                key={index}
+                className={cn(
+                  "flex items-start gap-4 rounded-md bg-zinc-100 p-2",
+                  {
+                    "bg-primary/20 border-primary border":
+                      selectedAddress?.id === address.id,
+                  },
+                )}
+                onClick={() => {
+                  handleSelectAddress(address);
+                }}
+              >
+                <div className="flex flex-col gap-2">
+                  <div className="text-sm font-medium">
+                    {address.firstName} {address.lastName}
+                  </div>
+                  <div className="text-muted-foreground text-sm">
+                    {address.address}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </ScrollArea>
+        </div>
+      )}
+
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -112,7 +179,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                   <FormItem>
                     <FormLabel>Prénom</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} disabled={!!selectedAddress} />
                     </FormControl>
 
                     <FormMessage />
@@ -129,7 +196,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                   <FormItem>
                     <FormLabel>Nom</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} disabled={!!selectedAddress} />
                     </FormControl>
 
                     <FormMessage />
@@ -146,7 +213,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input {...field} disabled={!!selectedAddress} />
                 </FormControl>
 
                 <FormMessage />
@@ -162,6 +229,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                 <FormLabel>Téléphone</FormLabel>
                 <FormControl className="w-full">
                   <PhoneInput
+                    disabled={!!selectedAddress}
                     placeholder=""
                     {...field}
                     defaultCountry="SN"
@@ -182,6 +250,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                 <FormItem>
                   <FormLabel>Pays</FormLabel>
                   <Select
+                    disabled={!!selectedAddress}
                     onValueChange={(val) => {
                       setDeliveryArea(
                         countries.find((c) => c.name === val)?.continent ||
@@ -198,7 +267,11 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                     </FormControl>
                     <SelectContent>
                       {countriesName.map((country, index) => (
-                        <SelectItem key={index} value={country}>
+                        <SelectItem
+                          key={index}
+                          value={country}
+                          disabled={!!selectedAddress}
+                        >
                           {country}
                         </SelectItem>
                       ))}
@@ -217,7 +290,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                 <FormItem>
                   <FormLabel>Ville</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} disabled={!!selectedAddress} />
                   </FormControl>
 
                   <FormMessage />
@@ -232,7 +305,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                 <FormItem>
                   <FormLabel>Région / Etat</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} disabled={!!selectedAddress} />
                   </FormControl>
 
                   <FormMessage />
@@ -247,7 +320,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                 <FormItem>
                   <FormLabel>Code postal / ZIP</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} disabled={!!selectedAddress} />
                   </FormControl>
 
                   <FormMessage />
@@ -263,7 +336,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
               <FormItem>
                 <FormLabel>Adresse</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input {...field} disabled={!!selectedAddress} />
                 </FormControl>
 
                 <FormMessage />
@@ -278,7 +351,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
               <FormItem>
                 <FormLabel>Instructions (optionnel)</FormLabel>
                 <FormControl>
-                  <Textarea {...field} />
+                  <Textarea {...field} disabled={!!selectedAddress} />
                 </FormControl>
 
                 <FormMessage />

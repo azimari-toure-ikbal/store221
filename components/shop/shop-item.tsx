@@ -30,7 +30,8 @@ export function ShoppingCartItem({ item }: ShoppingCartItemProps) {
     ([_, value]) => value !== undefined,
   );
 
-  const { removeProductFromCart, removing, droppingCart } = useCart();
+  const { removeProductFromCart, removing, droppingCart, surMesureTotal } =
+    useCart();
 
   return (
     <div className="flex items-start gap-4 p-4">
@@ -98,11 +99,21 @@ export function ShoppingCartItem({ item }: ShoppingCartItemProps) {
         </div>
 
         <div className="mt-1 flex items-center justify-between text-sm">
-          <div className="flex items-center gap-4">
-            <span className="text-xs">Qte: {quantity}</span>
-            <span className="text-muted-foreground text-xs">
-              Poids: {(getWeight(productType) * quantity).toFixed(2)} kg
-            </span>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-4">
+              <span className="text-xs">Qte: {quantity}</span>
+              <span className="text-muted-foreground text-xs">
+                Poids: {(getWeight(productType) * quantity).toFixed(2)} kg
+              </span>
+            </div>
+            {item.options.size === "sur-mesure" && (
+              <div className="flex items-center gap-4">
+                <span className="text-xs">Sur-mesure</span>
+                <span className="text-muted-foreground text-xs">
+                  +{formatPrice(surMesureTotal, currency.code, currency.rate)}
+                </span>
+              </div>
+            )}
           </div>
           <Button
             size={"icon"}

@@ -16,9 +16,9 @@ import {
 } from "@/lib/validators";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { TRPCError } from "@trpc/server";
-import { and, eq, ne, or, sql } from "drizzle-orm";
+import { and, desc, eq, ne, or, sql } from "drizzle-orm";
 import { z } from "zod";
-import { adminProcedure, createTRPCRouter, publicProcedure } from "../init";
+import { createTRPCRouter, privateProcedure, publicProcedure } from "../init";
 
 // --- Helper: Enrich cart items with additional product details ---
 export async function enrichCartItems(
@@ -131,12 +131,18 @@ export async function mergeSessionCartIntoUserCart(
 }
 
 export const cartsRouter = createTRPCRouter({
-  getCarts: adminProcedure.query(async () => {
+  getCarts: privateProcedure.query(async ({ ctx }) => {
     return await db.query.carts.findMany({
+      where: ctx.db.role === "USER" ? eq(carts.userId, ctx.db.id) : undefined,
       with: {
         user: true,
-        items: true,
+        items: {
+          with: {
+            product: true,
+          },
+        },
       },
+      orderBy: desc(carts.createdAt),
     });
   }),
   getCart: publicProcedure
@@ -466,7 +472,7 @@ export const cartsRouter = createTRPCRouter({
         promoCode: z.string().optional(),
         // currency: z.string(),
         // rate: z.number(),
-        sessionId: z.string(),
+        // sessionId: z.string(),
         deliveryPrice: z.number(),
         delivery: checkoutFormSchema,
       }),
@@ -484,7 +490,7 @@ export const cartsRouter = createTRPCRouter({
         currency: "XOF",
         ref_command: `${input.cartId}-${new Date().toISOString()}`,
         command_name: "Paiement panier store221 via Paytech",
-        env: "prod",
+        env: "dev",
         ipn_url: devMode
           ? "https://9cef-41-208-134-215.ngrok-free.app/api/paytech/ipn"
           : "https://store221.com/api/paytech/ipn",
@@ -495,7 +501,7 @@ export const cartsRouter = createTRPCRouter({
           ? `https://shiny.samaweekend.com`
           : `https://store221.com/sale-canceled`,
         custom_field: JSON.stringify({
-          sessionId: input.sessionId,
+          // sessionId: input.sessionId,
           userId: kUser.id,
           cartId: input.cartId,
           promoCode: input.promoCode,

@@ -5,11 +5,10 @@ import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
+import Cart from "./cart";
 import CurrencySwitcher from "./currency-switcher";
-import { Button } from "./ui/button";
 import UserAuth from "./user-auth";
 import UserMenu from "./user-menu";
-import Cart from "./cart";
 
 type NavbarProps = {};
 
@@ -18,6 +17,8 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
   const pathname = usePathname();
 
   if (pathname.includes("/dashboard")) return null;
+
+  // console.log("organization", organization);
 
   return (
     <header className="bg-background sticky top-0 z-40 border-b">

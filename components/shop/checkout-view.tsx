@@ -14,12 +14,7 @@ const CheckoutView: React.FC<CheckoutViewProps> = ({}) => {
     <div className="container mx-auto h-full w-full pt-12">
       <div className="grid h-full w-full grid-cols-1 gap-6 md:grid-cols-12">
         <div className="h-full md:col-span-7">
-          <CheckoutForm
-            email={user?.email || ""}
-            familyName={user?.familyName || ""}
-            givenName={user?.givenName || ""}
-            phone={user?.phone || ""}
-          />
+          <CheckoutForm user={user} />
         </div>
         <div className="relative h-full md:col-span-5">
           <OrderSummary />

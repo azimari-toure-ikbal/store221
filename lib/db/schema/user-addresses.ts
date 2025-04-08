@@ -22,6 +22,8 @@ export const userAddresses = pgTable("user_addresses", {
   updatedAt,
 });
 
+export type DBUserAddress = typeof userAddresses.$inferSelect;
+
 export const userAddressesRelations = relations(
   userAddresses,
   ({ one, many }) => ({

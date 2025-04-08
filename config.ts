@@ -1,4 +1,5 @@
 import {
+  Archive,
   BoxIcon,
   HeartIcon,
   House,
@@ -25,6 +26,8 @@ export const logVerbose = process.env.SHOW_VERBOSE_LOG === "true";
 export const devMode = process.env.DEV_MODE === "true";
 export const publicDevMode = process.env.NEXT_PUBLIC_DEV_MODE === "true";
 
+export const SUR_MESURE_PRICE = 2500;
+
 export const NAVBAR_MENU = [
   { title: "Accueil", href: "/" },
   { title: "Boutique", href: "/shop" },
@@ -36,7 +39,8 @@ export const NAVBAR_MENU = [
 
 export const CUSTOMERS_MENU = [
   { title: "Profil", icon: User, href: "/customer" },
-  { title: "Commandes", icon: ShoppingCart, href: "/customer/orders" },
+  { title: "Commandes", icon: Archive, href: "/customer/orders" },
+  { title: "Paniers", icon: ShoppingCart, href: "/customer/carts" },
   { title: "Adresses", icon: House, href: "/customer/addresses" },
   { title: "Favoris", icon: HeartIcon, href: "/customer/favorites" },
   // { title: "Wishlist", icon: ListChecks, href: "/customer/wishlist" },
@@ -57,8 +61,9 @@ export const ADMINS_MENU = [
   {
     title: "Commandes",
     href: "/dashboard/orders",
-    icon: ShoppingCart,
+    icon: Archive,
   },
+  { title: "Paniers", icon: ShoppingCart, href: "/customer/carts" },
   {
     title: "Utilisateurs",
     href: "/dashboard/users",

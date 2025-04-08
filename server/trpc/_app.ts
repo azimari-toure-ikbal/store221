@@ -1,6 +1,7 @@
 import { authRouter } from "./_procedures/auth";
 import { cartsRouter } from "./_procedures/carts";
 import { favoritesRouter } from "./_procedures/favorites";
+import { ordersRouter } from "./_procedures/orders";
 import { productsRouter } from "./_procedures/products";
 import { ratesRouter } from "./_procedures/rates";
 import { userAddressesRouter } from "./_procedures/user-addresses";
@@ -15,6 +16,7 @@ export const appRouter = createTRPCRouter({
   carts: cartsRouter,
   favorites: favoritesRouter,
   userAddresses: userAddressesRouter,
+  orders: ordersRouter,
   // options: optionsRouter,
   // fabrics: fabricsRouter,
   // collars: collarsRouter,

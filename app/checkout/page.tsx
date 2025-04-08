@@ -12,7 +12,16 @@ const CheckoutPage: React.FC<CheckoutPageProps> = async ({}) => {
 
   return (
     <HydrateClient>
-      <Suspense fallback={<p>Loading...</p>}>
+      <Suspense
+        fallback={
+          <div className="container mx-auto h-full w-full pt-12">
+            <div className="grid h-full w-full grid-cols-1 gap-6 md:grid-cols-12">
+              <div className="h-[32rem] w-full animate-pulse rounded-md bg-zinc-200 md:col-span-7"></div>
+              <div className="relative h-52 w-full animate-pulse rounded-md bg-zinc-200 md:col-span-5"></div>
+            </div>
+          </div>
+        }
+      >
         <ErrorBoundary fallback={<p>An error occurred</p>}>
           <CheckoutView />
         </ErrorBoundary>
