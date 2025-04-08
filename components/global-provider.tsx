@@ -1,6 +1,7 @@
 "use client";
 
 import { sessionAtom } from "@/lib/atoms";
+import { generateUUIDv4 } from "@/lib/utils";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useAtom } from "jotai";
 import React from "react";
@@ -12,10 +13,10 @@ export default function GlobalSessionProvider() {
   React.useEffect(() => {
     // if (typeof window === "undefined") return;
 
-    // if (sessionId === "") {
-    //   console.log("Session ID is empty, creating one...");
-    //   setSessionId(generateUUIDv4());
-    // }
+    if (sessionId === "") {
+      // console.log("Session ID is empty, creating one...");
+      setSessionId(generateUUIDv4());
+    }
 
     if (user) {
       // console.log("User is authenticated, syncing user with session...");
