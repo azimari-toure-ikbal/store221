@@ -12,6 +12,7 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Toaster } from "sonner";
 import "./globals.css";
+import GlobalProvider from "@/components/global-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -74,7 +75,7 @@ export default function RootLayout({
                     </Suspense>
                   </HydrateClient>
                   <div className="h-full w-full flex-1 flex-grow overflow-x-hidden pb-6 sm:overflow-x-scroll">
-                    {/* <GlobalProvider /> */}
+                    <GlobalProvider />
                     {children}
                   </div>
                   <Footer />
