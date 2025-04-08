@@ -15,7 +15,7 @@ export default function GlobalSessionProvider() {
 
     if (sessionId === "") {
       // console.log("Session ID is empty, creating one...");
-      setSessionId(generateUUIDv4());
+      // setSessionId(generateUUIDv4());
     }
 
     if (user) {
