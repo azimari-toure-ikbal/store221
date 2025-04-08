@@ -12,7 +12,6 @@ import {
   currencyAtom,
   deliveryAreaAtom,
   paymentGatewayAtom,
-  sessionAtom,
 } from "@/lib/atoms";
 import { generateUUIDv4, inStock } from "@/lib/utils";
 import { trpc } from "@/server/trpc/client";
@@ -33,7 +32,8 @@ export const useCart = () => {
   const deliveryArea = useAtomValue(deliveryAreaAtom);
 
   const { user } = useKindeBrowserClient();
-  const [sessionId, setSessionId] = useAtom(sessionAtom);
+  // const [sessionId, setSessionId] = useAtom(sessionAtom);
+  const [sessionId, setSessionId] = React.useState("");
 
   // const { mutate: syncCart } = trpc.carts.syncCart.useMutation({
   //   onError: (error) => {
@@ -43,11 +43,6 @@ export const useCart = () => {
   // });
 
   React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      // console.log("Document is ready");
-      return;
-    }
-
     if (!sessionId || sessionId === "") {
       // console.info("Nous ne pouvons pas trouver votre session");
       // TODO: Crypter la session

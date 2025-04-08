@@ -14,7 +14,7 @@ export const currencyAtom = atomWithStorage<{ code: Currencies; rate: number }>(
   { code: "XOF", rate: 1 },
 );
 
-export const sessionAtom = atomWithStorage<string>("S221_Session", "");
+export const sessionAtom = atom("");
 
 export const cartAtom = atom<Cart>();
 

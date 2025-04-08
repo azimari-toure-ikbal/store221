@@ -2,28 +2,29 @@
 
 import { sessionAtom } from "@/lib/atoms";
 import { generateUUIDv4 } from "@/lib/utils";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useAtom } from "jotai";
+import Cookies from "js-cookie";
 import React from "react";
 
 export default function GlobalSessionProvider() {
-  const { user } = useKindeBrowserClient();
   const [sessionId, setSessionId] = useAtom(sessionAtom);
 
   React.useEffect(() => {
-    // if (typeof window === "undefined") return;
+    const sessionId = Cookies.get("S221_SESSION_ID");
 
-    if (sessionId === "") {
-      // console.log("Session ID is empty, creating one...");
-      // setSessionId(generateUUIDv4());
-    }
+    // if (!sessionId) {
+    //   const newSessionId = generateUUIDv4();
+    //   Cookies.set("S221_SESSION_ID", newSessionId, { expires: 7 }); // Expires in 7 days
+    // }
 
-    if (user) {
-      // console.log("User is authenticated, syncing user with session...");
+    if (sessionId) {
+      setSessionId(sessionId);
     } else {
-      // console.log("No user is authenticated, skipping sync...");
+      const newSessionId = generateUUIDv4();
+      Cookies.set("S221_SESSION_ID", newSessionId, { expires: 7 }); // Expires in 7 days
+      setSessionId(newSessionId);
     }
-  }, [user]);
+  }, []);
 
   return null; // Server components don’t return JSX directly
 }
