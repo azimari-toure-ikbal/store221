@@ -6,7 +6,7 @@ import crypto from "crypto";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
   const body = await req.text();
 
   console.log("body", body);

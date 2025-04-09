@@ -1,4 +1,4 @@
-import { Cart, devMode, logVerbose, PaytechResponse } from "@/config";
+import { Cart, logVerbose, PaytechResponse } from "@/config";
 import { db } from "@/lib/db";
 import {
   cartItems,
@@ -492,12 +492,8 @@ export const cartsRouter = createTRPCRouter({
         command_name: "Paiement panier store221 via Paytech",
         env: "test",
         ipn_url: "https://store221.com/api/paytech/ipn",
-        success_url: devMode
-          ? `http://localhost:3000/success`
-          : `https://store221.com/sale-success`,
-        cancel_url: devMode
-          ? `http://localhost:3000/cancel`
-          : `https://store221.com/sale-canceled`,
+        success_url: "https://store221.com/sale-success",
+        cancel_url: "https://store221.com/sale-canceled",
         custom_field: JSON.stringify({
           // sessionId: input.sessionId,
           userId: kUser.id,
