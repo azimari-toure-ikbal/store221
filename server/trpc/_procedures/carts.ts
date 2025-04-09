@@ -491,14 +491,12 @@ export const cartsRouter = createTRPCRouter({
         ref_command: `${input.cartId}-${new Date().toISOString()}`,
         command_name: "Paiement panier store221 via Paytech",
         env: "test",
-        ipn_url: devMode
-          ? "https://9cef-41-208-134-215.ngrok-free.app/api/paytech/ipn"
-          : "https://store221.com/api/paytech/ipn",
+        ipn_url: "https://store221.com/api/paytech/ipn",
         success_url: devMode
-          ? `https://shiny.samaweekend.com/success`
+          ? `http://localhost:3000/success`
           : `https://store221.com/sale-success`,
         cancel_url: devMode
-          ? `https://shiny.samaweekend.com`
+          ? `http://localhost:3000/cancel`
           : `https://store221.com/sale-canceled`,
         custom_field: JSON.stringify({
           // sessionId: input.sessionId,
@@ -535,7 +533,7 @@ export const cartsRouter = createTRPCRouter({
           throw new TRPCError({ code: "UNAUTHORIZED" });
         });
 
-      console.log("response", response as PaytechResponse);
+      // console.log("response", response as PaytechResponse);
 
       return response as PaytechResponse;
     }),
