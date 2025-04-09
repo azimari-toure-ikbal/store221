@@ -7,6 +7,10 @@ import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
+  const body = await req.text();
+
+  console.log("body", body);
+
   return NextResponse.json({ success: true });
 }
 
