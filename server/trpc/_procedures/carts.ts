@@ -481,9 +481,6 @@ export const cartsRouter = createTRPCRouter({
       const paymentRequestUrl =
         "https://paytech.sn/api/payment/request-payment";
 
-      const { getUser } = getKindeServerSession();
-      const kUser = await getUser();
-
       const params = {
         item_name: input.productName,
         item_price: input.cartPrice,
@@ -496,7 +493,6 @@ export const cartsRouter = createTRPCRouter({
         cancel_url: "https://store221.com/sale-canceled",
         custom_field: JSON.stringify({
           // sessionId: input.sessionId,
-          userId: kUser.id,
           cartId: input.cartId,
           promoCode: input.promoCode,
           delivery: input.delivery,

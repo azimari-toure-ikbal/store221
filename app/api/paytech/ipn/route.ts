@@ -6,7 +6,9 @@ import crypto from "crypto";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
+  console.log("IPN request received");
+
   const body = await req.text();
 
   console.log("body", body);
@@ -42,7 +44,6 @@ export async function GET(req: NextRequest) {
   const api_secret_sha256 = shaEncrypt(process.env.PAYTECH_SECRET!);
 
   const customField = decodeURIComponent(response.custom_field);
-  const userId = JSON.parse(customField).userId as string | undefined;
   const cartId = JSON.parse(customField).cartId as string;
   // const promoCode = JSON.parse(customField).promoCode as string | undefined;
   const delivery = JSON.parse(customField).delivery as Delivery;
@@ -62,7 +63,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(`https://store221.com/sale-canceled`);
   }
 
-  const cart = db.query.carts.findFirst({
+  const cart = await db.query.carts.findFirst({
     where: eq(carts.id, cartId),
   });
 
@@ -74,7 +75,7 @@ export async function GET(req: NextRequest) {
 
   await db.insert(orders).values({
     cartId: cartId,
-    userId: userId,
+    userId: cart.userId,
     delivery: delivery,
     totalPaid: response.item_price,
   });
