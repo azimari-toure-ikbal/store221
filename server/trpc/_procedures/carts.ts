@@ -488,7 +488,7 @@ export const cartsRouter = createTRPCRouter({
         ref_command: `${input.cartId}-${new Date().toISOString()}`,
         command_name: "Paiement panier store221 via Paytech",
         env: "test",
-        ipn_url: "https://store221.com/api/paytech/ipn",
+        ipn_url: "https://ipn.samaweekend.com/v1/paytech/ipn/store221",
         success_url: "https://store221.com/sale-success",
         cancel_url: "https://store221.com/sale-canceled",
         custom_field: JSON.stringify({
@@ -500,7 +500,7 @@ export const cartsRouter = createTRPCRouter({
         }),
       };
 
-      if (!process.env.PAYTECH_API && !process.env.PAYTECH_SECRET) {
+      if (!process.env.PAYTECH_API || !process.env.PAYTECH_SECRET) {
         console.error("Missing PAYTECH_API or PAYTECH_SECRET");
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       }
@@ -508,8 +508,8 @@ export const cartsRouter = createTRPCRouter({
       const headers = {
         Accept: "application/json",
         "Content-Type": "application/json",
-        API_KEY: process.env.PAYTECH_API!,
-        API_SECRET: process.env.PAYTECH_SECRET!,
+        API_KEY: process.env.PAYTECH_API,
+        API_SECRET: process.env.PAYTECH_SECRET,
       };
 
       const response = await fetch(paymentRequestUrl, {

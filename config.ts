@@ -298,3 +298,19 @@ export type PaytechResponse = {
   redirect_url: string;
   redirectUrl: string;
 };
+
+export type IpnBody = {
+  custom_field: any;
+  currency: string;
+  api_key_sha256: string;
+  api_secret_sha256: string;
+  type_event: string;
+  ref_command: string;
+  item_name: string;
+  item_price: string;
+  command_name: string;
+  token: string;
+  env: string;
+  payment_method: string;
+  client_phone: string;
+};
