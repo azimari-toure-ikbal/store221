@@ -1,9 +1,9 @@
 import { IpnBody } from "@/config";
 import { db } from "@/lib/db";
-import { carts, orders } from "@/lib/db/schema";
+import { carts, orders, products } from "@/lib/db/schema";
 import { Delivery } from "@/lib/validators";
 import crypto from "crypto";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -21,6 +21,9 @@ export async function POST(req: NextRequest) {
 
   const cart = await db.query.carts.findFirst({
     where: eq(carts.id, cartId),
+    with: {
+      items: true,
+    },
   });
 
   if (!cart) {
@@ -28,6 +31,14 @@ export async function POST(req: NextRequest) {
   }
 
   await db.update(carts).set({ status: "PAYED" }).where(eq(carts.id, cartId));
+
+  // Decrement the quantity of the items in the cart
+  for (const item of cart.items) {
+    await db
+      .update(products)
+      .set({ stock: sql`${products.stock} - ${item.quantity}` })
+      .where(eq(products.id, item.productId));
+  }
 
   await db.insert(orders).values({
     cartId: cartId,
