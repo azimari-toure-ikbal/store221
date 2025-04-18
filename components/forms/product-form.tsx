@@ -25,6 +25,7 @@ import { productFormSchema } from "@/lib/validators";
 import { trpc } from "@/server/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAtom } from "jotai";
+import { PencilIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -134,6 +135,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
         discountedPrice: product.discountedPrice || undefined,
         stock: String(product.stock),
         gallery: product.gallery,
+        tissues: product.tissues,
         sizes: product.sizes,
         options: {
           sleevesLength: product.options.sleevesLength ?? [],
@@ -201,7 +203,22 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
 
   async function onSubmit(values: z.infer<typeof productFormSchema>) {
     try {
-      toastId = toast.loading("Création en cours");
+      if (values.tissues.length === 0) {
+        return toast.error("Vous devez ajouter au moins un tissu");
+      }
+
+      if (values.tissues.length >= 0) {
+        // If there is at least one tissue, check if all tissues have a name and a url
+        const hasNameAndUrl = values.tissues.every(
+          (tissue) => tissue.name && tissue.url,
+        );
+
+        if (!hasNameAndUrl) {
+          return toast.error(
+            "Vous devez ajouter un nom et une image pour chaque tissu",
+          );
+        }
+      }
 
       if (values.type === "AFRICAN_SHIRTS") {
         values.options.collarType = [];
@@ -214,12 +231,16 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
       }
 
       if (id) {
+        toastId = toast.loading("Modification en cours");
+
         updateProduct({
           id,
           values,
           status: "PUBLISHED",
         });
       } else {
+        toastId = toast.loading("Création en cours");
+
         createProduct({
           values: {
             ...values,
@@ -244,6 +265,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
       </div>
     );
   }
+
+  // console.log("tissues", form.watch("tissues"));
 
   return (
     <div className="mx-auto h-full max-w-4xl">
@@ -410,6 +433,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
             name="gallery"
             render={({ field }) => (
               <FormItem>
+                <FormLabel>Galerie de photos</FormLabel>
                 <FormControl>
                   <FileUpload
                     endPoint="productImages"
@@ -442,6 +466,94 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
             items={form.watch("gallery") || []}
             onReorder={handleReorderGallery}
             onDelete={handleDeleteGallery}
+          />
+
+          <FormField
+            control={form.control}
+            name="tissues"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Galerie de tissus</FormLabel>
+                <FormControl>
+                  <div className="space-y-4">
+                    {field.value?.map((tissue, index) => (
+                      <div key={index} className="flex items-center gap-4">
+                        <Input
+                          placeholder="Nom du tissu"
+                          value={tissue.name}
+                          onChange={(e) => {
+                            const newTissues = [...field.value];
+                            newTissues[index].name = e.target.value;
+                            field.onChange(newTissues);
+                          }}
+                        />
+
+                        {tissue.url ? (
+                          <div className="relative">
+                            <img
+                              src={tissue.url}
+                              alt={tissue.name || "Tissu"}
+                              className="h-24 w-40 rounded-md object-cover"
+                            />
+                            <Button
+                              type="button"
+                              size="sm"
+                              className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-1"
+                              onClick={() => {
+                                const newTissues = [...field.value];
+                                newTissues[index].url = "";
+                                field.onChange(newTissues);
+                              }}
+                            >
+                              <PencilIcon className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <FileUpload
+                            endPoint="productTissues"
+                            onChange={(url) => {
+                              if (!url) {
+                                return toast.error("Le fichier est invalide");
+                              }
+
+                              const newTissues = [...field.value];
+                              newTissues[index].url = url;
+                              field.onChange(newTissues);
+                            }}
+                          />
+                        )}
+
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          onClick={() => {
+                            const newTissues = field.value.filter(
+                              (_, i) => i !== index,
+                            );
+                            field.onChange(newTissues);
+                          }}
+                        >
+                          Supprimer
+                        </Button>
+                      </div>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        field.onChange([
+                          ...(field.value || []),
+                          { name: "", url: "" },
+                        ]);
+                      }}
+                    >
+                      Ajouter un tissu
+                    </Button>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
 
           {(form.watch("type") === "CLASSIC_SHIRTS" ||

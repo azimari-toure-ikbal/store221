@@ -77,7 +77,9 @@ export function ShoppingCartItem({ item }: ShoppingCartItemProps) {
                                   ? "Type de col"
                                   : key === "wristsType"
                                     ? "Type de poignets"
-                                    : "Taille"}
+                                    : key === "tissu"
+                                      ? "Tissu"
+                                      : "Taille"}
                           :
                         </span>
                         <span>{value}</span>

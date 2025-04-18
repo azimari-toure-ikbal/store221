@@ -71,6 +71,10 @@ export const products = pgTable("products", {
     }>()
     .notNull(),
   gallery: text().array().notNull(),
+  tissues: jsonb()
+    .$type<{ name: string; url: string }[]>()
+    .notNull()
+    .default([]),
   seller: sellersEnum().notNull(),
   status: productStatusesEnum().notNull(),
   createdAt,

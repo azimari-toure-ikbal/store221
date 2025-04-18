@@ -61,8 +61,6 @@ import { trpc } from "@/server/trpc/client";
 import { useAtomValue } from "jotai";
 import { toast } from "sonner";
 
-type ProductType = "SUITS" | "SHIRTS" | "PANTS";
-
 type Params = Promise<{ id: string }>;
 
 type Props = {
@@ -1100,6 +1098,60 @@ export default function ProductDetailPage({ params }: Props) {
             {/* Dynamic Product Options */}
             {renderProductOptions()}
 
+            <div className="space-y-3">
+              <h3 className="font-medium">Choix du tissu</h3>
+              <RadioGroup
+                defaultValue={selectedOptions.tissu}
+                className="flex flex-wrap gap-4"
+                onValueChange={(val) => {
+                  setFilters((prev) => ({
+                    ...prev,
+                    selectedOptions: {
+                      ...prev.selectedOptions,
+                      tissu: val,
+                    },
+                  }));
+                }}
+              >
+                {product.tissues.map((tissu, index) => (
+                  <div key={index}>
+                    <RadioGroupItem
+                      id={tissu.name}
+                      value={tissu.name}
+                      className="peer sr-only"
+                    />
+                    <Label
+                      htmlFor={tissu.name}
+                      className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 relative flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
+                    >
+                      {tissu.name}
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant={"secondary"}
+                            size={"icon"}
+                            className="absolute -top-2 -right-2 size-5 rounded-full p-3"
+                          >
+                            <Info />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>{tissu.name}</DialogTitle>
+                          </DialogHeader>
+                          <img
+                            src={tissu.url}
+                            alt={`tissu ${tissu.name}`}
+                            className="aspect-square h-auto w-full rounded-lg border"
+                          />
+                        </DialogContent>
+                      </Dialog>
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
+
             {/* Initials Section */}
             {selectedOptions.sleevesLength === "LONG" && (
               <div className="space-y-3">
@@ -1168,76 +1220,96 @@ export default function ProductDetailPage({ params }: Props) {
             </div>
           </div>
 
-          <Button
-            size="lg"
-            disabled={addingProduct}
-            className="w-full md:w-auto"
-            onClick={() => {
-              // console.log("Add product to cart quantity is: ", quantity);
+          <div className="flex flex-col gap-2">
+            <Button
+              size="lg"
+              disabled={addingProduct}
+              className="w-full md:w-auto"
+              onClick={() => {
+                // console.log("Add product to cart quantity is: ", quantity);
 
-              if (
-                product.type === "MEN_SUITS" ||
-                product.type === "WOMEN_SUITS"
-              ) {
                 if (
-                  !selectedOptions.collarType ||
-                  !selectedOptions.wristsType ||
-                  !selectedOptions.pantFit ||
-                  !selectedOptions.pantLeg
+                  product.type === "MEN_SUITS" ||
+                  product.type === "WOMEN_SUITS"
                 ) {
-                  return toast.warning(
-                    "Vous devez sélectionner toutes les options avant de pouvoir ajouter le produit au panier",
-                  );
+                  if (
+                    !selectedOptions.collarType ||
+                    !selectedOptions.wristsType ||
+                    !selectedOptions.pantFit ||
+                    !selectedOptions.pantLeg
+                  ) {
+                    return toast.warning(
+                      "Vous devez sélectionner toutes les options avant de pouvoir ajouter le produit au panier",
+                    );
+                  }
                 }
-              }
 
-              if (product.type === "PANTS") {
-                if (!selectedOptions.pantFit || !selectedOptions.pantLeg) {
-                  return toast.warning(
-                    "Vous devez sélectionner les options avant de pouvoir ajouter le produit au panier",
-                  );
+                if (product.type === "PANTS") {
+                  if (!selectedOptions.pantFit || !selectedOptions.pantLeg) {
+                    return toast.warning(
+                      "Vous devez sélectionner les options avant de pouvoir ajouter le produit au panier",
+                    );
+                  }
                 }
-              }
 
-              if (
-                product.type === "CLASSIC_SHIRTS" ||
-                product.type === "AFRICAN_SHIRTS"
-              ) {
                 if (
-                  !selectedOptions.sleevesLength ||
-                  !selectedOptions.collarType ||
-                  !selectedOptions.wristsType
+                  product.type === "CLASSIC_SHIRTS" ||
+                  product.type === "AFRICAN_SHIRTS"
                 ) {
+                  if (
+                    !selectedOptions.sleevesLength ||
+                    !selectedOptions.collarType ||
+                    !selectedOptions.wristsType
+                  ) {
+                    return toast.warning(
+                      "Vous devez sélectionner les options avant de pouvoir ajouter le produit au panier",
+                    );
+                  }
+                }
+
+                if (selectedOptions.tissu === "") {
                   return toast.warning(
-                    "Vous devez sélectionner les options avant de pouvoir ajouter le produit au panier",
+                    "Vous devez sélectionner un tissu avant de pouvoir ajouter le produit au panier",
                   );
                 }
-              }
 
-              addProductToCart(
-                {
-                  image: product.gallery[0],
-                  name: product.name,
-                  productId: product.id,
-                  productType: product.type,
-                  price: Number(product.price),
+                addProductToCart(
+                  {
+                    image: product.gallery[0],
+                    name: product.name,
+                    productId: product.id,
+                    productType: product.type,
+                    price: Number(product.price),
+                    quantity,
+                    stock: Number(product.stock),
+                    options: selectedOptions,
+                  },
                   quantity,
-                  stock: Number(product.stock),
-                  options: selectedOptions,
-                },
-                quantity,
-              );
-            }}
-          >
-            {addingProduct ? (
-              <IsLoading />
-            ) : (
-              <>
-                <ShoppingCart className="mr-2 h-5 w-5" />
-                Ajouter au panier
-              </>
-            )}
-          </Button>
+                );
+              }}
+            >
+              {addingProduct ? (
+                <IsLoading />
+              ) : (
+                <>
+                  <ShoppingCart className="mr-2 h-5 w-5" />
+                  Ajouter au panier
+                </>
+              )}
+            </Button>
+
+            <Button
+              variant={"outline"}
+              onClick={() => {
+                setFilters(null);
+                setTimeout(() => {
+                  window.location.reload();
+                }, 100);
+              }}
+            >
+              Réinitialiser
+            </Button>
+          </div>
 
           <Separator />
 

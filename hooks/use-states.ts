@@ -22,6 +22,7 @@ export const useShopFilters = () => {
         wristsOptions: [],
         pantFitOptions: [],
         pantLegOptions: [],
+        tissues: [],
         sort: "created-desc",
         price: 0,
       }),
@@ -38,6 +39,7 @@ export const useProductFilters = () => {
     {
       selectedOptions: parseAsJson(productOptionsValidator.parse).withDefault({
         size: "M",
+        tissu: "",
       }),
       initials: parseAsString.withDefault(""),
       quantity: parseAsInteger.withDefault(1),

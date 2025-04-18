@@ -389,9 +389,15 @@ export const useCart = () => {
 
     if (cart) {
       const existingItemIndex = cart.items.findIndex((item) => {
+        const itemOptions = Object.fromEntries(
+          Object.entries(item.options).filter(
+            ([_, value]) => value !== undefined,
+          ),
+        );
+
         return (
           item.productId === product.productId &&
-          isEqual(item.options, product.options)
+          isEqual(itemOptions, product.options)
         );
       });
 

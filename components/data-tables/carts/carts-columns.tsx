@@ -35,6 +35,10 @@ export const cartsColumns: ColumnDef<CartResponse>[] = [
     accessorKey: "user",
     header: "Acheteur",
     cell: ({ row }) => {
+      if (!row.original.user) {
+        return <span>Anonyme</span>;
+      }
+
       return (
         <span>
           {row.original.user?.givenName} {row.original.user?.familyName}

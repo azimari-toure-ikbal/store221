@@ -65,8 +65,8 @@ export function ProductsTable<TData, TValue>({
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const utils = trpc.useUtils();
-  const { mutate: deleteUser, isPending: isDeleting } =
-    trpc.users.deleteUser.useMutation({});
+  const { mutate: deleteProduct, isPending: isDeleting } =
+    trpc.products.deleteProduct.useMutation({});
 
   const table = useReactTable({
     data,
@@ -101,7 +101,7 @@ export function ProductsTable<TData, TValue>({
 
     if (ids.length > 0) {
       for (const id of ids) {
-        deleteUser({ id });
+        deleteProduct({ id });
       }
     }
 
@@ -110,7 +110,7 @@ export function ProductsTable<TData, TValue>({
 
   const handleRefetch = async () => {
     setRefetching(true);
-    utils.users.getUsers.invalidate();
+    utils.products.getProducts.invalidate();
     setTimeout(() => {
       setRefetching(false);
     }, 1000);

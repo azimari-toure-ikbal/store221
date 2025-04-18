@@ -67,6 +67,7 @@ export const productFormSchema = z.object({
     })
     .optional(),
   gallery: z.string().array(),
+  tissues: z.array(z.object({ name: z.string(), url: z.string() })),
   type: z.enum(productTypes),
   sizes: z.array(z.enum(sizes)),
   seller: z.enum(sellers),
@@ -86,6 +87,7 @@ export const productFilterValidator = z.object({
   wristsOptions: z.array(z.enum(wristsTypes)),
   pantFitOptions: z.array(z.enum(pantFits)),
   pantLegOptions: z.array(z.enum(pantLegs)),
+  tissues: z.array(z.string()),
   sort: z.enum(AVAILABLE_SORT),
   price: z.number(),
 });
@@ -99,6 +101,7 @@ export const productOptionsValidator = z.object({
   wristsType: z.enum(wristsTypes).optional(),
   pantFit: z.enum(pantFits).optional(),
   pantLeg: z.enum(pantLegs).optional(),
+  tissu: z.string(),
 });
 
 export const cartItemSchema = z.object({
@@ -110,6 +113,7 @@ export const cartItemSchema = z.object({
   price: z.number(),
   stock: z.number(),
   options: z.object({
+    tissu: z.string(),
     sleevesLength: z.enum(sleevesLengths).optional(),
     collarType: z.enum(collarTypes).optional(),
     wristsType: z.enum(wristsTypes).optional(),
@@ -130,6 +134,7 @@ export const itemOptions = z.object({
   wristsType: z.enum(wristsTypes).optional(),
   pantFit: z.enum(pantFits).optional(),
   pantLeg: z.enum(pantLegs).optional(),
+  tissu: z.string(),
   size: z.enum(["XS", "S", "M", "L", "XL", "XXL", "sur-mesure"]),
 });
 

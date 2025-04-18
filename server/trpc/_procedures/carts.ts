@@ -50,6 +50,7 @@ export async function enrichCartItems(
         quantity: Number(item.quantity),
         stock: Number(product.stock),
         options: {
+          tissu: item.options.tissu,
           sleevesLength: item.options.sleevesLength || undefined,
           collarType: item.options.collarType || undefined,
           wristsType: item.options.wristsType || undefined,
@@ -81,6 +82,7 @@ export async function populateCartItems(
       quantity: item.quantity,
       price: item.price,
       options: {
+        tissu: item.options.tissu,
         sleevesLength: item.options.sleevesLength,
         collarType: item.options.collarType,
         wristsType: item.options.wristsType,
@@ -269,6 +271,7 @@ export const cartsRouter = createTRPCRouter({
           quantity: input.item.quantity,
           price: input.item.price,
           options: {
+            tissu: input.item.options.tissu,
             sleevesLength: input.item.options.sleevesLength,
             collarType: input.item.options.collarType,
             wristsType: input.item.options.wristsType,

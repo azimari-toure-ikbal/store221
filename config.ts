@@ -95,6 +95,7 @@ export type ItemOptions = {
   wristsType?: WristsTypes;
   pantFit?: PantFits;
   pantLeg?: PantLegs;
+  tissu: string;
   size: Sizes | "sur-mesure";
 };
 
@@ -144,6 +145,7 @@ export const PRODUCT_FORM_DEFAULT_VALUES: z.infer<typeof productFormSchema> = {
   price: "",
   stock: "",
   discountedPrice: "",
+  tissues: [],
   gallery: [],
   type: "CLASSIC_SHIRTS",
   sizes: ["S", "XS", "M", "L", "XL", "XXL"],

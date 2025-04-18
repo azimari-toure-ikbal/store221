@@ -24,6 +24,14 @@ export const ourFileRouter = {
   })
     .middleware(async () => await handleAuth())
     .onUploadComplete(() => {}),
+  productTissues: f({
+    image: {
+      maxFileSize: "2MB",
+      maxFileCount: 1,
+    },
+  })
+    .middleware(async () => await handleAuth())
+    .onUploadComplete(() => {}),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;
