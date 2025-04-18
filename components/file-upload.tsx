@@ -25,6 +25,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
 }) => {
   return (
     <UploadDropzone
+      config={{ mode: "auto" }}
       disabled={disabled}
       endpoint={endPoint}
       onClientUploadComplete={(res) => {
