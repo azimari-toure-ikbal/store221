@@ -177,6 +177,7 @@ export const createProductQueryParams = (
     collarOptions: [],
     wristsOptions: [],
     pantFitOptions: [],
+    tissues: [],
     pantLegOptions: [],
     sort: "created-desc",
     price: 0,

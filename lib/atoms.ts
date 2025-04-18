@@ -34,6 +34,7 @@ export const filterAtom = atom<ProductFilter>({
   wristsOptions: [],
   pantFitOptions: [],
   pantLegOptions: [],
+  tissues: [],
   sort: "created-desc",
   price: 0,
 });
