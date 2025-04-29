@@ -30,6 +30,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
+import { INITIALS_PRICE } from "@/config";
 import { useCart } from "@/hooks/use-cart";
 import { useProductFilters } from "@/hooks/use-states";
 import { currencyAtom } from "@/lib/atoms";
@@ -59,6 +60,7 @@ import {
 } from "@/lib/utils";
 import { trpc } from "@/server/trpc/client";
 import { useAtomValue } from "jotai";
+import React from "react";
 import { toast } from "sonner";
 
 type Params = Promise<{ id: string }>;
@@ -74,11 +76,14 @@ export default function ProductDetailPage({ params }: Props) {
 
   const { addProductToCart, addingProduct } = useCart();
 
-  const [{ initials, quantity, selectedOptions }, setFilters] =
-    useProductFilters();
+  const [{ quantity, selectedOptions }, setFilters] = useProductFilters();
 
   const [currentImage, setCurrentImage] = useState(0);
   const [showInitials, setShowInitials] = useState(false);
+
+  React.useEffect(() => {
+    if (selectedOptions.initials !== "") setShowInitials(true);
+  }, [selectedOptions.initials]);
 
   const { data: product, isLoading } = trpc.products.getProductDetails.useQuery(
     {
@@ -123,7 +128,14 @@ export default function ProductDetailPage({ params }: Props) {
 
   const toggleInitials = () => {
     setShowInitials((prev) => !prev);
-    if (showInitials) setFilters((prev) => ({ ...prev, initials: "" }));
+    if (showInitials)
+      setFilters((prev) => ({
+        ...prev,
+        selectedOptions: {
+          ...prev.selectedOptions,
+          initials: "",
+        },
+      }));
   };
 
   const nextImage = () => {
@@ -137,6 +149,18 @@ export default function ProductDetailPage({ params }: Props) {
       (prev) => (prev - 1 + product?.gallery.length) % product?.gallery.length,
     );
   };
+
+  // React.useEffect(() => {
+  //   if (!showInitials) {
+  //     setFilters((prev) => ({
+  //       ...prev,
+  //       selectedOptions: {
+  //         ...prev.selectedOptions,
+  //         initials: "",
+  //       },
+  //     }));
+  //   }
+  // }, [setFilters, showInitials]);
 
   // Render options based on product type
   const renderProductOptions = () => {
@@ -1155,13 +1179,23 @@ export default function ProductDetailPage({ params }: Props) {
             {/* Initials Section */}
             {selectedOptions.sleevesLength === "LONG" && (
               <div className="space-y-3">
-                <Button
-                  variant="outline"
-                  onClick={toggleInitials}
-                  className={showInitials ? "border-primary text-primary" : ""}
-                >
-                  {showInitials ? "Annuler" : "Ajouter vos initiales"}
-                </Button>
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold">
+                    +{" "}
+                    {formatPrice(INITIALS_PRICE, currency.code, currency.rate)}
+                  </span>
+                  <Button
+                    variant="outline"
+                    onClick={toggleInitials}
+                    className={
+                      showInitials
+                        ? "border-primary text-primary w-fit"
+                        : "w-fit"
+                    }
+                  >
+                    {showInitials ? "Annuler" : "Ajouter vos initiales"}
+                  </Button>
+                </div>
 
                 {showInitials && (
                   <div className="space-y-2">
@@ -1170,11 +1204,14 @@ export default function ProductDetailPage({ params }: Props) {
                     </Label>
                     <Input
                       id="initials"
-                      value={initials}
+                      value={selectedOptions.initials}
                       onChange={(e) =>
                         setFilters((prev) => ({
                           ...prev,
-                          initials: e.target.value.slice(0, 3).toUpperCase(),
+                          selectedOptions: {
+                            ...prev.selectedOptions,
+                            initials: e.target.value.slice(0, 3).toUpperCase(),
+                          },
                         }))
                       }
                       placeholder="e.g. ABC"
@@ -1272,6 +1309,10 @@ export default function ProductDetailPage({ params }: Props) {
                     "Vous devez sélectionner un tissu avant de pouvoir ajouter le produit au panier",
                   );
                 }
+
+                // console.log("selectedOptions", selectedOptions);
+
+                // return;
 
                 addProductToCart(
                   {

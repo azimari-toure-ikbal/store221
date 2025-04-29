@@ -1,7 +1,8 @@
 import { db } from "@/lib/db";
-import { orders } from "@/lib/db/schema";
+import { orders, orderStatuses } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { createTRPCRouter, privateProcedure } from "../init";
+import { z } from "zod";
+import { adminProcedure, createTRPCRouter, privateProcedure } from "../init";
 
 export const ordersRouter = createTRPCRouter({
   getOrders: privateProcedure.query(async ({ ctx }) => {
@@ -21,4 +22,20 @@ export const ordersRouter = createTRPCRouter({
       },
     });
   }),
+  updateOrderStatus: adminProcedure
+    .input(
+      z.object({
+        orderId: z.string().uuid(),
+        status: z.enum(orderStatuses),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const res = await db
+        .update(orders)
+        .set({ status: input.status })
+        .where(eq(orders.id, input.orderId))
+        .returning();
+
+      return res;
+    }),
 });

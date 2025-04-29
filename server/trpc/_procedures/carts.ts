@@ -40,7 +40,7 @@ export async function enrichCartItems(
         });
       }
 
-      // console.log("enrichCartItems", item);
+      // console.log("enrichCartItems", item.options);
 
       return {
         name: product.name,
@@ -57,6 +57,7 @@ export async function enrichCartItems(
           pantFit: item.options.pantFit || undefined,
           pantLeg: item.options.pantLeg || undefined,
           size: item.options.size,
+          initials: item.options.initials || "",
         },
         productType: product.type,
       };
@@ -89,6 +90,7 @@ export async function populateCartItems(
         pantFit: item.options.pantFit,
         pantLeg: item.options.pantLeg,
         size: item.options.size,
+        initials: item.options.initials,
       },
       currency: item.currency,
       rate: String(item.rate),
@@ -278,6 +280,7 @@ export const cartsRouter = createTRPCRouter({
             pantFit: input.item.options.pantFit,
             pantLeg: input.item.options.pantLeg,
             size: input.item.options.size,
+            initials: input.item.options.initials,
           },
           currency: input.item.currency,
           rate: String(input.item.rate),
@@ -319,6 +322,8 @@ export const cartsRouter = createTRPCRouter({
       //     .from(carts)
       //     .where(eq(carts.id, input.cartId)),
       // );
+
+      // console.log("input", input.options);
 
       const [res] = await db
         .update(cartItems)

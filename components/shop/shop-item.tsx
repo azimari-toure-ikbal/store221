@@ -5,7 +5,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CartItem } from "@/config";
+import { CartItem, INITIALS_PRICE, SUR_MESURE_PRICE } from "@/config";
 import { useCart } from "@/hooks/use-cart";
 import { currencyAtom } from "@/lib/atoms";
 import { formatPrice, getWeight } from "@/lib/utils";
@@ -30,8 +30,13 @@ export function ShoppingCartItem({ item }: ShoppingCartItemProps) {
     ([_, value]) => value !== undefined,
   );
 
-  const { removeProductFromCart, removing, droppingCart, surMesureTotal } =
-    useCart();
+  const {
+    removeProductFromCart,
+    removing,
+    droppingCart,
+    surMesureTotal,
+    initialsTotal,
+  } = useCart();
 
   return (
     <div className="flex items-start gap-4 p-4">
@@ -79,7 +84,9 @@ export function ShoppingCartItem({ item }: ShoppingCartItemProps) {
                                     ? "Type de poignets"
                                     : key === "tissu"
                                       ? "Tissu"
-                                      : "Taille"}
+                                      : key === "initials"
+                                        ? "Initials"
+                                        : "Taille"}
                           :
                         </span>
                         <span>{value}</span>
@@ -112,7 +119,25 @@ export function ShoppingCartItem({ item }: ShoppingCartItemProps) {
               <div className="flex items-center gap-4">
                 <span className="text-xs">Sur-mesure</span>
                 <span className="text-muted-foreground text-xs">
-                  +{formatPrice(surMesureTotal, currency.code, currency.rate)}
+                  +
+                  {formatPrice(
+                    item.quantity * SUR_MESURE_PRICE,
+                    currency.code,
+                    currency.rate,
+                  )}
+                </span>
+              </div>
+            )}
+            {item.options.initials !== "" && (
+              <div className="flex items-center gap-4">
+                <span className="text-xs">Initiales</span>
+                <span className="text-muted-foreground text-xs">
+                  +
+                  {formatPrice(
+                    item.quantity * INITIALS_PRICE,
+                    currency.code,
+                    currency.rate,
+                  )}
                 </span>
               </div>
             )}

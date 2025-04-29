@@ -102,6 +102,7 @@ export const productOptionsValidator = z.object({
   pantFit: z.enum(pantFits).optional(),
   pantLeg: z.enum(pantLegs).optional(),
   tissu: z.string(),
+  initials: z.string(),
 });
 
 export const cartItemSchema = z.object({
@@ -136,6 +137,7 @@ export const itemOptions = z.object({
   pantLeg: z.enum(pantLegs).optional(),
   tissu: z.string(),
   size: z.enum(["XS", "S", "M", "L", "XL", "XXL", "sur-mesure"]),
+  initials: z.string().optional(),
 });
 
 export type ProductOption = z.infer<typeof itemOptions>;

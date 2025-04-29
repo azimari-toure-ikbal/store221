@@ -1,7 +1,7 @@
 // hooks/useCart.ts
-
 import {
   CartItem,
+  INITIALS_PRICE,
   PANTS_WEIGHT,
   SHIRT_WEIGHT,
   SUITS_WEIGHT,
@@ -12,6 +12,7 @@ import {
   currencyAtom,
   deliveryAreaAtom,
   paymentGatewayAtom,
+  sessionAtom,
 } from "@/lib/atoms";
 import { generateUUIDv4, inStock } from "@/lib/utils";
 import { trpc } from "@/server/trpc/client";
@@ -32,8 +33,8 @@ export const useCart = () => {
   const deliveryArea = useAtomValue(deliveryAreaAtom);
 
   const { user } = useKindeBrowserClient();
-  // const [sessionId, setSessionId] = useAtom(sessionAtom);
-  const [sessionId, setSessionId] = React.useState("");
+  const [sessionId, setSessionId] = useAtom(sessionAtom);
+  // const [sessionId, setSessionId] = React.useState("");
 
   // const { mutate: syncCart } = trpc.carts.syncCart.useMutation({
   //   onError: (error) => {
@@ -42,13 +43,18 @@ export const useCart = () => {
   //   },
   // });
 
-  React.useEffect(() => {
-    if (!sessionId || sessionId === "") {
-      // console.info("Nous ne pouvons pas trouver votre session");
-      // TODO: Crypter la session
-      setSessionId(generateUUIDv4());
-    }
-  }, [sessionId, user, cart]);
+  // React.useEffect(() => {
+  //   const sessionId = Cookies.get("S221_SESSION_ID");
+  //   // console.log("sessionId", sessionId);
+
+  //   if (!sessionId || sessionId === "") {
+  //     // console.info("Nous ne pouvons pas trouver votre session");
+  //     // TODO: Crypter la session
+  //     setSessionId(generateUUIDv4());
+  //   }
+  // }, [sessionId, user, cart]);
+
+  // console.log("sessionId", sessionId);
 
   const { data } = trpc.carts.getCart.useQuery(
     { sessionId },
@@ -98,7 +104,10 @@ export const useCart = () => {
               quantity: item.quantity,
               price: item.price,
               stock: item.stock,
-              options: item.options,
+              options: {
+                ...item.options,
+                initials: item.options.initials || "",
+              },
               rate: item.rate,
               currency: item.currency,
             })),
@@ -140,7 +149,10 @@ export const useCart = () => {
                     quantity: input.item.quantity,
                     price: input.item.price,
                     stock: input.item.stock,
-                    options: input.item.options,
+                    options: {
+                      ...input.item.options,
+                      initials: input.item.options.initials || "",
+                    },
                     rate: input.item.rate,
                     currency: input.item.currency,
                   },
@@ -281,12 +293,21 @@ export const useCart = () => {
         const previousCart = utils.carts.getCart.getData({ sessionId });
         setCart((prev) => {
           if (!prev) return prev;
-          const updatedItems = prev.items.filter(
-            (item) => item.productId !== input.productId,
-          );
+
+          // We should filter the items that have the same productId and options
+
+          const updatedItems = prev.items.filter((item) => {
+            return (
+              item.productId !== input.productId ||
+              item.options !== input.options
+            );
+          });
+
+          console.log("updatedItems", updatedItems.length);
+
           // If no items remain, you may want to clear the cart entirely.
           if (updatedItems.length === 0) {
-            dropCart(); // Implement dropCart() to clear the cart state.
+            dropCart();
             return { ...prev, items: [] };
           }
           return { ...prev, items: updatedItems };
@@ -318,6 +339,8 @@ export const useCart = () => {
 
   const addProductToCart = async (product: CartItem, quantity: number = 1) => {
     // console.log("addProductToCart quantity is in use-cart: ", quantity);
+
+    // console.log("addProductToCart quantity is in use-cart: ", product.options);
 
     // No cart found, checking for user authentication...
     if (!cart) {
@@ -411,11 +434,17 @@ export const useCart = () => {
           );
         }
 
+        const cleanedOptions = Object.fromEntries(
+          Object.entries(existingItem.options).filter(
+            ([_, value]) => value !== undefined,
+          ),
+        );
+
         updateQuantity({
           cartId: cart.id,
           productId: existingItem.productId,
           quantity: quantity,
-          options: existingItem.options,
+          options: cleanedOptions as any,
         });
 
         return;
@@ -584,7 +613,7 @@ export const useCart = () => {
         productId: product.productId,
         options: product.options,
       });
-      dropCart();
+      // dropCart();
       return;
     }
 
@@ -625,6 +654,18 @@ export const useCart = () => {
     return total;
   }, [cart]);
 
+  const initialsTotal = useMemo(() => {
+    if (!cart) return 0;
+
+    let total = 0;
+    for (const item of cart.items) {
+      if (item.options.initials !== "") {
+        total += INITIALS_PRICE * item.quantity;
+      }
+    }
+    return total;
+  }, [cart]);
+
   const subTotal = useMemo(() => {
     if (!cart) return 0;
 
@@ -633,7 +674,7 @@ export const useCart = () => {
       0,
     );
 
-    return sub + surMesureTotal;
+    return sub + surMesureTotal + initialsTotal;
   }, [cart]);
 
   const totalWeight = useMemo(() => {
@@ -728,6 +769,7 @@ export const useCart = () => {
     total,
     totalWeight,
     surMesureTotal,
+    initialsTotal,
     deliveryPrice,
     paymentGateway,
     cartItemsLength,

@@ -1,6 +1,6 @@
 "use client";
 
-import { PRODUCT_FORM_DEFAULT_VALUES, publicDevMode } from "@/config";
+import { PRODUCT_FORM_DEFAULT_VALUES } from "@/config";
 import { productFormAtom } from "@/lib/atoms";
 import {
   collarTypes,
@@ -148,32 +148,41 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
     }
   }, [form, product]);
 
-  React.useEffect(() => {
-    // Each 60 seconds, update setProductFormBackup with the current form values
-    const interval = setInterval(() => {
-      setProductFormBackup(form.getValues());
-    }, 60000);
+  // React.useEffect(() => {
+  //   console.log("we are here");
+  //   // Each 60 seconds, update setProductFormBackup with the current form values
+  //   const interval = setInterval(() => {
+  //     console.log("test");
+  //     setProductFormBackup(form.getValues());
+  //   }, 5000);
 
-    return () => {
-      clearInterval(interval);
-      setProductFormBackup(PRODUCT_FORM_DEFAULT_VALUES);
+  //   return () => {
+  //     clearInterval(interval);
+  //     setProductFormBackup(PRODUCT_FORM_DEFAULT_VALUES);
 
-      if (!publicDevMode) {
-        if (id) {
-          updateProduct({
-            id,
-            values: productFormBackup,
-            status: "DRAFT",
-          });
-        } else {
-          createProduct({
-            values: productFormBackup,
-            status: "DRAFT",
-          });
-        }
-      }
-    };
-  }, [form, id, setProductFormBackup, productFormBackup]);
+  //     if (true) {
+  //       if (id) {
+  //         updateProduct({
+  //           id,
+  //           values: productFormBackup,
+  //           status: "DRAFT",
+  //         });
+  //       } else {
+  //         createProduct({
+  //           values: productFormBackup,
+  //           status: "DRAFT",
+  //         });
+  //       }
+  //     }
+  //   };
+  // }, [
+  //   form,
+  //   id,
+  //   setProductFormBackup,
+  //   productFormBackup,
+  //   createProduct,
+  //   updateProduct,
+  // ]);
 
   const handleReorderGallery = (newOrder: string[]) => {
     form.setValue("gallery", newOrder);

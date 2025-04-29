@@ -27,6 +27,7 @@ export const devMode = process.env.DEV_MODE === "true";
 export const publicDevMode = process.env.NEXT_PUBLIC_DEV_MODE === "true";
 
 export const SUR_MESURE_PRICE = 2500;
+export const INITIALS_PRICE = 2500;
 
 export const NAVBAR_MENU = [
   { title: "Accueil", href: "/" },
@@ -97,6 +98,7 @@ export type ItemOptions = {
   pantLeg?: PantLegs;
   tissu: string;
   size: Sizes | "sur-mesure";
+  initials: string;
 };
 
 export type CartItem = {

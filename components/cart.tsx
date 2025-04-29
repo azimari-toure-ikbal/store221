@@ -39,6 +39,7 @@ const Cart: React.FC<CartProps> = ({}) => {
     totalWeight,
     subTotal,
     surMesureTotal,
+    initialsTotal,
     dropCart,
     removing,
     droppingCart,
@@ -84,6 +85,26 @@ const Cart: React.FC<CartProps> = ({}) => {
                   <span>Poids total:</span>
                   <span>{totalWeight} kg</span>
                 </div>
+                {surMesureTotal > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span>Supplément sur-mesure:</span>
+                    <span>
+                      {formatPrice(
+                        surMesureTotal,
+                        currency.code,
+                        currency.rate,
+                      )}
+                    </span>
+                  </div>
+                )}
+                {initialsTotal > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span>Supplément pour les initiales:</span>
+                    <span>
+                      {formatPrice(initialsTotal, currency.code, currency.rate)}
+                    </span>
+                  </div>
+                )}
                 <div className="flex justify-between font-semibold">
                   <span>Sous-total:</span>
                   <span>
@@ -159,6 +180,14 @@ const Cart: React.FC<CartProps> = ({}) => {
                   <span>Supplément sur-mesure:</span>
                   <span>
                     {formatPrice(surMesureTotal, currency.code, currency.rate)}
+                  </span>
+                </div>
+              )}
+              {initialsTotal > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span>Supplément pour les initiales:</span>
+                  <span>
+                    {formatPrice(initialsTotal, currency.code, currency.rate)}
                   </span>
                 </div>
               )}

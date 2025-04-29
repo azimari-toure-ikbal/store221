@@ -25,6 +25,7 @@ export const orders = pgTable("orders", {
     .notNull(),
   totalPaid: numeric().notNull(),
   delivery: jsonb().$type<Delivery>().notNull(),
+  deliveryPrice: numeric().notNull().default("0"),
   status: orderStatusesEnum().notNull().default("PREPARATION"),
   createdAt,
   updatedAt,

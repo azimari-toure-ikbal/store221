@@ -1,8 +1,22 @@
 import { Badge } from "@/components/ui/badge";
 
 const statusVariants = {
-  success: ["payed", "succeeded", "completed", "published", "approved", "paid"],
-  warning: ["waiting_payment", "pending_payment", "forgotten", "pending"],
+  success: [
+    "payed",
+    "succeeded",
+    "completed",
+    "published",
+    "approved",
+    "paid",
+    "delivered",
+  ],
+  warning: [
+    "waiting_payment",
+    "pending_payment",
+    "forgotten",
+    "pending",
+    "shipping",
+  ],
   error: [
     "dropped",
     "abandonned",
@@ -10,11 +24,18 @@ const statusVariants = {
     "cancelled",
     "rejected",
     "deleted",
+    "canceled",
+    "refunded",
   ],
-  neutral: ["draft", "default"],
+  neutral: ["draft", "default", "preparation"],
 };
 
 export const statusLabels = {
+  preparation: "Préparation",
+  shipping: "En livraison",
+  delivered: "Livré",
+  refunded: "Remboursé",
+  canceled: "Annulé",
   published: "Publié",
   waiting_payment: "En attente",
   pending_payment: "En attente",
@@ -47,7 +68,7 @@ const getBadgeVariant = (status: string) => {
 const CustomBadge = ({ status }: { status: keyof typeof statusLabels }) => {
   const variant = getBadgeVariant(status);
   return (
-    <Badge variant={variant}>
+    <Badge variant={variant} className="w-full">
       {statusLabels[status.toLowerCase() as keyof typeof statusLabels] ||
         "Unknown"}
     </Badge>

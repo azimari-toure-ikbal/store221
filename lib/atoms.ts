@@ -5,6 +5,7 @@ import { z } from "zod";
 import { Currencies } from "./db/schema";
 import {
   checkoutFormSchema,
+  Delivery,
   ProductFilter,
   productFormSchema,
 } from "./validators";
@@ -26,6 +27,8 @@ export const deliveryAreaAtom = atomWithStorage<DELIVERY_AREAS>(
   "S221_DeliveryArea",
   "Afrique",
 );
+
+export const deliveryZoneAtom = atom<Delivery | undefined>(undefined);
 
 export const filterAtom = atom<ProductFilter>({
   productType: "ALL",

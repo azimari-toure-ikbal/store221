@@ -40,8 +40,8 @@ export const useProductFilters = () => {
       selectedOptions: parseAsJson(productOptionsValidator.parse).withDefault({
         size: "M",
         tissu: "",
+        initials: "",
       }),
-      initials: parseAsString.withDefault(""),
       quantity: parseAsInteger.withDefault(1),
     },
     {

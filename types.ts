@@ -10,4 +10,28 @@ export type ProductItemResponse =
 
 export type CartResponse = RouterOutput["carts"]["getCarts"][number];
 export type CurrentUserResponse = RouterOutput["users"]["getCurrentUser"];
+
+export type OrderResponse = RouterOutput["orders"]["getOrders"][number];
+// export type OrderItemResponse =
+//   RouterOutput["orders"]["getOrders"]["items"][0];
+
 // export type UserAddress
+
+export type PayPalBody = {
+  items: {
+    name: string;
+    quantity: string;
+    unit_amount: {
+      currency_code: string;
+      value: string;
+    };
+  }[];
+  amount: {
+    currency_code: string;
+    value: string;
+    breakdown: {
+      item_total: { currency_code: string; value: string };
+      shipping: { currency_code: string; value: string };
+    };
+  };
+};

@@ -2,7 +2,6 @@ import { IpnBody } from "@/config";
 import { db } from "@/lib/db";
 import { carts, orders, products } from "@/lib/db/schema";
 import { Delivery } from "@/lib/validators";
-import crypto from "crypto";
 import { eq, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -27,7 +26,7 @@ export async function POST(req: NextRequest) {
   });
 
   if (!cart) {
-    return NextResponse.redirect(`https://store221.com/sale-error`);
+    return NextResponse.redirect(`https://store221.com/sale-canceled`);
   }
 
   await db.update(carts).set({ status: "PAYED" }).where(eq(carts.id, cartId));
@@ -44,14 +43,9 @@ export async function POST(req: NextRequest) {
     cartId: cartId,
     userId: cart.userId,
     delivery: delivery,
+    deliveryPrice: String(deliveryPrice),
     totalPaid: body.item_price,
   });
 
   return NextResponse.json({ success: true });
 }
-
-const shaEncrypt = (data: string) => {
-  const hash = crypto.createHash("sha256");
-  hash.update(data);
-  return hash.digest("hex");
-};

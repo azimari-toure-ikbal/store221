@@ -1,7 +1,9 @@
 export const dynamic = "force-dynamic";
 
 import Footer from "@/components/footer";
+import GlobalProvider from "@/components/global-provider";
 import Navbar from "@/components/navbar";
+import PaypalProvider from "@/components/paypal-provider";
 import { TRPCProvider } from "@/server/trpc/client";
 import { HydrateClient, trpc } from "@/server/trpc/server";
 import { Provider as JotaiProvider } from "jotai";
@@ -12,7 +14,6 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Toaster } from "sonner";
 import "./globals.css";
-import GlobalProvider from "@/components/global-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -76,7 +77,7 @@ export default function RootLayout({
                   </HydrateClient>
                   <div className="h-full w-full flex-1 flex-grow overflow-x-hidden pb-6 sm:overflow-x-scroll">
                     <GlobalProvider />
-                    {children}
+                    <PaypalProvider>{children}</PaypalProvider>
                   </div>
                   <Footer />
                 </main>

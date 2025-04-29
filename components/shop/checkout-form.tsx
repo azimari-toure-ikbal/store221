@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { countries, countriesName } from "@/config";
 import { useCart } from "@/hooks/use-cart";
-import { deliveryAreaAtom } from "@/lib/atoms";
+import { deliveryAreaAtom, deliveryZoneAtom } from "@/lib/atoms";
 import { DBUserAddress } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
 import { checkoutFormSchema } from "@/lib/validators";
@@ -51,6 +51,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ user }) => {
   // const currency = useAtomValue(currencyAtom);
   const { cart, total, surMesureTotal, deliveryPrice } = useCart();
   const setDeliveryArea = useSetAtom(deliveryAreaAtom);
+  const setDeliveryZone = useSetAtom(deliveryZoneAtom);
 
   const { mutate: checkout, isPending } = trpc.carts.checkout.useMutation({
     onSuccess: (data) => {
@@ -61,6 +62,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ user }) => {
 
   const form = useForm<z.infer<typeof checkoutFormSchema>>({
     resolver: zodResolver(checkoutFormSchema),
+    mode: "onChange",
   });
 
   function onSubmit(values: z.infer<typeof checkoutFormSchema>) {
@@ -70,7 +72,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ user }) => {
       checkout({
         cartId: cart.id,
         cartPrice: total,
-        productName: "Pantalon",
+        productName: "Commande produits Store221",
         // rate: 0.12,
         // currency: "XOF",
         delivery: values,
@@ -116,6 +118,14 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ user }) => {
       note: address.note ?? undefined,
     });
   };
+
+  React.useEffect(() => {
+    if (form.formState.isValid) {
+      setDeliveryZone(form.getValues());
+    } else {
+      setDeliveryZone(undefined);
+    }
+  }, [form.formState]);
 
   // React.useEffect(() => {
   //   if (form.watch("country")) {

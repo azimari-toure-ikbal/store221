@@ -9,6 +9,8 @@ import React from "react";
 export default function GlobalSessionProvider() {
   const [sessionId, setSessionId] = useAtom(sessionAtom);
 
+  // console.log("global-provider sessionId", sessionId);
+
   React.useEffect(() => {
     const sessionId = Cookies.get("S221_SESSION_ID");
 
@@ -24,7 +26,7 @@ export default function GlobalSessionProvider() {
       Cookies.set("S221_SESSION_ID", newSessionId, { expires: 7 }); // Expires in 7 days
       setSessionId(newSessionId);
     }
-  }, []);
+  }, [setSessionId]);
 
-  return null; // Server components don’t return JSX directly
+  return null;
 }
