@@ -1,8 +1,24 @@
+import africanShirt from "@/assets/img/african-shirt.jpg";
+import classicShirt from "@/assets/img/classic-shirt.jpg";
+import closeUp from "@/assets/img/closeup.jpg";
+import pants from "@/assets/img/pants.jpg";
+import suit from "@/assets/img/suit.jpg";
+
+import gal1 from "@/assets/img/gal/1.jpg";
+import gal2 from "@/assets/img/gal/2.jpg";
+import gal3 from "@/assets/img/gal/3.jpg";
+import gal4 from "@/assets/img/gal/4.jpg";
+import gal5 from "@/assets/img/gal/5.jpg";
+import gal6 from "@/assets/img/gal/6.jpg";
+
 import CollectionCard from "@/components/collection-card";
+import NewArrivals from "@/components/home/new-arrivals";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ChevronRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+
+const phototeque = [gal1, gal2, gal3, gal4, gal5, gal6];
 
 export default function HomePage() {
   return (
@@ -12,7 +28,7 @@ export default function HomePage() {
         <div className="absolute inset-0 z-10 bg-black/40" />
         <div className="relative h-[600px]">
           <Image
-            src="/placeholder.svg"
+            src="/home/head.jpg"
             alt="African clothing collection"
             fill
             className="object-cover"
@@ -23,18 +39,19 @@ export default function HomePage() {
           <div className="container mx-auto px-4 text-center md:px-6">
             <div className="space-y-4 text-white">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
-                Timeless African Elegance
+                L'élégance africaine intemporelle
               </h1>
               <p className="mx-auto max-w-[700px] text-lg md:text-xl">
-                Discover our collection of authentic African costumes, shirts,
-                and pants crafted with tradition and style.
+                Découvrez notre collection de costumes, chemises et pantalons
+                africains authentiques fabriqués dans le respect de la tradition
+                et du style.
               </p>
               <div className="flex flex-col justify-center gap-4 pt-4 sm:flex-row">
                 <Button
                   size="lg"
                   className="bg-white text-black hover:bg-white/90"
                 >
-                  Voir la boutique
+                  <Link href={"/shop"}>Voir la boutique</Link>
                 </Button>
               </div>
             </div>
@@ -59,70 +76,26 @@ export default function HomePage() {
           <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
             <CollectionCard
               title="Chemises Classiques"
-              image="/home/classique.jpg"
+              image={classicShirt.src}
+              type="CLASSIC_SHIRTS"
             />
             <CollectionCard
               title="Chemises Africaines"
-              image="/home/africaine.jpg"
+              image={africanShirt.src}
+              type="AFRICAN_SHIRTS"
             />
-            <CollectionCard title="Costumes" image="/home/hommes.jpg" />
-            <CollectionCard title="Pantalons" image="/home/pantalons.jpg" />
+            <CollectionCard
+              title="Costumes"
+              image={suit.src}
+              type="MEN_SUITS"
+            />
+            <CollectionCard title="Pantalons" image={pants.src} type="PANTS" />
           </div>
         </div>
       </section>
 
       {/* Recent Products */}
-      <section className="py-12 md:py-16 lg:py-20">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center">
-            <div className="space-y-2">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                New Arrivals
-              </h2>
-              <p className="text-muted-foreground mx-auto max-w-[700px] md:text-lg">
-                Our latest collection of authentic African attire, crafted with
-                precision and care.
-              </p>
-            </div>
-          </div>
-          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {[1, 2, 3, 4].map((item) => (
-              <div
-                key={item}
-                className="group bg-background relative overflow-hidden rounded-lg border p-2"
-              >
-                <div className="bg-muted aspect-square overflow-hidden rounded-md">
-                  <Image
-                    src={`/placeholder.svg`}
-                    alt={`Product ${item}`}
-                    width={300}
-                    height={300}
-                    className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                  />
-                </div>
-                <div className="pt-3 pb-2">
-                  <h3 className="text-sm font-medium">African Print Shirt</h3>
-                  <p className="text-muted-foreground text-sm">
-                    Traditional Design
-                  </p>
-                  <div className="flex items-center justify-between pt-2">
-                    <p className="text-base font-bold">$89.99</p>
-                    <Button size="sm" variant="ghost">
-                      Add to Cart
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-10 flex justify-center">
-            <Button className="gap-1">
-              View All Products
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </section>
+      <NewArrivals />
 
       {/* First CTA Section */}
       <section className="bg-primary text-primary-foreground py-12 md:py-16 lg:py-20">
@@ -130,20 +103,17 @@ export default function HomePage() {
           <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2">
             <div className="space-y-4">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Handcrafted Excellence
+                Excellence artisanale
               </h2>
               <p className="text-primary-foreground/90 md:text-lg">
-                Each piece in our collection is meticulously crafted by skilled
-                artisans, preserving traditional techniques while embracing
-                modern designs.
+                Chaque pièce est méticuleusement fabriquée par des artisans
+                qualifiés, qui préservent les techniques traditionnelles tout en
+                adoptant des designs modernes.
               </p>
-              <Button size="lg" variant="secondary" className="mt-2">
-                Discover Our Process
-              </Button>
             </div>
             <div className="relative h-[300px] overflow-hidden rounded-lg md:h-[400px]">
               <Image
-                src="/placeholder.svg"
+                src={closeUp.src}
                 alt="Artisan crafting"
                 fill
                 className="object-cover"
@@ -154,7 +124,7 @@ export default function HomePage() {
       </section>
 
       {/* Featured Products */}
-      <section className="py-12 md:py-16 lg:py-20">
+      {/* <section className="py-12 md:py-16 lg:py-20">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
@@ -214,10 +184,10 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Second CTA Section */}
-      <section className="bg-muted py-12 md:py-16 lg:py-20">
+      {/* <section className="bg-muted py-12 md:py-16 lg:py-20">
         <div className="container mx-auto px-4 text-center md:px-6">
           <div className="mx-auto max-w-[800px] space-y-4">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
@@ -242,7 +212,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Testimonials */}
       <section className="py-12 md:py-16 lg:py-20">
@@ -250,11 +220,11 @@ export default function HomePage() {
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                What Our Customers Say
+                Ce que disent nos clients
               </h2>
               <p className="text-muted-foreground mx-auto max-w-[700px] md:text-lg">
-                Hear from our satisfied customers about their experience with
-                our products.
+                Écoutez les témoignages de nos clients satisfaits sur leur
+                expérience avec nos produits.
               </p>
             </div>
           </div>
@@ -262,19 +232,17 @@ export default function HomePage() {
             {[1, 2, 3].map((item) => (
               <div key={item} className="bg-background rounded-lg border p-6">
                 <div className="flex items-start space-x-4">
-                  <div className="bg-muted h-10 w-10 overflow-hidden rounded-full">
+                  {/* <div className="bg-muted h-10 w-10 overflow-hidden rounded-full">
                     <Image
                       src={`/placeholder.svg`}
                       alt="User"
                       width={40}
                       height={40}
                     />
-                  </div>
+                  </div> */}
                   <div>
                     <h3 className="font-medium">Customer Name</h3>
-                    <p className="text-muted-foreground text-sm">
-                      Verified Buyer
-                    </p>
+                    <Badge>Achat vérifié</Badge>
                   </div>
                 </div>
                 <p className="text-muted-foreground mt-4">
@@ -310,18 +278,8 @@ export default function HomePage() {
                 artistry. Each garment is a piece of history.
               </p>
               <div className="flex flex-col justify-center gap-4 pt-4 sm:flex-row">
-                <Button
-                  size="lg"
-                  className="bg-white text-black hover:bg-white/90"
-                >
-                  Shop Now
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-white text-white hover:bg-white/10"
-                >
-                  Our Story
+                <Button size="lg" asChild>
+                  <Link href={"/shop"}>Boutique</Link>
                 </Button>
               </div>
             </div>
@@ -335,7 +293,7 @@ export default function HomePage() {
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Follow Our Journey
+                Photothèque
               </h2>
               <p className="text-muted-foreground mx-auto max-w-[700px] md:text-lg">
                 Join us on Instagram for styling inspiration and
@@ -344,11 +302,11 @@ export default function HomePage() {
             </div>
           </div>
           <div className="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-            {[1, 2, 3, 4, 5, 6].map((item) => (
-              <div key={item} className="aspect-square overflow-hidden">
-                <Image
-                  src={`/placeholder.svg`}
-                  alt={`Instagram post ${item}`}
+            {phototeque.map((item, index) => (
+              <div key={index} className="aspect-square overflow-hidden">
+                <img
+                  src={item.src || `/placeholder.svg`}
+                  alt={`Galerie ${index}`}
                   width={200}
                   height={200}
                   className="h-full w-full object-cover transition-transform hover:scale-105"
@@ -356,11 +314,11 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          <div className="mt-6 flex justify-center">
+          {/* <div className="mt-6 flex justify-center">
             <Button variant="outline" className="gap-1">
               Follow Us @AfriqueStyle
             </Button>
-          </div>
+          </div> */}
         </div>
       </section>
     </main>

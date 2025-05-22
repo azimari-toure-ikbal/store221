@@ -1,6 +1,7 @@
 "use client";
 
 import { NAVBAR_MENU } from "@/config";
+import { useShopFilters } from "@/hooks/use-states";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,6 +17,8 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
   const { user, organization } = useKindeBrowserClient();
   const pathname = usePathname();
 
+  const [{ filter: shopFilter }] = useShopFilters();
+
   if (pathname.includes("/dashboard")) return null;
 
   // console.log("organization", organization);
@@ -25,19 +28,40 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
       <div className="container mx-auto flex h-16 items-center justify-between py-4">
         <div className="flex items-center gap-2">
           <Link href="/" className="text-xl font-bold tracking-tighter">
-            AFRIQUE
+            STORE221.
           </Link>
         </div>
         <nav className="hidden gap-6 md:flex">
-          {NAVBAR_MENU.map((link, index) => (
-            <Link
-              key={index}
-              href={link.href}
-              className="hover:text-primary text-sm font-medium transition-colors"
-            >
-              {link.title}
-            </Link>
-          ))}
+          {NAVBAR_MENU.map((link, index) => {
+            if (!link.query) {
+              return (
+                <Link
+                  key={index}
+                  href={link.hrefBase}
+                  className="hover:text-primary text-sm font-medium transition-colors"
+                >
+                  {link.title}
+                </Link>
+              );
+            }
+
+            const mergedFilters = { ...shopFilter, ...link.query };
+
+            return (
+              <Link
+                key={index}
+                href={{
+                  pathname: link.hrefBase,
+                  query: {
+                    filter: JSON.stringify(mergedFilters),
+                  },
+                }}
+                className="hover:text-primary text-sm font-medium transition-colors"
+              >
+                {link.title}
+              </Link>
+            );
+          })}
         </nav>
         <div className="flex items-center gap-4">
           {!user || !organization ? (

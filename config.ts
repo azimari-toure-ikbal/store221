@@ -26,16 +26,20 @@ export const logVerbose = process.env.SHOW_VERBOSE_LOG === "true";
 export const devMode = process.env.DEV_MODE === "true";
 export const publicDevMode = process.env.NEXT_PUBLIC_DEV_MODE === "true";
 
-export const SUR_MESURE_PRICE = 2500;
-export const INITIALS_PRICE = 2500;
+export const SUR_MESURE_PRICE = 0;
+export const INITIALS_PRICE = 5000;
 
 export const NAVBAR_MENU = [
-  { title: "Accueil", href: "/" },
-  { title: "Boutique", href: "/shop" },
-  { title: "Chemises", href: "/shop" },
-  { title: "Pantalons", href: "/shop" },
-  { title: "Costumes", href: "/shop" },
-  { title: "Contact", href: "/contact" },
+  { title: "Accueil", hrefBase: "/" },
+  { title: "Boutique", hrefBase: "/shop" },
+  {
+    title: "Chemises",
+    hrefBase: "/shop",
+    query: { productType: "CLASSIC_SHIRTS" },
+  },
+  { title: "Pantalons", hrefBase: "/shop", query: { productType: "PANTS" } },
+  { title: "Costumes", hrefBase: "/shop", query: { productType: "MEN_SUITS" } },
+  { title: "Contact", hrefBase: "/contact" },
 ];
 
 export const CUSTOMERS_MENU = [

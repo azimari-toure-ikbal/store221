@@ -267,16 +267,16 @@ export default function ProductListingPage() {
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem
-                id="shirts"
-                value="SHIRTS"
+                id="classic-shirts"
+                value="CLASSIC_SHIRTS"
                 onClick={() => handleTypeChange("CLASSIC_SHIRTS")}
               />
               <Label htmlFor="shirts">Chemises Classiques</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem
-                id="shirts"
-                value="SHIRTS"
+                id="african-shirts"
+                value="AFRICAN_SHIRTS"
                 onClick={() => handleTypeChange("AFRICAN_SHIRTS")}
               />
               <Label htmlFor="shirts">Chemises Africaines</Label>
@@ -291,16 +291,16 @@ export default function ProductListingPage() {
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem
-                id="suits"
-                value="SUITS"
+                id="men-suits"
+                value="MEN_SUITS"
                 onClick={() => handleTypeChange("MEN_SUITS")}
               />
               <Label htmlFor="suits">Costumes Hommes</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem
-                id="suits"
-                value="SUITS"
+                id="women-suits"
+                value="WOMEN_SUITS"
                 onClick={() => handleTypeChange("WOMEN_SUITS")}
               />
               <Label htmlFor="suits">Costumes Femmes</Label>

@@ -91,32 +91,15 @@ export default function ProductDetailPage({ params }: Props) {
     },
   );
 
-  const relatedProducts = [
-    {
-      id: 1,
-      name: "Ankara Print Shirt",
-      price: "$89.99",
-      image: "/placeholder.svg",
-    },
-    {
-      id: 2,
-      name: "Kente Fabric Suit",
-      price: "$169.99",
-      image: "/placeholder.svg",
-    },
-    {
-      id: 3,
-      name: "Dashiki Top",
-      price: "$59.99",
-      image: "/placeholder.svg",
-    },
-    {
-      id: 4,
-      name: "Mud Cloth Pants",
-      price: "$79.99",
-      image: "/placeholder.svg",
-    },
-  ];
+  const { data: otherProducts, isLoading: otherLoading } =
+    trpc.products.getOtherProducts.useQuery(
+      {
+        type: product?.type || "AFRICAN_SHIRTS",
+      },
+      {
+        enabled: !!product,
+      },
+    );
 
   const incrementQuantity = () =>
     setFilters((prev) => ({ ...prev, quantity: prev.quantity + 1 }));
@@ -1364,31 +1347,43 @@ export default function ProductDetailPage({ params }: Props) {
       </div>
 
       {/* Related Products */}
-      <div>
-        <h2 className="mb-6 text-2xl font-bold">You May Also Like</h2>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {relatedProducts.map((product) => (
-            <Link href="#" key={product.id} className="group">
-              <div className="space-y-3">
-                <div className="bg-muted relative aspect-[4/5] overflow-hidden rounded-lg">
-                  <Image
-                    src={product.image || "/placeholder.svg"}
-                    alt={product.name}
-                    fill
-                    className="object-cover transition-transform group-hover:scale-105"
-                  />
-                </div>
-                <div>
-                  <h3 className="font-medium group-hover:underline">
-                    {product.name}
-                  </h3>
-                  <p className="text-muted-foreground">{product.price}</p>
-                </div>
-              </div>
-            </Link>
-          ))}
+      {otherProducts && otherProducts.length > 0 && (
+        <div>
+          <h2 className="mb-6 text-2xl font-bold">Complètez votre look</h2>
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            {otherLoading && (
+              <div className="h-72 w-full animate-pulse rounded-lg bg-zinc-100"></div>
+            )}
+
+            {!otherLoading &&
+              otherProducts &&
+              otherProducts.length > 0 &&
+              otherProducts.map((product) => (
+                <Link
+                  href={`/shop/${product.id}`}
+                  key={product.id}
+                  className="group"
+                >
+                  <div className="space-y-3">
+                    <div className="bg-muted relative aspect-[4/5] overflow-hidden rounded-lg">
+                      <img
+                        src={product.gallery[0] || "/placeholder.svg"}
+                        alt={product.name}
+                        className="object-cover transition-transform group-hover:scale-105"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="font-medium group-hover:underline">
+                        {product.name}
+                      </h3>
+                      <p className="text-muted-foreground">{product.price}</p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

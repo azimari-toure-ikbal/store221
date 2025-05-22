@@ -125,7 +125,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ user }) => {
     } else {
       setDeliveryZone(undefined);
     }
-  }, [form.formState]);
+  }, [form.formState, form, setDeliveryZone]);
 
   // React.useEffect(() => {
   //   if (form.watch("country")) {

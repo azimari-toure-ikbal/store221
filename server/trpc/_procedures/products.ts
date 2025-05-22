@@ -1,6 +1,10 @@
 import { logVerbose } from "@/config";
 import { db } from "@/lib/db";
-import { products, productStatuses } from "@/lib/db/schema/products";
+import {
+  products,
+  productStatuses,
+  productTypes,
+} from "@/lib/db/schema/products";
 import { productFilterValidator, productFormSchema } from "@/lib/validators";
 import { TRPCError } from "@trpc/server";
 import { and, asc, desc, eq, lte, ne, sql, SQL } from "drizzle-orm";
@@ -13,6 +17,28 @@ export const productsRouter = createTRPCRouter({
       where: ne(products.status, "DELETED"),
     });
   }),
+  getNewProducts: publicProcedure.query(async ({ ctx }) => {
+    return await db.query.products.findMany({
+      where: ne(products.status, "DELETED"),
+      orderBy: asc(products.createdAt),
+      limit: 4,
+    });
+  }),
+  getOtherProducts: publicProcedure
+    .input(z.object({ type: z.enum(productTypes) }))
+    .query(async ({ input, ctx }) => {
+      return await db.query.products.findMany({
+        where: and(
+          eq(products.status, "PUBLISHED"),
+          ne(products.type, input.type),
+        ),
+        orderBy: asc(products.createdAt),
+        limit: 4,
+      });
+    }),
+  // getBestSellers: publicProcedure.query(async ({ ctx }) => {
+  //   // const orders =
+  // }),
   createProduct: adminProcedure
     .input(
       z.object({
