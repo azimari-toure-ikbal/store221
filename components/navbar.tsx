@@ -25,7 +25,7 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
 
   return (
     <header className="bg-background sticky top-0 z-40 border-b">
-      <div className="container mx-auto flex h-16 items-center justify-between py-4">
+      <div className="container mx-auto flex h-16 items-center justify-between px-6 py-8 md:px-0">
         <div className="flex items-center gap-2">
           <Link href="/" className="text-xl font-bold tracking-tighter">
             STORE221.
