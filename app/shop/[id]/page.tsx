@@ -431,7 +431,7 @@ export default function ProductDetailPage({ params }: Props) {
                               )}
                             </DialogDescription>
                           </DialogHeader>
-                          <img
+                          {/* <img
                             src={
                               fit === "REGULAR"
                                 ? "/shop/Bas-ourlet.png"
@@ -439,7 +439,7 @@ export default function ProductDetailPage({ params }: Props) {
                             }
                             alt="collar"
                             className="aspect-square h-auto w-full rounded-lg border"
-                          />
+                          /> */}
                         </DialogContent>
                       </Dialog>
                     </Label>
@@ -1106,7 +1106,7 @@ export default function ProductDetailPage({ params }: Props) {
             {renderProductOptions()}
 
             <div className="space-y-3">
-              <h3 className="font-medium">Choix du tissu</h3>
+              <h3 className="font-medium">changer de tissu</h3>
               <RadioGroup
                 defaultValue={selectedOptions.tissu}
                 className="flex flex-wrap gap-4"

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
@@ -14,7 +13,7 @@ const Footer: React.FC<FooterProps> = ({}) => {
   return (
     <div className="bg-muted flex flex-col items-center justify-between border-t p-4 md:flex-row">
       <p className="text-muted-foreground text-xs">
-        &copy; {new Date().getFullYear()} AFRIQUE. All rights reserved.
+        &copy; {new Date().getFullYear()} Store 221. All rights reserved.
       </p>
       {/* <div className="mt-4 flex space-x-4 md:mt-0">
         <Link
