@@ -4,6 +4,7 @@ import pants from "@/assets/img/pants.jpg";
 import suit from "@/assets/img/suit.jpg";
 
 import banner from "@/assets/img/banner.png";
+import banner2 from "@/assets/img/banner2.png";
 
 import gal1 from "@/assets/img/gal/1.jpg";
 import gal2 from "@/assets/img/gal/2.jpg";
@@ -101,45 +102,15 @@ export default function HomePage() {
       <NewArrivals />
 
       {/* First CTA Section */}
-      <section className="bg-primary/5 text-primary-foreground py-12 lg:py-8">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2">
-            <div className="space-y-6">
-              <p className="text-3xl font-bold tracking-tighter text-black sm:text-4xl md:text-5xl">
-                Le costume africain.
-              </p>
-              <p className="text-primary text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Authentique.
-              </p>
-              <p className="text-primary text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Moderne.
-              </p>
-              <p className="text-primary text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Inoubliable.
-              </p>
-
-              <div className="space-y-4">
-                {/* <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                  Excellence artisanale
-                </h2> */}
-                {/* <p className="text-white md:text-lg">
-                  Chaque pièce est méticuleusement fabriquée par des artisans
-                  qualifiés, qui préservent les techniques traditionnelles tout
-                  en adoptant des designs modernes.
-                </p> */}
-              </div>
-            </div>
-            <div className="relative h-[300px] overflow-hidden rounded-lg md:h-[650px]">
-              <Image
-                src="/home/head2.jpg"
-                alt="Artisan crafting"
-                fill
-                className="object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+      <div className="relative h-[600px] lg:h-[750px] xl:h-[830px]">
+        <Image
+          src={banner2.src}
+          alt="African clothing collection"
+          fill
+          className="object-cover"
+          priority
+        />
+      </div>
 
       {/* Featured Products */}
       {/* <section className="py-12 md:py-16 lg:py-20">
@@ -275,7 +246,7 @@ export default function HomePage() {
       </section>
 
       {/* Third CTA Section */}
-      <section className="relative py-12 md:py-16 lg:py-20">
+      {/* <section className="relative py-12 md:py-16 lg:py-20">
         <div className="absolute inset-0 z-10 bg-black/60" />
         <div className="relative h-[400px]">
           <Image
@@ -303,7 +274,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Instagram Feed */}
       <section className="py-12 md:py-16 lg:py-20">

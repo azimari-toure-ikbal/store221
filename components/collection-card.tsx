@@ -26,7 +26,7 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
       <img
         src={image}
         alt={title}
-        className="h-[550px] w-full rounded-lg object-cover transition-transform group-hover:scale-105 xl:h-[700px]"
+        className="h-[600px] w-full rounded-lg object-cover transition-transform group-hover:scale-105 xl:h-[700px]"
       />
       <div className="absolute inset-0 z-20 flex w-full items-end p-6">
         <div className="text-primary flex w-full flex-col items-center space-y-2">
