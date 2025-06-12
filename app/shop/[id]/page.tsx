@@ -810,7 +810,7 @@ export default function ProductDetailPage({ params }: Props) {
                               )}
                             </DialogDescription>
                           </DialogHeader>
-                          <img
+                          {/* <img
                             src={
                               fit === "REGULAR"
                                 ? "/shop/Bas-ourlet.png"
@@ -818,7 +818,7 @@ export default function ProductDetailPage({ params }: Props) {
                             }
                             alt="collar"
                             className="aspect-square h-auto w-full rounded-lg border"
-                          />
+                          /> */}
                         </DialogContent>
                       </Dialog>
                     </Label>
