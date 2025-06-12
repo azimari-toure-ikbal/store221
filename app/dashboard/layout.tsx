@@ -14,8 +14,10 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { extractRouterConfig } from "uploadthing/server";
 
 export const metadata: Metadata = {
@@ -23,11 +25,19 @@ export const metadata: Metadata = {
   description: "Tableau de bord de l'application Store221",
 };
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { getUser } = getKindeServerSession();
+
+  const kUser = await getUser();
+
+  if (!kUser) {
+    redirect("/");
+  }
+
   return (
     <SidebarProvider>
       <AppSidebar />

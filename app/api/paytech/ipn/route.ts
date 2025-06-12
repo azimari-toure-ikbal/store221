@@ -1,4 +1,4 @@
-import { IpnBody } from "@/config";
+import { IpnBody, logVerbose } from "@/config";
 import { db } from "@/lib/db";
 import { carts, orders, products } from "@/lib/db/schema";
 import { Delivery } from "@/lib/validators";
@@ -46,6 +46,26 @@ export async function POST(req: NextRequest) {
     deliveryPrice: String(deliveryPrice),
     totalPaid: body.item_price,
   });
+
+  // Send notification to the NTFY server
+  fetch(`${process.env.NTFY_BASE_URL}/orders`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+    },
+    body: "Bonjour, vous avez une nouvelle commande sur Store221. Cliquez sur le lien suivant https://store221.com/dashboard/orders",
+  })
+    .then((response) => {
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+      return response.text();
+    })
+    .then(async (text) => {
+      if (logVerbose) console.info("NTFY notification sent:", text);
+    })
+    .catch((err) => {
+      if (logVerbose) console.error("NTFY notification error:", err);
+    });
 
   return NextResponse.json({ success: true });
 }

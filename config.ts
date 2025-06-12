@@ -22,6 +22,7 @@ import { productFormSchema } from "./lib/validators";
 // import { createListingQueryParams } from "./lib/utils";
 // import { ProductSizes } from "./lib/db/schema";
 
+export const CUSTOMER_SERVICE_PHONE = "+221769019494";
 export const logVerbose = process.env.SHOW_VERBOSE_LOG === "true";
 export const devMode = process.env.DEV_MODE === "true";
 export const publicDevMode = process.env.NEXT_PUBLIC_DEV_MODE === "true";

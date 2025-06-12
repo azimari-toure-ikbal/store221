@@ -1,8 +1,9 @@
 import africanShirt from "@/assets/img/african-shirt.jpg";
 import classicShirt from "@/assets/img/classic-shirt.jpg";
-import closeUp from "@/assets/img/closeup.jpg";
 import pants from "@/assets/img/pants.jpg";
 import suit from "@/assets/img/suit.jpg";
+
+import banner from "@/assets/img/banner.png";
 
 import gal1 from "@/assets/img/gal/1.jpg";
 import gal2 from "@/assets/img/gal/2.jpg";
@@ -25,17 +26,19 @@ export default function HomePage() {
     <main className="">
       {/* Hero Section */}
       <section className="relative">
-        <div className="absolute inset-0 z-10 bg-black/40" />
-        <div className="relative h-[600px]">
-          <Image
-            src="/home/head.jpg"
-            alt="African clothing collection"
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
-        <div className="absolute inset-0 z-20 flex items-center justify-center">
+        {/* <div className="absolute inset-0 z-10" /> */}
+        <Link href={"/shop"}>
+          <div className="relative h-[600px]">
+            <Image
+              src={banner.src}
+              alt="African clothing collection"
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+        </Link>
+        {/* <div className="absolute inset-0 z-20 flex items-center justify-center">
           <div className="container mx-auto px-4 text-center md:px-6">
             <div className="space-y-4 text-white">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
@@ -56,7 +59,7 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </section>
 
       {/* Featured Categories */}
@@ -98,22 +101,37 @@ export default function HomePage() {
       <NewArrivals />
 
       {/* First CTA Section */}
-      <section className="bg-primary text-primary-foreground py-12 md:py-16 lg:py-20">
+      <section className="bg-primary/5 text-primary-foreground py-12 lg:py-8">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2">
-            <div className="space-y-4">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Excellence artisanale
-              </h2>
-              <p className="text-primary-foreground/90 md:text-lg">
-                Chaque pièce est méticuleusement fabriquée par des artisans
-                qualifiés, qui préservent les techniques traditionnelles tout en
-                adoptant des designs modernes.
+            <div className="space-y-6">
+              <p className="text-3xl font-bold tracking-tighter text-black sm:text-4xl md:text-5xl">
+                Le costume africain.
               </p>
+              <p className="text-primary text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                Authentique.
+              </p>
+              <p className="text-primary text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                Moderne.
+              </p>
+              <p className="text-primary text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                Inoubliable.
+              </p>
+
+              <div className="space-y-4">
+                {/* <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                  Excellence artisanale
+                </h2> */}
+                {/* <p className="text-white md:text-lg">
+                  Chaque pièce est méticuleusement fabriquée par des artisans
+                  qualifiés, qui préservent les techniques traditionnelles tout
+                  en adoptant des designs modernes.
+                </p> */}
+              </div>
             </div>
-            <div className="relative h-[300px] overflow-hidden rounded-lg md:h-[400px]">
+            <div className="relative h-[300px] overflow-hidden rounded-lg md:h-[650px]">
               <Image
-                src={closeUp.src}
+                src="/home/head2.jpg"
                 alt="Artisan crafting"
                 fill
                 className="object-cover"
@@ -223,7 +241,7 @@ export default function HomePage() {
                 Ce que disent nos clients
               </h2>
               <p className="text-muted-foreground mx-auto max-w-[700px] md:text-lg">
-                Écoutez les témoignages de nos clients satisfaits sur leur
+                Lisez les témoignages de nos clients satisfaits sur leur
                 expérience avec nos produits.
               </p>
             </div>
@@ -261,7 +279,7 @@ export default function HomePage() {
         <div className="absolute inset-0 z-10 bg-black/60" />
         <div className="relative h-[400px]">
           <Image
-            src="/placeholder.svg"
+            src={banner.src}
             alt="African fashion"
             fill
             className="object-cover"
@@ -295,15 +313,14 @@ export default function HomePage() {
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
                 Photothèque
               </h2>
-              <p className="text-muted-foreground mx-auto max-w-[700px] md:text-lg">
-                Join us on Instagram for styling inspiration and
-                behind-the-scenes content.
-              </p>
             </div>
           </div>
-          <div className="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
+          <div className="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {phototeque.map((item, index) => (
-              <div key={index} className="aspect-square overflow-hidden">
+              <div
+                key={index}
+                className="aspect-square overflow-hidden rounded-lg"
+              >
                 <Image
                   src={item.src || `/placeholder.svg`}
                   alt={`Galerie ${index}`}

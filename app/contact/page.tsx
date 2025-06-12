@@ -7,7 +7,9 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { CUSTOMER_SERVICE_PHONE } from "@/config";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import Link from "next/link";
 
 export default function ContactPage() {
   return (
@@ -18,11 +20,11 @@ export default function ContactPage() {
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
               <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Contact Us
+                Contactez Nous
               </h1>
               <p className="text-muted-foreground mx-auto max-w-[700px] md:text-lg">
-                We're here to help you with any questions about our African
-                clothing collection.
+                Nous sommes à votre disposition pour répondre à toutes vos
+                questions sur nos produits et services.
               </p>
             </div>
           </div>
@@ -39,11 +41,10 @@ export default function ContactPage() {
                 <Phone className="h-6 w-6" />
               </div>
               <div className="space-y-2">
-                <h3 className="text-lg font-semibold">Phone</h3>
+                <h3 className="text-lg font-semibold">Téléphone</h3>
                 <div className="text-muted-foreground space-y-1 text-sm">
-                  <p>Main: +1 (555) 123-4567</p>
-                  <p>Orders: +1 (555) 123-4568</p>
-                  <p>WhatsApp: +1 (555) 123-4569</p>
+                  <p>Principal: {CUSTOMER_SERVICE_PHONE}</p>
+                  <p>WhatsApp: {CUSTOMER_SERVICE_PHONE}</p>
                 </div>
               </div>
             </div>
@@ -69,7 +70,7 @@ export default function ContactPage() {
                 <MapPin className="h-6 w-6" />
               </div>
               <div className="space-y-2">
-                <h3 className="text-lg font-semibold">Address</h3>
+                <h3 className="text-lg font-semibold">Adresse</h3>
                 <div className="text-muted-foreground space-y-1 text-sm">
                   <p>123 Fashion Street</p>
                   <p>Cultural District</p>
@@ -84,7 +85,7 @@ export default function ContactPage() {
                 <Clock className="h-6 w-6" />
               </div>
               <div className="space-y-2">
-                <h3 className="text-lg font-semibold">Business Hours</h3>
+                <h3 className="text-lg font-semibold">Horaires</h3>
                 <div className="text-muted-foreground space-y-1 text-sm">
                   <p>Mon - Fri: 9:00 AM - 7:00 PM</p>
                   <p>Saturday: 10:00 AM - 6:00 PM</p>
@@ -103,11 +104,11 @@ export default function ContactPage() {
             <div className="space-y-6">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
-                  Customer Service
+                  Service client
                 </h2>
                 <p className="text-muted-foreground md:text-lg">
-                  Our dedicated team is here to assist you with any questions or
-                  concerns about our African clothing collection.
+                  Notre équipe est là pour vous aider à répondre à toutes vos
+                  demandes.
                 </p>
               </div>
               <div className="space-y-4">
@@ -116,10 +117,9 @@ export default function ContactPage() {
                     1
                   </div>
                   <div>
-                    <h3 className="font-semibold">Quick Response</h3>
+                    <h3 className="font-semibold">Réponse rapide</h3>
                     <p className="text-muted-foreground text-sm">
-                      We respond to all inquiries within 24 hours during
-                      business days.
+                      Nous répondons à toutes vos demandes dans les 24 heures.
                     </p>
                   </div>
                 </div>
@@ -128,14 +128,14 @@ export default function ContactPage() {
                     2
                   </div>
                   <div>
-                    <h3 className="font-semibold">Expert Guidance</h3>
+                    <h3 className="font-semibold">Conseil expert</h3>
                     <p className="text-muted-foreground text-sm">
-                      Our team has extensive knowledge about African fashion and
-                      cultural significance.
+                      Notre équipe a une expertise approfondie sur la mode
+                      africaine.
                     </p>
                   </div>
                 </div>
-                <div className="flex items-start space-x-3">
+                {/* <div className="flex items-start space-x-3">
                   <div className="bg-primary text-primary-foreground flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold">
                     3
                   </div>
@@ -146,24 +146,36 @@ export default function ContactPage() {
                       preferences and needs.
                     </p>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="space-y-4">
               <div className="bg-card rounded-lg border p-6">
-                <h3 className="mb-2 font-semibold">Need Immediate Help?</h3>
+                <h3 className="mb-2 font-semibold">
+                  Besoin d&apos;aide immédiate ?
+                </h3>
                 <p className="text-muted-foreground mb-4 text-sm">
-                  For urgent inquiries, call our customer service hotline or
-                  reach out via WhatsApp.
+                  Pour des demandes urgentes, appelez notre numéro de téléphone
+                  de service client ou contactez-nous via WhatsApp.
                 </p>
                 <div className="flex flex-col gap-2 sm:flex-row">
-                  <Button className="flex-1">Call Now</Button>
-                  <Button variant="outline" className="flex-1">
-                    WhatsApp
+                  <Button className="flex-1" asChild>
+                    <Link href={`tel:${CUSTOMER_SERVICE_PHONE}`}>
+                      Appeler maintenant
+                    </Link>
+                  </Button>
+                  <Button variant="outline" className="flex-1" asChild>
+                    <Link
+                      href={`whatsapp://send?phone=221769019494`}
+                      data-action="share/whatsapp/share"
+                      target="_blank"
+                    >
+                      WhatsApp
+                    </Link>
                   </Button>
                 </div>
               </div>
-              <div className="bg-card rounded-lg border p-6">
+              {/* <div className="bg-card rounded-lg border p-6">
                 <h3 className="mb-2 font-semibold">Visit Our Showroom</h3>
                 <p className="text-muted-foreground mb-4 text-sm">
                   Experience our collection in person at our flagship store in
@@ -172,7 +184,7 @@ export default function ContactPage() {
                 <Button variant="outline" className="w-full">
                   Get Directions
                 </Button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -184,11 +196,11 @@ export default function ContactPage() {
           <div className="mb-12 flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Frequently Asked Questions
+                Foire aux questions
               </h2>
               <p className="text-muted-foreground mx-auto max-w-[700px] md:text-lg">
-                Find answers to common questions about our products, shipping,
-                and services.
+                Trouvez les réponses aux questions les plus courantes sur nos
+                produits, nos expéditions et nos services.
               </p>
             </div>
           </div>
@@ -302,7 +314,7 @@ export default function ContactPage() {
       </section>
 
       {/* Contact CTA */}
-      <section className="bg-primary text-primary-foreground py-12 md:py-16 lg:py-20">
+      {/* <section className="bg-primary text-primary-foreground py-12 md:py-16 lg:py-20">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
@@ -328,7 +340,7 @@ export default function ContactPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
     </main>
   );
 }

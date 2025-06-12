@@ -26,10 +26,10 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
       <img
         src={image}
         alt={title}
-        className="h-[500px] w-full rounded-lg object-cover transition-transform group-hover:scale-95"
+        className="h-[500px] w-full rounded-lg object-cover transition-transform group-hover:scale-105"
       />
-      <div className="absolute inset-0 z-20 flex items-end p-6">
-        <div className="text-primary flex flex-col space-y-2">
+      <div className="absolute inset-0 z-20 flex w-full items-end p-6">
+        <div className="text-primary flex w-full flex-col items-center space-y-2">
           <Badge variant={"default"}>{title}</Badge>
           <Button variant="secondary" className="w-fit" size={"sm"} asChild>
             <Link

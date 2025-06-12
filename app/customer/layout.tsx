@@ -8,10 +8,12 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { CUSTOMERS_MENU } from "@/config";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { Menu } from "lucide-react";
 import { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import React from "react";
 import { extractRouterConfig } from "uploadthing/server";
 
@@ -22,9 +24,17 @@ export const metadata: Metadata = {
   description: "Tableau de bord de l'application Minebar Déco",
 };
 
-const CustomerDashboardLayout: React.FC<CustomerDashboardLayoutProps> = ({
+const CustomerDashboardLayout: React.FC<CustomerDashboardLayoutProps> = async ({
   children,
 }) => {
+  const { getUser } = getKindeServerSession();
+
+  const kUser = await getUser();
+
+  if (!kUser) {
+    redirect("/");
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <div className="container mx-auto flex flex-grow flex-col px-4 sm:px-6 lg:px-8">
