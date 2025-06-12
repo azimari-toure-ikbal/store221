@@ -16,7 +16,6 @@ import gal6 from "@/assets/img/gal/6.jpg";
 import CollectionCard from "@/components/collection-card";
 import NewArrivals from "@/components/home/new-arrivals";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -27,40 +26,18 @@ export default function HomePage() {
     <main className="">
       {/* Hero Section */}
       <section className="relative">
-        {/* <div className="absolute inset-0 z-10" /> */}
-        <Link href={"/shop"}>
-          <div className="relative h-[600px] lg:h-[750px] xl:h-[830px]">
+        <Link href="/shop">
+          <div className="relative aspect-video w-full">
             <Image
               src={banner.src}
               alt="African clothing collection"
               fill
-              className="object-cover"
+              sizes="100vw"
+              className="object-contain md:object-cover"
               priority
             />
           </div>
         </Link>
-        {/* <div className="absolute inset-0 z-20 flex items-center justify-center">
-          <div className="container mx-auto px-4 text-center md:px-6">
-            <div className="space-y-4 text-white">
-              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
-                L'élégance africaine intemporelle
-              </h1>
-              <p className="mx-auto max-w-[700px] text-lg md:text-xl">
-                Découvrez notre collection de costumes, chemises et pantalons
-                africains authentiques fabriqués dans le respect de la tradition
-                et du style.
-              </p>
-              <div className="flex flex-col justify-center gap-4 pt-4 sm:flex-row">
-                <Button
-                  size="lg"
-                  className="bg-white text-black hover:bg-white/90"
-                >
-                  <Link href={"/shop"}>Voir la boutique</Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div> */}
       </section>
 
       {/* Featured Categories */}
@@ -102,12 +79,13 @@ export default function HomePage() {
       <NewArrivals />
 
       {/* First CTA Section */}
-      <div className="relative h-[600px] lg:h-[750px] xl:h-[830px]">
+      <div className="relative aspect-video w-full">
         <Image
           src={banner2.src}
           alt="African clothing collection"
           fill
-          className="object-cover"
+          sizes="100vw"
+          className="object-contain md:object-cover"
           priority
         />
       </div>
