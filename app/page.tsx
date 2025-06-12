@@ -1,9 +1,9 @@
-import africanShirt from "@/assets/img/african-shirt.jpg";
-import classicShirt from "@/assets/img/classic-shirt.jpg";
+import africanShirt from "@/assets/img/african-shirt3.jpg";
+import classicShirt from "@/assets/img/classic-shirt4.jpg";
 import pants from "@/assets/img/pants.jpg";
-import suit from "@/assets/img/suit.jpg";
+import suit from "@/assets/img/suit3.jpg";
 
-import banner from "@/assets/img/banner.png";
+import banner from "@/assets/img/banner-alt.png";
 import banner2 from "@/assets/img/banner2.png";
 
 import gal1 from "@/assets/img/gal/1.jpg";
@@ -33,7 +33,7 @@ export default function HomePage() {
               alt="African clothing collection"
               fill
               sizes="100vw"
-              className="object-contain md:object-cover"
+              className="object-contain md:object-cover md:p-6"
               priority
             />
           </div>
@@ -61,14 +61,14 @@ export default function HomePage() {
               type="CLASSIC_SHIRTS"
             />
             <CollectionCard
-              title="Chemises Africaines"
-              image={africanShirt.src}
-              type="AFRICAN_SHIRTS"
-            />
-            <CollectionCard
               title="Costumes"
               image={suit.src}
               type="MEN_SUITS"
+            />
+            <CollectionCard
+              title="Chemises Africaines"
+              image={africanShirt.src}
+              type="AFRICAN_SHIRTS"
             />
             <CollectionCard title="Pantalons" image={pants.src} type="PANTS" />
           </div>
@@ -86,7 +86,6 @@ export default function HomePage() {
           fill
           sizes="100vw"
           className="object-contain md:object-cover"
-          priority
         />
       </div>
 
