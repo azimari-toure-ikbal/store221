@@ -301,14 +301,14 @@ export default function HomePage() {
               </p>
             </div>
           </div>
-          <div className="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          <div className="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
             {phototeque.map((item, index) => (
               <div key={index} className="aspect-square overflow-hidden">
-                <img
+                <Image
                   src={item.src || `/placeholder.svg`}
                   alt={`Galerie ${index}`}
-                  width={200}
-                  height={200}
+                  width={400}
+                  height={400}
                   className="h-full w-full object-cover transition-transform hover:scale-105"
                 />
               </div>

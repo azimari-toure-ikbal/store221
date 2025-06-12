@@ -4,6 +4,7 @@ import { useShopFilters } from "@/hooks/use-states";
 import { ProductTypes } from "@/lib/db/schema";
 import Link from "next/link";
 import React from "react";
+import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 
 type CollectionCardProps = {
@@ -25,12 +26,12 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
       <img
         src={image}
         alt={title}
-        className="w-full rounded-lg object-fill transition-transform group-hover:scale-95"
+        className="h-[500px] w-full rounded-lg object-cover transition-transform group-hover:scale-95"
       />
       <div className="absolute inset-0 z-20 flex items-end p-6">
-        <div className="text-primary space-y-2">
-          <h3 className="text-xl font-bold">{title}</h3>
-          <Button variant="secondary" asChild>
+        <div className="text-primary flex flex-col space-y-2">
+          <Badge variant={"default"}>{title}</Badge>
+          <Button variant="secondary" className="w-fit" size={"sm"} asChild>
             <Link
               href={{
                 pathname: "/shop",

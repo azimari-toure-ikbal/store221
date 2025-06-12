@@ -16,7 +16,7 @@ const FloatingWhatsapp: React.FC<FloatingWhatsappProps> = ({}) => {
           className="rounded-full bg-emerald-600 hover:bg-emerald-500"
         >
           <Link
-            href={`whatsapp://send?phone=221786051138`}
+            href={`whatsapp://send?phone=221769019494`}
             data-action="share/whatsapp/share"
             target="_blank"
           >
