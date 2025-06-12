@@ -59,7 +59,6 @@ export default function ContactPage() {
                 <div className="text-muted-foreground space-y-1 text-sm">
                   <p>info@afriquestyle.com</p>
                   <p>orders@afriquestyle.com</p>
-                  <p>support@afriquestyle.com</p>
                 </div>
               </div>
             </div>
@@ -87,9 +86,8 @@ export default function ContactPage() {
               <div className="space-y-2">
                 <h3 className="text-lg font-semibold">Horaires</h3>
                 <div className="text-muted-foreground space-y-1 text-sm">
-                  <p>Mon - Fri: 9:00 AM - 7:00 PM</p>
-                  <p>Saturday: 10:00 AM - 6:00 PM</p>
-                  <p>Sunday: 12:00 PM - 5:00 PM</p>
+                  <p>Lundi - Vendredi: 9:00 - 19:00</p>
+                  <p>Samedi: 10:00 - 16:00</p>
                 </div>
               </div>
             </div>

@@ -28,7 +28,7 @@ export default function HomePage() {
       <section className="relative">
         {/* <div className="absolute inset-0 z-10" /> */}
         <Link href={"/shop"}>
-          <div className="relative h-[600px]">
+          <div className="relative h-[600px] lg:h-[750px] xl:h-[830px]">
             <Image
               src={banner.src}
               alt="African clothing collection"
