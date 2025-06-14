@@ -303,8 +303,6 @@ export const useCart = () => {
             );
           });
 
-          console.log("updatedItems", updatedItems.length);
-
           // If no items remain, you may want to clear the cart entirely.
           if (updatedItems.length === 0) {
             dropCart();
@@ -547,22 +545,53 @@ export const useCart = () => {
       );
     }
 
-    const existingItemIndex = cart.items.findIndex(
-      (item) =>
+    const existingItemIndex = cart.items.findIndex((item) => {
+      const itemOptions = Object.fromEntries(
+        Object.entries(item.options).filter(
+          ([_, value]) => value !== undefined,
+        ),
+      );
+
+      const filteredOptions = Object.fromEntries(
+        Object.entries(product.options).filter(
+          ([_, value]) => value !== undefined,
+        ),
+      );
+
+      return (
         item.productId === product.productId &&
-        isEqual(item.options, product.options),
-    );
+        isEqual(itemOptions, filteredOptions)
+      );
+    });
 
     if (existingItemIndex === -1) {
       toast.warning("Ce produit n'est pas dans votre panier");
       return;
     }
 
+    const existingItem = cart.items[existingItemIndex];
+
+    // console.log("existingItem", existingItem);
+
+    if (!inStock(existingItem, existingItem.quantity + quantity)) {
+      return toast.warning(
+        "Action impossible. Vous tenter d'ajouter plus de produits que disponible dans le stock",
+      );
+    }
+
+    const cleanedOptions = Object.fromEntries(
+      Object.entries(existingItem.options).filter(
+        ([_, value]) => value !== undefined,
+      ),
+    );
+
+    // console.log("cleanedOptions", cleanedOptions);
+
     incrementQuantity({
       cartId: cart.id,
       productId: product.productId,
       quantity,
-      options: product.options,
+      options: cleanedOptions as any,
     });
   };
 
@@ -573,12 +602,24 @@ export const useCart = () => {
     if (!cart) {
       return;
     }
+    const existingItemIndex = cart.items.findIndex((item) => {
+      const itemOptions = Object.fromEntries(
+        Object.entries(item.options).filter(
+          ([_, value]) => value !== undefined,
+        ),
+      );
 
-    const existingItemIndex = cart.items.findIndex(
-      (item) =>
+      const filteredOptions = Object.fromEntries(
+        Object.entries(product.options).filter(
+          ([_, value]) => value !== undefined,
+        ),
+      );
+
+      return (
         item.productId === product.productId &&
-        isEqual(item.options, product.options),
-    );
+        isEqual(itemOptions, filteredOptions)
+      );
+    });
 
     if (existingItemIndex === -1) {
       toast.warning("Ce produit n'est pas dans votre panier");
@@ -590,11 +631,29 @@ export const useCart = () => {
       return;
     }
 
+    const existingItem = cart.items[existingItemIndex];
+
+    // console.log("existingItem", existingItem);
+
+    if (!inStock(existingItem, existingItem.quantity + quantity)) {
+      return toast.warning(
+        "Action impossible. Vous tenter d'ajouter plus de produits que disponible dans le stock",
+      );
+    }
+
+    const cleanedOptions = Object.fromEntries(
+      Object.entries(existingItem.options).filter(
+        ([_, value]) => value !== undefined,
+      ),
+    );
+
+    // console.log("cleanedOptions", cleanedOptions);
+
     decrementQuantity({
       cartId: cart.id,
       productId: product.productId,
       quantity,
-      options: product.options,
+      options: cleanedOptions as any,
     });
   };
 
@@ -703,36 +762,36 @@ export const useCart = () => {
       }
     }
 
-    return weight;
+    return Math.ceil(weight);
   }, [cart, deliveryArea]);
 
   const deliveryPrice = useMemo(() => {
     if (!cart) return 0;
 
-    if (deliveryArea === "Afrique") {
+    if (deliveryArea === "Afrique-Senegal") {
       return 0;
     }
 
     if (totalWeight <= 2.5) {
-      if (deliveryArea === "Europe") {
+      if (deliveryArea === "Europe" || deliveryArea === "Afrique") {
         return 18500;
       } else {
         return 21000;
       }
     } else if (totalWeight > 2.5 && totalWeight <= 5) {
-      if (deliveryArea === "Europe") {
+      if (deliveryArea === "Europe" || deliveryArea === "Afrique") {
         return 37000;
       } else {
         return 42000;
       }
     } else if (totalWeight > 5 && totalWeight <= 7.5) {
-      if (deliveryArea === "Europe") {
+      if (deliveryArea === "Europe" || deliveryArea === "Afrique") {
         return 55500;
       } else {
         return 63000;
       }
     } else if (totalWeight > 7.5 && totalWeight <= 10) {
-      if (deliveryArea === "Europe") {
+      if (deliveryArea === "Europe" || deliveryArea === "Afrique") {
         return 74000;
       } else {
         return 84000;

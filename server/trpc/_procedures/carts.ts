@@ -50,7 +50,7 @@ export async function enrichCartItems(
         quantity: Number(item.quantity),
         stock: Number(product.stock),
         options: {
-          tissu: item.options.tissu,
+          tissu: item.options.tissu || "",
           sleevesLength: item.options.sleevesLength || undefined,
           collarType: item.options.collarType || undefined,
           wristsType: item.options.wristsType || undefined,

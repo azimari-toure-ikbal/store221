@@ -117,6 +117,11 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ user }) => {
       address: address.address,
       note: address.note ?? undefined,
     });
+
+    setDeliveryArea(
+      countries.find((c) => c.name === address.country)?.continent ||
+        "Afrique-Senegal",
+    );
   };
 
   React.useEffect(() => {
@@ -264,7 +269,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ user }) => {
                     onValueChange={(val) => {
                       setDeliveryArea(
                         countries.find((c) => c.name === val)?.continent ||
-                          "Afrique",
+                          "Afrique-Senegal",
                       );
                       field.onChange(val);
                     }}
@@ -272,7 +277,13 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ user }) => {
                   >
                     <FormControl>
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Sélectionner un pays" />
+                        <SelectValue
+                          placeholder={
+                            selectedAddress
+                              ? selectedAddress.country
+                              : "Sélectionner un pays"
+                          }
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

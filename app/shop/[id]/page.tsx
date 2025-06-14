@@ -121,6 +121,8 @@ export default function ProductDetailPage({ params }: Props) {
       }));
   };
 
+  // console.log("filters", selectedOptions);
+
   const nextImage = () => {
     if (!product) return;
     setCurrentImage((prev) => (prev + 1) % product.gallery.length);
@@ -537,7 +539,7 @@ export default function ProductDetailPage({ params }: Props) {
         return (
           <div className="grid grid-cols-2 gap-4">
             {/* Sleeves options */}
-            <div className="space-y-3">
+            {/* <div className="space-y-3">
               <h3 className="font-medium">Longeur des manches</h3>
               <RadioGroup
                 defaultValue={selectedOptions.sleevesLength}
@@ -568,10 +570,10 @@ export default function ProductDetailPage({ params }: Props) {
                   </div>
                 ))}
               </RadioGroup>
-            </div>
+            </div> */}
 
             {/* Collar options */}
-            <div className="space-y-3">
+            {/* <div className="space-y-3">
               <h3 className="font-medium">Type de col</h3>
               <RadioGroup
                 defaultValue={selectedOptions.collarType}
@@ -651,10 +653,10 @@ export default function ProductDetailPage({ params }: Props) {
                   </div>
                 ))}
               </RadioGroup>
-            </div>
+            </div> */}
 
             {/* Wrists options */}
-            <div className="space-y-3">
+            {/* <div className="space-y-3">
               <h3 className="font-medium">Type de poignets</h3>
               <RadioGroup
                 defaultValue={selectedOptions.wristsType}
@@ -735,7 +737,7 @@ export default function ProductDetailPage({ params }: Props) {
                   </div>
                 ))}
               </RadioGroup>
-            </div>
+            </div> */}
 
             {/* Pant fit options */}
             <div className="space-y-3">
@@ -1105,59 +1107,61 @@ export default function ProductDetailPage({ params }: Props) {
             {/* Dynamic Product Options */}
             {renderProductOptions()}
 
-            <div className="space-y-3">
-              <h3 className="font-medium">changer de tissu</h3>
-              <RadioGroup
-                defaultValue={selectedOptions.tissu}
-                className="flex flex-wrap gap-4"
-                onValueChange={(val) => {
-                  setFilters((prev) => ({
-                    ...prev,
-                    selectedOptions: {
-                      ...prev.selectedOptions,
-                      tissu: val,
-                    },
-                  }));
-                }}
-              >
-                {product.tissues.map((tissu, index) => (
-                  <div key={index}>
-                    <RadioGroupItem
-                      id={tissu.name}
-                      value={tissu.name}
-                      className="peer sr-only"
-                    />
-                    <Label
-                      htmlFor={tissu.name}
-                      className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 relative flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
-                    >
-                      {tissu.name}
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            variant={"secondary"}
-                            size={"icon"}
-                            className="absolute -top-2 -right-2 size-5 rounded-full p-3"
-                          >
-                            <Info />
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>{tissu.name}</DialogTitle>
-                          </DialogHeader>
-                          <img
-                            src={tissu.url}
-                            alt={`tissu ${tissu.name}`}
-                            className="aspect-square h-auto w-full rounded-lg border"
-                          />
-                        </DialogContent>
-                      </Dialog>
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
+            {product.tissues.length > 1 && (
+              <div className="space-y-3">
+                <h3 className="font-medium">Changer de tissu</h3>
+                <RadioGroup
+                  defaultValue={selectedOptions.tissu}
+                  className="flex flex-wrap gap-4"
+                  onValueChange={(val) => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      selectedOptions: {
+                        ...prev.selectedOptions,
+                        tissu: val,
+                      },
+                    }));
+                  }}
+                >
+                  {product.tissues.map((tissu, index) => (
+                    <div key={index}>
+                      <RadioGroupItem
+                        id={tissu.name}
+                        value={tissu.name}
+                        className="peer sr-only"
+                      />
+                      <Label
+                        htmlFor={tissu.name}
+                        className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 relative flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
+                      >
+                        {tissu.name}
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              variant={"secondary"}
+                              size={"icon"}
+                              className="absolute -top-2 -right-2 size-5 rounded-full p-3"
+                            >
+                              <Info />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>{tissu.name}</DialogTitle>
+                            </DialogHeader>
+                            <img
+                              src={tissu.url}
+                              alt={`tissu ${tissu.name}`}
+                              className="aspect-square h-auto w-full rounded-lg border"
+                            />
+                          </DialogContent>
+                        </Dialog>
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+            )}
 
             {/* Initials Section */}
             {selectedOptions.sleevesLength === "LONG" && (
@@ -1252,12 +1256,7 @@ export default function ProductDetailPage({ params }: Props) {
                   product.type === "MEN_SUITS" ||
                   product.type === "WOMEN_SUITS"
                 ) {
-                  if (
-                    !selectedOptions.collarType ||
-                    !selectedOptions.wristsType ||
-                    !selectedOptions.pantFit ||
-                    !selectedOptions.pantLeg
-                  ) {
+                  if (!selectedOptions.pantFit || !selectedOptions.pantLeg) {
                     return toast.warning(
                       "Vous devez sélectionner toutes les options avant de pouvoir ajouter le produit au panier",
                     );
@@ -1285,12 +1284,6 @@ export default function ProductDetailPage({ params }: Props) {
                       "Vous devez sélectionner les options avant de pouvoir ajouter le produit au panier",
                     );
                   }
-                }
-
-                if (selectedOptions.tissu === "") {
-                  return toast.warning(
-                    "Vous devez sélectionner un tissu avant de pouvoir ajouter le produit au panier",
-                  );
                 }
 
                 // console.log("selectedOptions", selectedOptions);

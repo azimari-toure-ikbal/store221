@@ -34,8 +34,8 @@ export function ShoppingCartItem({ item }: ShoppingCartItemProps) {
     removeProductFromCart,
     removing,
     droppingCart,
-    surMesureTotal,
-    initialsTotal,
+    incrementProductQuantity,
+    decrementProductQuantity,
   } = useCart();
 
   return (
@@ -110,7 +110,28 @@ export function ShoppingCartItem({ item }: ShoppingCartItemProps) {
         <div className="mt-1 flex items-center justify-between text-sm">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-4">
-              <span className="text-xs">Qte: {quantity}</span>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="icon"
+                  variant="outline"
+                  className="h-6 w-6 text-xs"
+                  disabled={removing || droppingCart || quantity <= 1}
+                  onClick={() => decrementProductQuantity(item, 1)}
+                >
+                  –
+                </Button>
+                <span className="text-sm font-medium">{quantity}</span>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  className="h-6 w-6 text-xs"
+                  disabled={removing || droppingCart}
+                  onClick={() => incrementProductQuantity(item, 1)}
+                >
+                  +
+                </Button>
+              </div>
+
               <span className="text-muted-foreground text-xs">
                 Poids: {(getWeight(productType) * quantity).toFixed(2)} kg
               </span>

@@ -114,7 +114,7 @@ export const cartItemSchema = z.object({
   price: z.number(),
   stock: z.number(),
   options: z.object({
-    tissu: z.string(),
+    tissu: z.string().optional(),
     sleevesLength: z.enum(sleevesLengths).optional(),
     collarType: z.enum(collarTypes).optional(),
     wristsType: z.enum(wristsTypes).optional(),
@@ -135,7 +135,7 @@ export const itemOptions = z.object({
   wristsType: z.enum(wristsTypes).optional(),
   pantFit: z.enum(pantFits).optional(),
   pantLeg: z.enum(pantLegs).optional(),
-  tissu: z.string(),
+  tissu: z.string().optional(),
   size: z.enum(["XS", "S", "M", "L", "XL", "XXL", "sur-mesure"]),
   initials: z.string().optional(),
 });

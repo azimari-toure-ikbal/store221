@@ -83,7 +83,7 @@ const Cart: React.FC<CartProps> = ({}) => {
               <div className="space-y-4 border-t p-4">
                 <div className="flex justify-between text-sm">
                   <span>Poids total:</span>
-                  <span>{totalWeight} kg</span>
+                  <span>~{totalWeight} kg</span>
                 </div>
                 {surMesureTotal > 0 && (
                   <div className="flex justify-between text-sm">
@@ -173,7 +173,7 @@ const Cart: React.FC<CartProps> = ({}) => {
             <div className="space-y-4 border-t p-4">
               <div className="flex justify-between text-sm">
                 <span>Poids total:</span>
-                <span>{totalWeight} kg</span>
+                <span>~{totalWeight} kg</span>
               </div>
               {surMesureTotal > 0 && (
                 <div className="flex justify-between text-sm">

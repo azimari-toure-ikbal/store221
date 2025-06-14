@@ -92,7 +92,12 @@ export const SHIRT_WEIGHT = 0.25;
 export const PANTS_WEIGHT = 0.3;
 export const SUITS_WEIGHT = 1;
 
-export const AREAS = ["Afrique", "Europe", "Amerique"] as const;
+export const AREAS = [
+  "Afrique",
+  "Europe",
+  "Amerique",
+  "Afrique-Senegal",
+] as const;
 export type DELIVERY_AREAS = (typeof AREAS)[number];
 
 export type ItemOptions = {
@@ -101,7 +106,7 @@ export type ItemOptions = {
   wristsType?: WristsTypes;
   pantFit?: PantFits;
   pantLeg?: PantLegs;
-  tissu: string;
+  tissu?: string;
   size: Sizes | "sur-mesure";
   initials: string;
 };
@@ -208,7 +213,7 @@ export const countries = [
   { name: "Nigéria", continent: "Afrique" },
   { name: "Rwanda", continent: "Afrique" },
   { name: "São Tomé-et-Principe", continent: "Afrique" },
-  { name: "Sénégal", continent: "Afrique" },
+  { name: "Sénégal", continent: "Afrique-Senegal" },
   { name: "Seychelles", continent: "Afrique" },
   { name: "Sierra Leone", continent: "Afrique" },
   { name: "Somalie", continent: "Afrique" },

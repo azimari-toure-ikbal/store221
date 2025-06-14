@@ -73,7 +73,7 @@ export const cartItems = pgTable("cart_items", {
       pantFit?: PantFits;
       pantLeg?: PantLegs;
       initials?: string;
-      tissu: string;
+      tissu?: string;
       size: Sizes | "sur-mesure";
     }>()
     .notNull(),

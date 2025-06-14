@@ -21,6 +21,24 @@ import Link from "next/link";
 
 const phototeque = [gal1, gal2, gal3, gal4, gal5, gal6];
 
+const testimonials = [
+  {
+    name: "Samba Ndiaye",
+    comment:
+      "Magasin avec pas mal de produits variés qui met en valeur la Broderie africaine et particulièrement sénégalaise. On y trouve du prêt-à-porter possibilité aussi de confectionner des vêtements sur mesure la qualité du tissu est au rendez-vous et le top l’accueil au magasin est très convivial.",
+  },
+  {
+    name: "Karima Da Moura",
+    comment:
+      "Très bons échanges avec le créateur pour nous assurer des tailles, des points d'attention. Un super effort pour une commande last minute, reçue très rapidement. Bonne communication tout au long du process, c'est rassurant.",
+  },
+  {
+    name: "Thiane Samb",
+    comment:
+      "Never disappoints! Quality is always on point! We own too many Kayshopping pieces in my household and piece is perfectly curated! We’ve been sold, and they have a client for life in us!",
+  },
+];
+
 export default function HomePage() {
   return (
     <main className="">
@@ -195,8 +213,8 @@ export default function HomePage() {
             </div>
           </div>
           <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {[1, 2, 3].map((item) => (
-              <div key={item} className="bg-background rounded-lg border p-6">
+            {testimonials.map((item, index) => (
+              <div key={index} className="bg-background rounded-lg border p-6">
                 <div className="flex items-start space-x-4">
                   {/* <div className="bg-muted h-10 w-10 overflow-hidden rounded-full">
                     <Image
@@ -207,14 +225,12 @@ export default function HomePage() {
                     />
                   </div> */}
                   <div>
-                    <h3 className="font-medium">Customer Name</h3>
+                    <h3 className="font-medium">{item.name}</h3>
                     <Badge>Achat vérifié</Badge>
                   </div>
                 </div>
-                <p className="text-muted-foreground mt-4">
-                  "The quality and craftsmanship of my African shirt exceeded my
-                  expectations. The fabric is beautiful and the fit is perfect.
-                  I've received so many compliments!"
+                <p className="text-muted-foreground mt-4 text-sm">
+                  "{item.comment}"
                 </p>
               </div>
             ))}
