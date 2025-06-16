@@ -67,7 +67,7 @@ export const productFormSchema = z.object({
     })
     .optional(),
   gallery: z.string().array(),
-  tissues: z.array(z.object({ name: z.string(), url: z.string() })),
+  tissues: z.array(z.object({ name: z.string(), url: z.string() })).default([]),
   type: z.enum(productTypes),
   sizes: z.array(z.enum(sizes)),
   seller: z.enum(sellers),

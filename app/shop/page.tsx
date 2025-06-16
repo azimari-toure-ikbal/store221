@@ -32,6 +32,7 @@ import { useState } from "react";
 // type ProductType = "ALL" | "SHIRTS" | "PANTS" | "SUITS";
 
 // Import atoms from your atoms file
+import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { AVAILABLE_SORT, DEFAULT_LIMIT } from "@/config";
 import { useShopFilters } from "@/hooks/use-states";
@@ -45,6 +46,7 @@ import {
   wristsTypes,
 } from "@/lib/db/schema";
 import {
+  calcDiscountPercentage,
   formatCollarType,
   formatPantFit,
   formatPantLeg,
@@ -627,14 +629,44 @@ export default function ProductListingPage() {
             fill
             className="object-cover transition-transform group-hover:scale-105"
           />
+          {product.discountedPrice && Number(product.discountedPrice) > 0 && (
+            <div className="absolute bottom-2 left-2 flex items-center gap-2">
+              <Badge variant={"secondary"} className="w-fit font-bold">
+                {calcDiscountPercentage(
+                  Number(product.price),
+                  Number(product.discountedPrice),
+                )}
+                %
+              </Badge>
+            </div>
+          )}
         </div>
         <div>
           <h3 className="truncate font-medium group-hover:underline">
             {product.name}
           </h3>
-          <p className="text-muted-foreground">
-            {formatPrice(Number(product.price), currency.code, currency.rate)}
-          </p>
+          {product.discountedPrice && Number(product.discountedPrice) > 0 ? (
+            <div className="">
+              <p className="text-muted-foreground line-through">
+                {formatPrice(
+                  Number(product.price),
+                  currency.code,
+                  currency.rate,
+                )}
+              </p>
+              <p className="text-primary font-semibold">
+                {formatPrice(
+                  Number(product.discountedPrice),
+                  currency.code,
+                  currency.rate,
+                )}
+              </p>
+            </div>
+          ) : (
+            <p className="text-muted-foreground">
+              {formatPrice(Number(product.price), currency.code, currency.rate)}
+            </p>
+          )}
         </div>
       </div>
     </Link>

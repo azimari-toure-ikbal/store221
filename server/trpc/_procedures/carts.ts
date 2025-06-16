@@ -42,11 +42,16 @@ export async function enrichCartItems(
 
       // console.log("enrichCartItems", item.options);
 
+      const productPrice =
+        product.discountedPrice && Number(product.discountedPrice) > 0
+          ? Number(product.discountedPrice)
+          : Number(product.price);
+
       return {
         name: product.name,
         productId: product.id,
         image: product.gallery[0],
-        price: Number(product.price),
+        price: productPrice,
         quantity: Number(item.quantity),
         stock: Number(product.stock),
         options: {

@@ -341,6 +341,7 @@ export const useCart = () => {
     // console.log("addProductToCart quantity is in use-cart: ", product.options);
 
     // No cart found, checking for user authentication...
+
     if (!cart) {
       if (!inStock(product, quantity)) {
         return toast.warning(

@@ -1,6 +1,5 @@
 "use client";
 
-import { PRODUCT_FORM_DEFAULT_VALUES } from "@/config";
 import { productFormAtom } from "@/lib/atoms";
 import {
   collarTypes,
@@ -212,11 +211,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
 
   async function onSubmit(values: z.infer<typeof productFormSchema>) {
     try {
-      if (values.tissues.length === 0) {
-        return toast.error("Vous devez ajouter au moins un tissu");
-      }
-
-      if (values.tissues.length >= 0) {
+      if (values.tissues && values.tissues.length > 0) {
         // If there is at least one tissue, check if all tissues have a name and a url
         const hasNameAndUrl = values.tissues.every(
           (tissue) => tissue.name && tissue.url,
@@ -742,103 +737,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ id }) => {
 
           {(form.watch("type") === "MEN_SUITS" ||
             form.watch("type") === "WOMEN_SUITS") && (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              <FormField
-                control={form.control}
-                name="options.sleevesLength"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tailles des manches</FormLabel>
-                    <FormControl>
-                      <MultiSelector
-                        values={field.value}
-                        onValuesChange={field.onChange}
-                        loop
-                      >
-                        <MultiSelectorTrigger>
-                          <MultiSelectorInput placeholder="Ajouter une taille" />
-                        </MultiSelectorTrigger>
-                        <MultiSelectorContent>
-                          <MultiSelectorList>
-                            {sleevesLengths.map((sleeve) => (
-                              <MultiSelectorItem key={sleeve} value={sleeve}>
-                                {formatSleevesLength(sleeve)}
-                              </MultiSelectorItem>
-                            ))}
-                          </MultiSelectorList>
-                        </MultiSelectorContent>
-                      </MultiSelector>
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="options.collarType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Type de col</FormLabel>
-                    <FormControl>
-                      <MultiSelector
-                        values={field.value}
-                        onValuesChange={field.onChange}
-                        loop
-                      >
-                        <MultiSelectorTrigger>
-                          <MultiSelectorInput placeholder="Ajouter une taille" />
-                        </MultiSelectorTrigger>
-                        <MultiSelectorContent>
-                          <MultiSelectorList>
-                            {collarTypes.map((col) => (
-                              <MultiSelectorItem key={col} value={col}>
-                                {formatCollarType(col)}
-                              </MultiSelectorItem>
-                            ))}
-                          </MultiSelectorList>
-                        </MultiSelectorContent>
-                      </MultiSelector>
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="options.wristsType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Type de poignets</FormLabel>
-                    <FormControl>
-                      <MultiSelector
-                        values={field.value}
-                        onValuesChange={field.onChange}
-                        loop
-                      >
-                        <MultiSelectorTrigger>
-                          <MultiSelectorInput placeholder="Ajouter une taille" />
-                        </MultiSelectorTrigger>
-                        <MultiSelectorContent>
-                          <MultiSelectorList>
-                            {wristsTypes.map((wrist) => (
-                              <MultiSelectorItem key={wrist} value={wrist}>
-                                {formatWristsType(wrist)}
-                              </MultiSelectorItem>
-                            ))}
-                          </MultiSelectorList>
-                        </MultiSelectorContent>
-                      </MultiSelector>
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
+            <div className="grid grid-cols-1 gap-4">
               <FormField
                 control={form.control}
                 name="options.pantFit"

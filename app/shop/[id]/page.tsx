@@ -990,9 +990,33 @@ export default function ProductDetailPage({ params }: Props) {
               <Badge>{formatType(product.type)}</Badge>
             </div>
 
-            <p className="mb-4 text-2xl font-semibold">
-              {formatPrice(Number(product.price), currency.code, currency.rate)}
-            </p>
+            {product.discountedPrice && Number(product.discountedPrice) > 0 ? (
+              <div className="flex items-center gap-6">
+                <p className="mb-4 text-2xl font-semibold line-through">
+                  {formatPrice(
+                    Number(product.price),
+                    currency.code,
+                    currency.rate,
+                  )}
+                </p>
+
+                <p className="text-primary mb-4 text-2xl font-semibold">
+                  {formatPrice(
+                    Number(product.discountedPrice),
+                    currency.code,
+                    currency.rate,
+                  )}
+                </p>
+              </div>
+            ) : (
+              <p className="mb-4 text-2xl font-semibold">
+                {formatPrice(
+                  Number(product.price),
+                  currency.code,
+                  currency.rate,
+                )}
+              </p>
+            )}
             <ProductDetailActions id={product.id} title={product.name} />
             {/* <p className="text-muted-foreground">
               This handcrafted piece features traditional African designs and
@@ -1290,13 +1314,18 @@ export default function ProductDetailPage({ params }: Props) {
 
                 // return;
 
+                const productPrice =
+                  product.discountedPrice && Number(product.discountedPrice) > 0
+                    ? Number(product.discountedPrice)
+                    : Number(product.price);
+
                 addProductToCart(
                   {
                     image: product.gallery[0],
                     name: product.name,
                     productId: product.id,
                     productType: product.type,
-                    price: Number(product.price),
+                    price: productPrice,
                     quantity,
                     stock: Number(product.stock),
                     options: selectedOptions,

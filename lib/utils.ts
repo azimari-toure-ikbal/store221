@@ -88,7 +88,7 @@ export const formatType = (type: ProductTypes) => {
     case "PANTS":
       return "Pantalons";
     case "CLASSIC_SHIRTS":
-      return "Chemises";
+      return "Chemises classiques";
     case "AFRICAN_SHIRTS":
       return "Chemises Africaines";
     case "MEN_SUITS":
@@ -259,4 +259,11 @@ export const getWeight = (productType: ProductTypes) => {
     default:
       return 0;
   }
+};
+
+export const calcDiscountPercentage = (
+  price: number,
+  discountedPrice: number,
+) => {
+  return Math.round((discountedPrice / price) * 100);
 };

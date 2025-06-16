@@ -1,10 +1,15 @@
+"use client";
+
 import africanShirt from "@/assets/img/african-shirt3.jpg";
 import classicShirt from "@/assets/img/classic-shirt4.jpg";
 import pants from "@/assets/img/pants.jpg";
 import suit from "@/assets/img/suit3.jpg";
 
+import bannerMobile from "@/assets/img/banner-alt-mobile.png";
 import banner from "@/assets/img/banner-alt.png";
-import banner2 from "@/assets/img/banner2.png";
+
+import banner2Mobile from "@/assets/img/banner-2-mobile.png";
+import banner2 from "@/assets/img/banner-2.png";
 
 import gal1 from "@/assets/img/gal/1.jpg";
 import gal2 from "@/assets/img/gal/2.jpg";
@@ -16,6 +21,7 @@ import gal6 from "@/assets/img/gal/6.jpg";
 import CollectionCard from "@/components/collection-card";
 import NewArrivals from "@/components/home/new-arrivals";
 import { Badge } from "@/components/ui/badge";
+import { useIsMobile } from "@/hooks/use-mobile";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -40,19 +46,24 @@ const testimonials = [
 ];
 
 export default function HomePage() {
+  const isMobile = useIsMobile();
+  const banner1Src = isMobile ? bannerMobile.src : banner.src;
+  const banner2Src = isMobile ? banner2Mobile.src : banner2.src;
+  const aspectClass = isMobile ? "aspect-[2/4]" : "aspect-video"; // 3:4 portrait on mobile, 16:9 on desktop
+
   return (
     <main className="">
       {/* Hero Section */}
       <section className="relative">
         <Link href="/shop">
-          <div className="relative aspect-video w-full">
+          <div className={`relative w-full ${aspectClass}`}>
             <Image
-              src={banner.src}
+              src={banner1Src}
               alt="African clothing collection"
               fill
               sizes="100vw"
-              className="object-contain md:object-cover md:p-6"
               priority
+              className="object-cover"
             />
           </div>
         </Link>
@@ -97,15 +108,20 @@ export default function HomePage() {
       <NewArrivals />
 
       {/* First CTA Section */}
-      <div className="relative aspect-video w-full">
-        <Image
-          src={banner2.src}
-          alt="African clothing collection"
-          fill
-          sizes="100vw"
-          className="object-contain md:object-cover"
-        />
-      </div>
+      <section className="relative">
+        <Link href="/shop">
+          <div className={`relative w-full ${aspectClass}`}>
+            <Image
+              src={banner2Src}
+              alt="African clothing collection"
+              fill
+              sizes="100vw"
+              priority
+              className="object-cover"
+            />
+          </div>
+        </Link>
+      </section>
 
       {/* Featured Products */}
       {/* <section className="py-12 md:py-16 lg:py-20">

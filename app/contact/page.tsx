@@ -11,6 +11,49 @@ import { CUSTOMER_SERVICE_PHONE } from "@/config";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
 
+const QUESTIONS = [
+  {
+    question: "Quels sont les matériaux utilisés pour nos tenues ?",
+    answer:
+      "Nos tenues sont confectionnées avec des tissus de qualité premium, sélectionnés pour leur confort et leur élégance. Nous utilisons principalement du coton, du lin et de la laine, garantissant un rendu raffiné et durable.",
+  },
+  {
+    question: "Comment déterminer la bonne taille pour passer commande ?",
+    answer:
+      "Nous mettons à votre disposition un guide des tailles adapté à chaque catégorie de produits pour vous aider à choisir la coupe parfaite. Si vous avez un doute, vous pouvez également nous contacter via WhatsApp, et nous vous accompagnerons dans la prise des bonnes mesures pour une tenue ajustée à votre morphologie.",
+  },
+  {
+    question: "Proposez-vous des services de confection sur mesure ?",
+    answer:
+      "Oui, nous proposons la confection sur mesure pour de nombreux vêtements. Vous pouvez demander des mesures spécifiques, des combinaisons de couleurs ou des modifications de design. Les commandes personnalisées prennent généralement 2 à 3 semaines pour être réalisées. Veuillez nous contacter avec vos exigences, et nous vous fournirons un devis ainsi qu'un délai de livraison.",
+  },
+  {
+    question: "Quelle est votre politique d’expédition et de retour ?",
+    answer:
+      "Nous livrons partout dans le monde via DHL Express, avec les frais à la charge du client. Pour les commandes au Sénégal, la livraison est gratuite. Pour les retours, vous pouvez renvoyer une tenue sous 30 jours après expédition, à vos frais. Si elle n’a jamais été portée, nous vous remboursons intégralement via PayPal, virement bancaire, Wave ou Orange Money. À noter : pour les commandes internationales, il peut arriver que des taxes douanières soient appliquées à la réception du colis, selon les réglementations du pays de destination. Le client peut consulter le site de DHL pour plus d’informations.",
+  },
+  {
+    question: "Comment dois-je prendre soin de mes vêtements ?",
+    answer:
+      "Les instructions d'entretien varient selon le type de tissu. En général, nous recommandons un lavage doux en machine à l'eau froide pour la plupart des articles. Évitez l'eau de Javel et les détergents agressifs. Séchez à l'air libre lorsque c'est possible afin de préserver les couleurs et l'intégrité du tissu. Chaque vêtement est accompagné d'instructions spécifiques. Pour les articles délicats, comme les costumes africains, le nettoyage à sec est recommandé.",
+  },
+  {
+    question: "Avez-vous un magasin physique que je peux visiter ?",
+    answer:
+      "Oui, nous avons un showroom principal situé au 1394 Sicap Liberté 2, Dakar, Sénégal. Vous pouvez y découvrir notre collection complète, essayer des vêtements et échanger avec notre équipe compétente. Nous recommandons d'appeler à l'avance pour prendre rendez-vous et bénéficier d'un service personnalisé, notamment pour les ajustements sur mesure.",
+  },
+  {
+    question: "Proposez-vous des commandes en gros ou en grande quantité ?",
+    answer:
+      "Oui, nous collaborons avec des détaillants, des organisations culturelles et des planificateurs d'événements pour les commandes en grande quantité. Nous offrons des tarifs de gros pour les commandes de 20 pièces ou plus. Veuillez contacter notre département de vente en gros via WhatsApp au +221-76-572-4620 avec vos exigences, et nous vous fournirons un devis personnalisé ainsi que les conditions.",
+  },
+  {
+    question: "Avez-vous des boutiques à l’international ?",
+    answer:
+      "Pas encore, mais nous travaillons activement à insérer nos produits dans des concept stores à travers le monde. En attendant, nous organisons parfois des ventes privées à l’étranger, offrant ainsi l’opportunité aux clients internationaux de découvrir et d’acquérir nos créations.",
+  },
+];
+
 export default function ContactPage() {
   return (
     <main>
@@ -71,9 +114,8 @@ export default function ContactPage() {
               <div className="space-y-2">
                 <h3 className="text-lg font-semibold">Adresse</h3>
                 <div className="text-muted-foreground space-y-1 text-sm">
-                  <p>123 Fashion Street</p>
-                  <p>Cultural District</p>
-                  <p>New York, NY 10001</p>
+                  <p>1394 Sicap Liberté 2</p>
+                  <p>Dakar, Sénégal</p>
                 </div>
               </div>
             </div>
@@ -204,108 +246,12 @@ export default function ContactPage() {
           </div>
           <div className="mx-auto max-w-3xl">
             <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="item-1">
-                <AccordionTrigger>
-                  What materials are used in your African clothing?
-                </AccordionTrigger>
-                <AccordionContent>
-                  We use authentic African fabrics including Ankara, Kente,
-                  Dashiki, and other traditional textiles. All our materials are
-                  sourced directly from African artisans and are made from
-                  high-quality cotton, silk, and other natural fibers. Each
-                  piece comes with information about its origin and cultural
-                  significance.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-2">
-                <AccordionTrigger>
-                  How do I determine the right size for African clothing?
-                </AccordionTrigger>
-                <AccordionContent>
-                  African clothing often has different sizing compared to
-                  Western garments. We provide detailed size charts for each
-                  product category. Many of our traditional pieces are designed
-                  to be loose-fitting for comfort. If you're unsure, we
-                  recommend contacting our customer service team for
-                  personalized sizing advice.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-3">
-                <AccordionTrigger>
-                  Do you offer custom tailoring services?
-                </AccordionTrigger>
-                <AccordionContent>
-                  Yes, we offer custom tailoring for many of our garments. You
-                  can request specific measurements, color combinations, or
-                  design modifications. Custom orders typically take 2-4 weeks
-                  to complete. Please contact us with your requirements, and
-                  we'll provide a quote and timeline.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-4">
-                <AccordionTrigger>
-                  What is your shipping and return policy?
-                </AccordionTrigger>
-                <AccordionContent>
-                  We offer free shipping on orders over $100 within the
-                  continental US. International shipping is available. We accept
-                  returns within 30 days of purchase for unworn items in
-                  original condition. Custom-made items are non-returnable
-                  unless there's a manufacturing defect. Please see our full
-                  shipping and returns policy for details.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-5">
-                <AccordionTrigger>
-                  How should I care for my African clothing?
-                </AccordionTrigger>
-                <AccordionContent>
-                  Care instructions vary by fabric type. Generally, we recommend
-                  hand washing or gentle machine wash in cold water for most
-                  items. Avoid bleach and harsh detergents. Air dry when
-                  possible to preserve colors and fabric integrity. Each garment
-                  comes with specific care instructions. For delicate items like
-                  Kente cloth, dry cleaning is recommended.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-6">
-                <AccordionTrigger>
-                  Can you tell me about the cultural significance of the
-                  patterns?
-                </AccordionTrigger>
-                <AccordionContent>
-                  Each pattern and design in our collection has cultural meaning
-                  and history. We provide detailed information about the origin,
-                  symbolism, and traditional use of each design. Our team
-                  includes cultural consultants who ensure authenticity and
-                  respect for African heritage. Feel free to ask about any
-                  specific pattern.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-7">
-                <AccordionTrigger>
-                  Do you have a physical store I can visit?
-                </AccordionTrigger>
-                <AccordionContent>
-                  Yes, we have a flagship showroom located at 123 Fashion Street
-                  in the Cultural District of New York. You can view our full
-                  collection, try on garments, and speak with our knowledgeable
-                  staff. We recommend calling ahead to schedule an appointment
-                  for personalized service, especially for custom fittings.
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-8">
-                <AccordionTrigger>
-                  Do you offer wholesale or bulk ordering?
-                </AccordionTrigger>
-                <AccordionContent>
-                  Yes, we work with retailers, cultural organizations, and event
-                  planners for bulk orders. We offer wholesale pricing for
-                  orders of 20+ pieces. Please contact our wholesale department
-                  at wholesale@afriquestyle.com with your requirements, and
-                  we'll provide a custom quote and terms.
-                </AccordionContent>
-              </AccordionItem>
+              {QUESTIONS.map((item, index) => (
+                <AccordionItem key={index} value={`question-${index}`}>
+                  <AccordionTrigger>{item.question}</AccordionTrigger>
+                  <AccordionContent>{item.answer}</AccordionContent>
+                </AccordionItem>
+              ))}
             </Accordion>
           </div>
         </div>
