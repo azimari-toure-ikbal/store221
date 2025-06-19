@@ -5,6 +5,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { currencyAtom } from "@/lib/atoms";
 import { cn, formatPrice } from "@/lib/utils";
 import { useAtomValue } from "jotai";
+import { ShoppingCartIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import IsLoading from "./is-loading";
@@ -52,7 +53,9 @@ const Cart: React.FC<CartProps> = ({}) => {
     return (
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerTrigger asChild>
-          <Button size="sm">Panier ({cartItemsLength})</Button>
+          <Button size="sm">
+            <ShoppingCartIcon />({cartItemsLength})
+          </Button>
         </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>

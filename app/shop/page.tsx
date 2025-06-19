@@ -234,7 +234,7 @@ export default function ProductListingPage() {
   // Render filter section
   const renderFilterSection = () => (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
         <h2 className="text-xl font-semibold">Filtres</h2>
         <Button variant="ghost" size="sm" onClick={clearAllFilters}>
           Réinitialiser
@@ -761,7 +761,7 @@ export default function ProductListingPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Products</h1>
+          <h1 className="text-xl font-bold">Produits</h1>
 
           <div className="flex items-center space-x-2">
             <Select
@@ -787,7 +787,10 @@ export default function ProductListingPage() {
                   <span className="sr-only">Filtres</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+              <SheetContent
+                side="left"
+                className="w-[300px] overflow-scroll pl-4 sm:w-[400px]"
+              >
                 {renderFilterSection()}
               </SheetContent>
             </Sheet>
