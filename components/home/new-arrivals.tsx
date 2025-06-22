@@ -1,12 +1,13 @@
 "use client";
 
 import { currencyAtom } from "@/lib/atoms";
-import { formatPrice } from "@/lib/utils";
+import { calcDiscountPercentage, formatPrice } from "@/lib/utils";
 import { trpc } from "@/server/trpc/client";
 import { useAtomValue } from "jotai";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import React from "react";
+import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 
 type NewArrivalsProps = {};
@@ -53,16 +54,48 @@ const NewArrivals: React.FC<NewArrivalsProps> = ({}) => {
                     className="h-full w-full object-cover transition-transform group-hover:scale-105"
                   />
                 </div>
+                {product.discountedPrice &&
+                  Number(product.discountedPrice) > 0 && (
+                    <div className="absolute top-3 left-5 flex items-center gap-2">
+                      <Badge variant={"secondary"} className="w-fit font-bold">
+                        {calcDiscountPercentage(
+                          Number(product.price),
+                          Number(product.discountedPrice),
+                        )}
+                        %
+                      </Badge>
+                    </div>
+                  )}
                 <div className="pt-3 pb-2">
                   <h3 className="text-sm font-medium">{product.name}</h3>
-                  <div className="flex items-center justify-between pt-2">
-                    <p className="text-base font-bold">
-                      {formatPrice(
-                        Number(product.price),
-                        currency.code,
-                        currency.rate,
-                      )}
-                    </p>
+                  <div className="flex flex-col gap-2 pt-2">
+                    {product.discountedPrice &&
+                    Number(product.discountedPrice) > 0 ? (
+                      <div className="flex items-center gap-4">
+                        <p className="text-muted-foreground text-sm line-through">
+                          {formatPrice(
+                            Number(product.price),
+                            currency.code,
+                            currency.rate,
+                          )}
+                        </p>
+                        <p className="text-primary font-semibold">
+                          {formatPrice(
+                            Number(product.discountedPrice),
+                            currency.code,
+                            currency.rate,
+                          )}
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-muted-foreground">
+                        {formatPrice(
+                          Number(product.price),
+                          currency.code,
+                          currency.rate,
+                        )}
+                      </p>
+                    )}
                     <Button size="sm" variant="ghost" asChild>
                       <Link href={`/shop/${product.id}`}>Voir le produit</Link>
                     </Button>
