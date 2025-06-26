@@ -47,11 +47,11 @@ const NewArrivals: React.FC<NewArrivalsProps> = ({}) => {
                 key={product.id}
                 className="group bg-background relative overflow-hidden rounded-lg border p-2"
               >
-                <div className="bg-muted aspect-square overflow-hidden rounded-md">
+                <div className="bg-muted h-72 overflow-hidden rounded-md">
                   <img
                     src={product.gallery[0] || "/placeholder.svg"}
                     alt={product.name}
-                    className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                    className="h-full w-full object-fill transition-transform group-hover:scale-105"
                   />
                 </div>
                 {product.discountedPrice &&

@@ -932,18 +932,20 @@ export default function ProductDetailPage({ params }: Props) {
       <div className="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2">
         {/* Product Images */}
         <div className="space-y-4">
-          <div className="border-border relative h-[600px] overflow-hidden rounded-lg border">
+          {/* Main image: aspect-ratio 3:4 to match your vertical shots */}
+          <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-gray-100 md:aspect-[4/5]">
             <Image
-              src={product?.gallery[currentImage] || "/placeholder.svg"}
+              src={product?.gallery[currentImage] ?? "/placeholder.svg"}
               fill
-              alt={`${product.name}`}
-              className="h-full w-full rounded-2xl object-cover"
+              alt={product?.name}
+              className="object-contain object-center"
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
             <div className="absolute inset-0 flex items-center justify-between px-4">
               <Button
                 variant="ghost"
                 size="icon"
-                className="bg-background/80 hover:bg-background cursor-pointer rounded-full"
+                className="bg-background/80 hover:bg-background rounded-full"
                 onClick={prevImage}
               >
                 <ChevronLeft className="h-6 w-6" />
@@ -952,7 +954,7 @@ export default function ProductDetailPage({ params }: Props) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="bg-background/80 hover:bg-background cursor-pointer rounded-full"
+                className="bg-background/80 hover:bg-background rounded-full"
                 onClick={nextImage}
               >
                 <ChevronRight className="h-6 w-6" />
@@ -960,21 +962,23 @@ export default function ProductDetailPage({ params }: Props) {
               </Button>
             </div>
           </div>
+
+          {/* Thumbnails: keep square thumbnails but center & contain */}
           <div className="flex space-x-2 overflow-x-auto pb-2">
             {product?.gallery.map((image, index) => (
               <button
                 key={index}
+                onClick={() => setCurrentImage(index)}
                 className={cn(
-                  "relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border-2",
+                  "relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border-2 bg-gray-50",
                   currentImage === index ? "border-primary" : "border-border",
                 )}
-                onClick={() => setCurrentImage(index)}
               >
                 <Image
-                  src={image || "/placeholder.svg"}
+                  src={image ?? "/placeholder.svg"}
                   fill
                   alt={`Product thumbnail ${index + 1}`}
-                  className="object-cover"
+                  className="object-contain object-center"
                 />
               </button>
             ))}
