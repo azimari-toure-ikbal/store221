@@ -301,12 +301,10 @@ export default function HomePage() {
                 key={index}
                 className="aspect-square overflow-hidden rounded-lg"
               >
-                <Image
+                <img
                   src={item.src || `/placeholder.svg`}
                   alt={`Galerie ${index}`}
-                  width={400}
-                  height={400}
-                  className="h-full w-full object-cover transition-transform hover:scale-105"
+                  className="h-full w-full object-contain transition-transform hover:scale-105"
                 />
               </div>
             ))}
