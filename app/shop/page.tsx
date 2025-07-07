@@ -24,7 +24,6 @@ import {
   SlidersHorizontal,
   X,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -623,11 +622,10 @@ export default function ProductListingPage() {
     <Link href={`/shop/${product.id}`} key={product.id} className="group block">
       <div className="space-y-3">
         <div className="bg-muted relative aspect-[4/5] overflow-hidden rounded-lg">
-          <Image
+          <img
             src={product.gallery[0] || "/placeholder.svg"}
             alt={product.name}
-            fill
-            className="object-cover transition-transform group-hover:scale-105"
+            className="object-contain transition-transform group-hover:scale-105"
           />
           {product.discountedPrice && Number(product.discountedPrice) > 0 && (
             <div className="absolute bottom-2 left-2 flex items-center gap-2">
