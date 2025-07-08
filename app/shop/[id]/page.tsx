@@ -150,6 +150,7 @@ export default function ProductDetailPage({ params }: Props) {
   // Render options based on product type
   const renderProductOptions = () => {
     if (!product) return;
+
     switch (product.type) {
       case "CLASSIC_SHIRTS":
       case "AFRICAN_SHIRTS":
@@ -190,171 +191,181 @@ export default function ProductDetailPage({ params }: Props) {
             </div>
 
             {/* Collar options */}
-            <div className="space-y-3">
-              <h3 className="font-medium">Type de col</h3>
-              <RadioGroup
-                defaultValue={selectedOptions.collarType}
-                className="flex flex-wrap gap-4"
-                onValueChange={(val) => {
-                  setFilters((prev) => ({
-                    ...prev,
-                    selectedOptions: {
-                      ...prev.selectedOptions,
-                      collarType: val as CollarTypes,
-                    },
-                  }));
-                }}
-              >
-                {collarTypes.map((col, index) => (
-                  <div key={index}>
-                    <RadioGroupItem
-                      id={col}
-                      value={col}
-                      className="peer sr-only"
-                    />
-                    <Label
-                      htmlFor={col}
-                      className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 relative flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
-                    >
-                      {formatCollarType(col)}
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            variant={"secondary"}
-                            size={"icon"}
-                            className="absolute -top-2 -right-2 size-5 rounded-full p-3"
-                          >
-                            <Info />
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>{formatCollarType(col)}</DialogTitle>
-                            <DialogDescription>
-                              {col === "MINIMALISTIC" ? (
-                                <p className="text-justify text-xs">
-                                  Le col minimaliste, également connu sous le
-                                  nom de col officier, se distingue par son
-                                  style épuré et moderne. Il s'adapte aussi bien
-                                  à une chemise formelle pour un look
-                                  sophistiqué qu'à une chemise d'été en lin pour
-                                  un style décontracté. La rigidité du col varie
-                                  en fonction du tissu : souple pour les
-                                  matières casual et plus rigide pour les tissus
-                                  formels.
-                                </p>
-                              ) : (
-                                <p className="text-justify text-xs">
-                                  Le col standard, aussi appelé col italien, est
-                                  un choix business polyvalent. Adaptable, il
-                                  peut se porter avec ou sans cravate. De taille
-                                  moyenne, avec des pointes plutôt évasées, il
-                                  offre une tenue parfaite et est équipé de
-                                  baleines amovibles.
-                                </p>
-                              )}
-                            </DialogDescription>
-                          </DialogHeader>
-                          <img
-                            src={
-                              col === "STANDARD"
-                                ? "/shop/Col-standard.png"
-                                : "/shop/Col-minimaliste.png"
-                            }
-                            alt="collar"
-                            className="aspect-square h-auto w-full rounded-lg border"
-                          />
-                        </DialogContent>
-                      </Dialog>
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
+            {selectedOptions.sleevesLength === "LONG" ||
+              (product.type === "CLASSIC_SHIRTS" && (
+                <div className="space-y-3">
+                  <h3 className="font-medium">Type de col</h3>
+                  <RadioGroup
+                    defaultValue={selectedOptions.collarType}
+                    className="flex flex-wrap gap-4"
+                    onValueChange={(val) => {
+                      setFilters((prev) => ({
+                        ...prev,
+                        selectedOptions: {
+                          ...prev.selectedOptions,
+                          collarType: val as CollarTypes,
+                        },
+                      }));
+                    }}
+                  >
+                    {collarTypes.map((col, index) => (
+                      <div key={index}>
+                        <RadioGroupItem
+                          id={col}
+                          value={col}
+                          className="peer sr-only"
+                        />
+                        <Label
+                          htmlFor={col}
+                          className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 relative flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
+                        >
+                          {formatCollarType(col)}
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button
+                                variant={"secondary"}
+                                size={"icon"}
+                                className="absolute -top-2 -right-2 size-5 rounded-full p-3"
+                              >
+                                <Info />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>
+                                  {formatCollarType(col)}
+                                </DialogTitle>
+                                <DialogDescription>
+                                  {col === "MINIMALISTIC" ? (
+                                    <p className="text-justify text-xs">
+                                      Le col minimaliste, également connu sous
+                                      le nom de col officier, se distingue par
+                                      son style épuré et moderne. Il s'adapte
+                                      aussi bien à une chemise formelle pour un
+                                      look sophistiqué qu'à une chemise d'été en
+                                      lin pour un style décontracté. La rigidité
+                                      du col varie en fonction du tissu : souple
+                                      pour les matières casual et plus rigide
+                                      pour les tissus formels.
+                                    </p>
+                                  ) : (
+                                    <p className="text-justify text-xs">
+                                      Le col standard, aussi appelé col italien,
+                                      est un choix business polyvalent.
+                                      Adaptable, il peut se porter avec ou sans
+                                      cravate. De taille moyenne, avec des
+                                      pointes plutôt évasées, il offre une tenue
+                                      parfaite et est équipé de baleines
+                                      amovibles.
+                                    </p>
+                                  )}
+                                </DialogDescription>
+                              </DialogHeader>
+                              <img
+                                src={
+                                  col === "STANDARD"
+                                    ? "/shop/Col-standard.png"
+                                    : "/shop/Col-minimaliste.png"
+                                }
+                                alt="collar"
+                                className="aspect-square h-auto w-full rounded-lg border"
+                              />
+                            </DialogContent>
+                          </Dialog>
+                        </Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                </div>
+              ))}
 
             {/* Wrists options */}
-            <div className="space-y-3">
-              <h3 className="font-medium">Type de poignets</h3>
-              <RadioGroup
-                defaultValue={selectedOptions.wristsType}
-                className="flex flex-wrap gap-2"
-                onValueChange={(val) => {
-                  setFilters((prev) => ({
-                    ...prev,
-                    selectedOptions: {
-                      ...prev.selectedOptions,
-                      wristsType: val as WristsTypes,
-                    },
-                  }));
-                }}
-              >
-                {wristsTypes.map((wrist, index) => (
-                  <div key={index}>
-                    <RadioGroupItem
-                      id={wrist}
-                      value={wrist}
-                      className="peer sr-only"
-                    />
-                    <Label
-                      htmlFor={wrist}
-                      className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 relative flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
-                    >
-                      {formatWristsType(wrist)}
+            {selectedOptions.sleevesLength === "LONG" && (
+              <div className="space-y-3">
+                <h3 className="font-medium">Type de poignets</h3>
+                <RadioGroup
+                  defaultValue={selectedOptions.wristsType}
+                  className="flex flex-wrap gap-2"
+                  onValueChange={(val) => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      selectedOptions: {
+                        ...prev.selectedOptions,
+                        wristsType: val as WristsTypes,
+                      },
+                    }));
+                  }}
+                >
+                  {wristsTypes.map((wrist, index) => (
+                    <div key={index}>
+                      <RadioGroupItem
+                        id={wrist}
+                        value={wrist}
+                        className="peer sr-only"
+                      />
+                      <Label
+                        htmlFor={wrist}
+                        className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 relative flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
+                      >
+                        {formatWristsType(wrist)}
 
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            variant={"secondary"}
-                            size={"icon"}
-                            className="absolute -top-2 -right-2 size-5 rounded-full p-3"
-                          >
-                            <Info />
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>{formatWristsType(wrist)}</DialogTitle>
-                            <DialogDescription>
-                              {wrist === "SIMPLE" ? (
-                                <p className="text-justify text-xs">
-                                  Les poignets simples sont adaptés à tous les
-                                  styles quotidiens, qu'ils soient casual ou
-                                  business. Leurs angles biseautés leur
-                                  confèrent une allure contemporaine et ils se
-                                  ferment par un bouton. leur rigidité et leur
-                                  hauteur sont adjustés en fonction du type de
-                                  tissu choisi : des poignets plus souples pour
-                                  les tissus casual et plus rigides pour les
-                                  tissus formels.
-                                </p>
-                              ) : (
-                                <p className="text-justify text-xs">
-                                  Les poignets mousquetaires sont parfaits pour
-                                  des chemises cérémonie ou pour créer un look
-                                  business sophistiqué. Ces poignets sont
-                                  doublés, ils se replient et se ferment à
-                                  l'aide de boutons de manchettes (non
-                                  fournies).
-                                </p>
-                              )}
-                            </DialogDescription>
-                          </DialogHeader>
-                          <img
-                            src={
-                              wrist === "SIMPLE"
-                                ? "/shop/Poignet-Simple.png"
-                                : "/shop/Poignet-Mousquetaire.png"
-                            }
-                            alt="collar"
-                            className="aspect-square h-auto w-full rounded-lg border"
-                          />
-                        </DialogContent>
-                      </Dialog>
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              variant={"secondary"}
+                              size={"icon"}
+                              className="absolute -top-2 -right-2 size-5 rounded-full p-3"
+                            >
+                              <Info />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>
+                                {formatWristsType(wrist)}
+                              </DialogTitle>
+                              <DialogDescription>
+                                {wrist === "SIMPLE" ? (
+                                  <p className="text-justify text-xs">
+                                    Les poignets simples sont adaptés à tous les
+                                    styles quotidiens, qu'ils soient casual ou
+                                    business. Leurs angles biseautés leur
+                                    confèrent une allure contemporaine et ils se
+                                    ferment par un bouton. leur rigidité et leur
+                                    hauteur sont adjustés en fonction du type de
+                                    tissu choisi : des poignets plus souples
+                                    pour les tissus casual et plus rigides pour
+                                    les tissus formels.
+                                  </p>
+                                ) : (
+                                  <p className="text-justify text-xs">
+                                    Les poignets mousquetaires sont parfaits
+                                    pour des chemises cérémonie ou pour créer un
+                                    look business sophistiqué. Ces poignets sont
+                                    doublés, ils se replient et se ferment à
+                                    l'aide de boutons de manchettes (non
+                                    fournies).
+                                  </p>
+                                )}
+                              </DialogDescription>
+                            </DialogHeader>
+                            <img
+                              src={
+                                wrist === "SIMPLE"
+                                  ? "/shop/Poignet-Simple.png"
+                                  : "/shop/Poignet-Mousquetaire.png"
+                              }
+                              alt="collar"
+                              className="aspect-square h-auto w-full rounded-lg border"
+                            />
+                          </DialogContent>
+                        </Dialog>
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+            )}
           </>
         );
       case "PANTS":
@@ -1303,10 +1314,24 @@ export default function ProductDetailPage({ params }: Props) {
                   product.type === "CLASSIC_SHIRTS" ||
                   product.type === "AFRICAN_SHIRTS"
                 ) {
+                  if (!selectedOptions.sleevesLength) {
+                    return toast.warning(
+                      "Vous devez sélectionner les options avant de pouvoir ajouter le produit au panier",
+                    );
+                  }
+
                   if (
-                    !selectedOptions.sleevesLength ||
-                    !selectedOptions.collarType ||
-                    !selectedOptions.wristsType
+                    selectedOptions.sleevesLength === "LONG" &&
+                    (!selectedOptions.collarType || !selectedOptions.wristsType)
+                  ) {
+                    return toast.warning(
+                      "Vous devez sélectionner les options avant de pouvoir ajouter le produit au panier",
+                    );
+                  }
+
+                  if (
+                    product.type === "CLASSIC_SHIRTS" &&
+                    !selectedOptions.collarType
                   ) {
                     return toast.warning(
                       "Vous devez sélectionner les options avant de pouvoir ajouter le produit au panier",

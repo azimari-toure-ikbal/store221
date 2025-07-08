@@ -22,6 +22,7 @@ import CollectionCard from "@/components/collection-card";
 import NewArrivals from "@/components/home/new-arrivals";
 import { Badge } from "@/components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useShopFilters } from "@/hooks/use-states";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -51,11 +52,23 @@ export default function HomePage() {
   const banner2Src = isMobile ? banner2Mobile.src : banner2.src;
   const aspectClass = isMobile ? "aspect-[2/4]" : "aspect-video"; // 3:4 portrait on mobile, 16:9 on desktop
 
+  const [{ filter: shopFilter }] = useShopFilters();
+
   return (
     <main className="">
       {/* Hero Section */}
       <section className="relative">
-        <Link href="/shop">
+        <Link
+          href={{
+            pathname: "/shop",
+            query: {
+              filter: JSON.stringify({
+                ...shopFilter,
+                productType: "CLASSIC_SHIRTS",
+              }),
+            },
+          }}
+        >
           <div className={`relative w-full ${aspectClass}`}>
             <Image
               src={banner1Src}
@@ -92,7 +105,7 @@ export default function HomePage() {
             <CollectionCard
               title="Costumes"
               image={suit.src}
-              type="MEN_SUITS"
+              type="WOMEN_SUITS"
             />
             <CollectionCard
               title="Chemises Africaines"
