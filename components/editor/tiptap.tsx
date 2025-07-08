@@ -44,12 +44,8 @@ const Tiptap: React.FC<TiptapProps> = ({ description, onChange, preview }) => {
   });
 
   React.useEffect(() => {
-    if (editor && !editor.isDestroyed) {
-      editor.commands.setContent(description, false, {
-        preserveWhitespace: "full",
-      });
-    }
-  }, [editor, description]);
+    if (editor?.isEmpty) editor.commands.setContent(description);
+  }, [description, editor]);
 
   return (
     <>
