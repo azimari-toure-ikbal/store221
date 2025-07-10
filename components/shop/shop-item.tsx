@@ -8,7 +8,22 @@ import {
 import { CartItem, INITIALS_PRICE, SUR_MESURE_PRICE } from "@/config";
 import { useCart } from "@/hooks/use-cart";
 import { currencyAtom } from "@/lib/atoms";
-import { formatPrice, getWeight } from "@/lib/utils";
+import {
+  CollarTypes,
+  PantFits,
+  PantLegs,
+  SleevesLengths,
+  WristsTypes,
+} from "@/lib/db/schema";
+import {
+  formatCollarType,
+  formatPantFit,
+  formatPantLeg,
+  formatPrice,
+  formatSleevesLength,
+  formatWristsType,
+  getWeight,
+} from "@/lib/utils";
 import { useAtomValue } from "jotai";
 import { Info, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -27,8 +42,25 @@ export function ShoppingCartItem({ item }: ShoppingCartItemProps) {
 
   // Filter out undefined options
   const validOptions = Object.entries(options).filter(
-    ([_, value]) => value !== undefined,
+    ([_, value]) => value !== undefined && value !== "",
   );
+
+  const formatValue = (key: string, value: string) => {
+    switch (key) {
+      case "collarType":
+        return formatCollarType(value as CollarTypes);
+      case "pantFit":
+        return formatPantFit(value as PantFits);
+      case "pantLeg":
+        return formatPantLeg(value as PantLegs);
+      case "sleevesLength":
+        return formatSleevesLength(value as SleevesLengths);
+      case "wristsType":
+        return formatWristsType(value as WristsTypes);
+      default:
+        return value;
+    }
+  };
 
   const {
     removeProductFromCart,
@@ -89,7 +121,7 @@ export function ShoppingCartItem({ item }: ShoppingCartItemProps) {
                                         : "Taille"}
                           :
                         </span>
-                        <span>{value}</span>
+                        <span>{formatValue(key, value)}</span>
                       </li>
                     ))}
                   </ul>

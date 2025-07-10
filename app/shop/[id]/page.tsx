@@ -1149,29 +1149,33 @@ export default function ProductDetailPage({ params }: Props) {
             {product.tissues.length > 1 && (
               <div className="space-y-3">
                 <h3 className="font-medium">Changer de tissu</h3>
-                <RadioGroup
-                  defaultValue={selectedOptions.tissu}
-                  className="flex flex-wrap gap-4"
-                  onValueChange={(val) => {
-                    setFilters((prev) => ({
-                      ...prev,
-                      selectedOptions: {
-                        ...prev.selectedOptions,
-                        tissu: val,
-                      },
-                    }));
-                  }}
-                >
+                <div className="flex flex-wrap gap-4">
                   {product.tissues.map((tissu, index) => (
-                    <div key={index}>
-                      <RadioGroupItem
-                        id={tissu.name}
-                        value={tissu.name}
-                        className="peer sr-only"
-                      />
+                    <div
+                      key={index}
+                      onClick={() => {
+                        setFilters((prev) => ({
+                          ...prev,
+                          selectedOptions: {
+                            ...prev.selectedOptions,
+                            tissu:
+                              tissu.name === prev.selectedOptions.tissu
+                                ? ""
+                                : tissu.name,
+                          },
+                        }));
+                      }}
+                    >
+                      <div id={tissu.name} className="peer sr-only" />
                       <Label
                         htmlFor={tissu.name}
-                        className="border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 relative flex h-10 cursor-pointer items-center justify-center rounded-md border px-4"
+                        className={cn(
+                          "border-border bg-background peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 relative flex h-10 cursor-pointer items-center justify-center rounded-md border px-4",
+                          {
+                            "border-primary bg-primary/10":
+                              tissu.name === selectedOptions.tissu,
+                          },
+                        )}
                       >
                         {tissu.name}
                         <Dialog>
@@ -1198,7 +1202,7 @@ export default function ProductDetailPage({ params }: Props) {
                       </Label>
                     </div>
                   ))}
-                </RadioGroup>
+                </div>
               </div>
             )}
 
@@ -1322,7 +1326,7 @@ export default function ProductDetailPage({ params }: Props) {
 
                   if (
                     selectedOptions.sleevesLength === "LONG" &&
-                    (!selectedOptions.collarType || !selectedOptions.wristsType)
+                    !selectedOptions.wristsType
                   ) {
                     return toast.warning(
                       "Vous devez sélectionner les options avant de pouvoir ajouter le produit au panier",
