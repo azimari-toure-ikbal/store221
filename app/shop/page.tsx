@@ -688,10 +688,10 @@ export default function ProductListingPage() {
       pages.push(
         <Button
           key={i}
-          variant={page === i ? "default" : "outline"}
+          variant={page + 1 === i ? "default" : "outline"}
           size="icon"
           className="h-8 w-8"
-          onClick={() => goToPage(i)}
+          onClick={() => goToPage(i - 1)}
         >
           {i}
         </Button>,
