@@ -190,47 +190,50 @@ export const productsRouter = createTRPCRouter({
       const { page, pageSize, filter } = input;
       const offset = page * pageSize;
 
-      const filters: SQL[] = [];
+      const baseFilters: SQL[] = [];
+      const itemFilters: SQL[] = [];
 
       if (filter) {
         if (filter.productType !== "ALL") {
-          filters.push(eq(products.type, filter.productType));
+          baseFilters.push(eq(products.type, filter.productType));
         }
 
         if (filter.collarOptions.length > 0) {
-          filters.push(
+          baseFilters.push(
             sql`${products.options} @> ${JSON.stringify({ collarType: filter.collarOptions })}`,
           );
         }
 
         if (filter.sleevesOptions.length > 0) {
-          filters.push(
+          baseFilters.push(
             sql`${products.options} @> ${JSON.stringify({ sleevesLength: filter.sleevesOptions })}`,
           );
         }
 
         if (filter.wristsOptions.length > 0) {
-          filters.push(
+          baseFilters.push(
             sql`${products.options} @> ${JSON.stringify({ wristsType: filter.wristsOptions })}`,
           );
         }
 
         if (filter.pantFitOptions.length > 0) {
-          filters.push(
+          baseFilters.push(
             sql`${products.options} @> ${JSON.stringify({ pantFit: filter.pantFitOptions })}`,
           );
         }
 
         if (filter.pantLegOptions.length > 0) {
-          filters.push(
+          baseFilters.push(
             sql`${products.options} @> ${JSON.stringify({ pantLeg: filter.pantLegOptions })}`,
           );
         }
 
         if (filter.price && filter.price > 0) {
-          filters.push(lte(products.price, String(filter.price)));
+          itemFilters.push(lte(products.price, String(filter.price)));
         }
       }
+
+      itemFilters.unshift(...baseFilters);
 
       const sortMapping: Record<string, any> = {
         "created-desc": desc(products.createdAt),
@@ -244,27 +247,31 @@ export const productsRouter = createTRPCRouter({
           ? sortMapping[filter.sort]
           : asc(products.createdAt);
 
-      const items = await db
+      const whereItems = and(eq(products.status, "PUBLISHED"), ...itemFilters);
+      const itemsPlusOne = await db
         .select()
         .from(products)
-        .where(and(eq(products.status, "PUBLISHED"), ...filters))
+        .where(whereItems)
         .orderBy(orderByClause)
-        .limit(pageSize)
+        .limit(pageSize + 1)
         .offset(offset);
 
-      // Optionally, get the total count for pagination metadata
+      const hasNextPage = itemsPlusOne.length > pageSize;
+      const items = itemsPlusOne.slice(0, pageSize);
+
       const countResult = await db
-        .select({
-          count: sql<number>`COUNT(*)`.as("count"),
-        })
-        .from(products);
+        .select({ count: sql<number>`COUNT(*)`.as("count") })
+        .from(products)
+        .where(whereItems);
 
       // Get the maximum price of the products
+      const whereStats = and(eq(products.status, "PUBLISHED"), ...baseFilters);
       const maxPriceResult = await db
         .select({
           maxPrice: sql<number>`MAX(price)`.as("maxPrice"),
         })
-        .from(products);
+        .from(products)
+        .where(whereStats);
 
       const maxPrice = maxPriceResult[0]?.maxPrice ?? 0;
 
@@ -273,7 +280,8 @@ export const productsRouter = createTRPCRouter({
         .select({
           minPrice: sql<number>`MIN(price)`.as("minPrice"),
         })
-        .from(products);
+        .from(products)
+        .where(whereStats);
 
       const minPrice = minPriceResult[0]?.minPrice ?? 0;
 
@@ -282,7 +290,8 @@ export const productsRouter = createTRPCRouter({
         .select({
           avgPrice: sql<number>`AVG(price)`.as("avgPrice"),
         })
-        .from(products);
+        .from(products)
+        .where(whereStats);
 
       const avgPrice = avgPriceResult[0]?.avgPrice ?? 0;
 
@@ -293,6 +302,7 @@ export const productsRouter = createTRPCRouter({
         total,
         page,
         pageSize,
+        hasNextPage,
         maxPrice,
         minPrice,
         avgPrice,

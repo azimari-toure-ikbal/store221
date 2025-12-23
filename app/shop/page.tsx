@@ -181,12 +181,12 @@ export default function ProductListingPage() {
   const goToPreviousPage = () => {
     setFilters((prev) => ({
       ...prev,
-      page: Math.max(prev.page - 1, 1),
+      page: Math.max(prev.page - 1, 0),
     }));
   };
 
   const goToNextPage = () => {
-    if (products && page < Math.ceil(products.total / DEFAULT_LIMIT)) {
+    if (products?.hasNextPage) {
       setFilters((prev) => ({
         ...prev,
         page: prev.page + 1,
@@ -676,8 +676,12 @@ export default function ProductListingPage() {
 
     const pages = [];
     const maxVisiblePages = 5;
+    const currentPage = page + 1;
 
-    let startPage = Math.max(1, page - Math.floor(maxVisiblePages / 2));
+    let startPage = Math.max(
+      1,
+      currentPage - Math.floor(maxVisiblePages / 2),
+    );
     const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
     if (endPage - startPage + 1 < maxVisiblePages) {
@@ -688,7 +692,7 @@ export default function ProductListingPage() {
       pages.push(
         <Button
           key={i}
-          variant={page + 1 === i ? "default" : "outline"}
+          variant={currentPage === i ? "default" : "outline"}
           size="icon"
           className="h-8 w-8"
           onClick={() => goToPage(i - 1)}
@@ -705,7 +709,7 @@ export default function ProductListingPage() {
           size="icon"
           className="h-8 w-8"
           onClick={goToPreviousPage}
-          disabled={page === 1}
+          disabled={currentPage === 1}
         >
           <ChevronLeft className="h-4 w-4" />
           <span className="sr-only">Previous page</span>
@@ -717,7 +721,7 @@ export default function ProductListingPage() {
               variant="outline"
               size="icon"
               className="h-8 w-8"
-              onClick={() => goToPage(1)}
+              onClick={() => goToPage(0)}
             >
               1
             </Button>
@@ -734,7 +738,7 @@ export default function ProductListingPage() {
               variant="outline"
               size="icon"
               className="h-8 w-8"
-              onClick={() => goToPage(totalPages)}
+              onClick={() => goToPage(totalPages - 1)}
             >
               {totalPages}
             </Button>
@@ -746,7 +750,7 @@ export default function ProductListingPage() {
           size="icon"
           className="h-8 w-8"
           onClick={goToNextPage}
-          disabled={page === totalPages}
+          disabled={!products.hasNextPage}
         >
           <ChevronRight className="h-4 w-4" />
           <span className="sr-only">Next page</span>
