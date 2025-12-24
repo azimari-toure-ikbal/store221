@@ -100,8 +100,7 @@ export default function ContactPage() {
               <div className="space-y-2">
                 <h3 className="text-lg font-semibold">Email</h3>
                 <div className="text-muted-foreground space-y-1 text-sm">
-                  <p>info@afriquestyle.com</p>
-                  <p>orders@afriquestyle.com</p>
+                  <p>contact@store221.com</p>
                 </div>
               </div>
             </div>
