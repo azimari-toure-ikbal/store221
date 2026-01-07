@@ -1100,47 +1100,108 @@ export default function ProductDetailPage({ params }: Props) {
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {product.type !== "PANTS" && (
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant={"outline"}>
-                      Guide des tailles (chemises)
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>
-                        Le guide des tailles pour les chemises
-                      </DialogTitle>
-                    </DialogHeader>
-                    <img
-                      src="/shop/guide-chemises.png"
-                      alt="guide taille chemises"
-                    />
-                  </DialogContent>
-                </Dialog>
-              )}
-
-              {product.type !== "AFRICAN_SHIRTS" &&
-                product.type !== "CLASSIC_SHIRTS" && (
+                <>
                   <Dialog>
                     <DialogTrigger asChild>
                       <Button variant={"outline"}>
-                        Guide des tailles (pantalons)
+                        Guide des tailles (chemises)
                       </Button>
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
                         <DialogTitle>
-                          Le guide des tailles pour les pantalons
+                          Le guide des tailles pour les chemises
                         </DialogTitle>
                       </DialogHeader>
                       <img
-                        src="/shop/guide-pantalons.png"
-                        alt="guide taille pantalons"
+                        src="/shop/guide-chemises.jpg"
+                        alt="guide taille chemises"
                       />
                     </DialogContent>
                   </Dialog>
+
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant={"outline"}>
+                        Guide de mesure (chemises)
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Comment mesurer vos chemises</DialogTitle>
+                      </DialogHeader>
+                      <img
+                        src="/shop/guide-mesure-chemises.jpg"
+                        alt="guide taille chemises"
+                      />
+                    </DialogContent>
+                  </Dialog>
+                </>
+              )}
+
+              {product.type !== "AFRICAN_SHIRTS" &&
+                product.type !== "CLASSIC_SHIRTS" && (
+                  <>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant={"outline"}>
+                          Guide des tailles (pantalons)
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>
+                            Le guide des tailles pour les pantalons
+                          </DialogTitle>
+                        </DialogHeader>
+                        <img
+                          src="/shop/guide-pantalons.jpg"
+                          alt="guide taille pantalons"
+                        />
+                      </DialogContent>
+                    </Dialog>
+
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant={"outline"}>
+                          Guide de mesure (pantalons)
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>
+                            Comment mesurer vos pantalons
+                          </DialogTitle>
+                        </DialogHeader>
+                        <img
+                          src="/shop/guide-mesure-pantalons.png"
+                          alt="guide mesure pantalons"
+                        />
+                      </DialogContent>
+                    </Dialog>
+                  </>
                 )}
+
+              {product.type === "WOMEN_SUITS" && (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant={"outline"}>
+                      Guide de mesure (ensembles)
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>
+                        Comment prendre vos mesures pour les ensembles femme
+                      </DialogTitle>
+                    </DialogHeader>
+                    <img
+                      src="/shop/guide-mesure-femmes.jpg"
+                      alt="guide taille pantalons"
+                    />
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
 
             {/* Dynamic Product Options */}
