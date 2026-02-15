@@ -501,7 +501,8 @@ export const cartsRouter = createTRPCRouter({
         ref_command: `${input.cartId}-${new Date().toISOString()}`,
         command_name: "Paiement panier store221 via Paytech",
         env: "test",
-        ipn_url: "https://ipn.samaweekend.com/v1/paytech/ipn/store221",
+        ipn_url:
+          "https://ipn-gateway-production.up.railway.app/v1/paytech/ipn/store221",
         success_url: "https://store221.com/sale-success",
         cancel_url: "https://store221.com/sale-canceled",
         custom_field: JSON.stringify({
